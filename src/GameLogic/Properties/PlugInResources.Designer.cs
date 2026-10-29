@@ -4005,6 +4005,24 @@ namespace MUnique.OpenMU.GameLogic.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unlocks createable character classes (Summoner, Dark Lord, Magic Gladiator, Rage Fighter, …) when a character of the account reaches the Level Requirement By Creation configured on that character class in the admin panel..
+        /// </summary>
+        public static string UnlockCharacterClassesByLevelRequirementPlugIn_Description {
+            get {
+                return ResourceManager.GetString("UnlockCharacterClassesByLevelRequirementPlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock character classes by level requirement.
+        /// </summary>
+        public static string UnlockCharacterClassesByLevelRequirementPlugIn_Name {
+            get {
+                return ResourceManager.GetString("UnlockCharacterClassesByLevelRequirementPlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This plugin increases the score of the duel, when a kill occurred..
         /// </summary>
         public static string UpdateDuelScorePlugIn_Description {
