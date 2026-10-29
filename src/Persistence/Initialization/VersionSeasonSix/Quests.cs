@@ -64,7 +64,7 @@ internal class Quests : InitializerBase
     {
         // Group 200 is reserved for Mission Broker custom missions (no stock F6 UI).
         this.CreateQuest(
-                new LocalizedString("Pest Control"),
+                LocalizedString.FromResource(() => QuestNames.PestControl),
                 MissionBrokerConstants.QuestGroup,
                 1,
                 1,

@@ -2555,6 +2555,13 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
             }
         }
 
+        /// <summary>Gets PestControl from the configuration name resources.</summary>
+        public static string PestControl {
+            get {
+                return ResourceManager.GetString("PestControl", resourceCulture);
+            }
+        }
+
         /// <summary>Gets IntoTheDarknessZone from the configuration name resources.</summary>
         public static string IntoTheDarknessZone {
             get {

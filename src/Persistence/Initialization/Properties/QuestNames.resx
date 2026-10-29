@@ -1086,6 +1086,9 @@
   <data name="SpiderHunt" xml:space="preserve">
     <value>Spider Hunt!</value>
   </data>
+  <data name="PestControl" xml:space="preserve">
+    <value>Pest Control</value>
+  </data>
   <data name="IntoTheDarknessZone" xml:space="preserve">
     <value>Into the 'Darkness' Zone</value>
   </data>

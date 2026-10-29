@@ -31,7 +31,7 @@ public class CultureSelectorTests
         Assert.That(cultures, Does.Contain("zh-CN"));
         Assert.That(cultures, Is.Unique);
         Assert.That(Resources.ResourceManager.GetString("WelcomeMessage", CultureInfo.GetCultureInfo("zh-CN")),
-            Is.EqualTo("欢迎使用 OpenMU 管理后台。"));
+            Is.EqualTo("欢迎使用 Zombie Mu 管理后台。"));
     }
 
     /// <summary>

@@ -63,7 +63,7 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
             return ValueTask.CompletedTask;
         }
 
-        npc.Designation = new LocalizedString("Mission Broker");
+        npc.Designation = LocalizedString.FromResource(() => MonsterNames.EliteSkillSoldier);
         npc.NpcWindow = NpcWindow.Undefined;
         npc.ObjectKind = NpcObjectKind.PassiveNpc;
         npc.MerchantStore = null;
@@ -108,7 +108,7 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
         var quest = context.CreateNew<QuestDefinition>();
         quest.SetGuid(MissionBrokerConstants.QuestGroup, SampleQuestNumber);
         quest.QuestGiver = npc;
-        quest.Name = new LocalizedString("Pest Control");
+        quest.Name = LocalizedString.FromResource(() => QuestNames.PestControl);
         quest.Group = MissionBrokerConstants.QuestGroup;
         quest.Number = SampleQuestNumber;
         quest.StartingNumber = SampleQuestNumber;

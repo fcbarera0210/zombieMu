@@ -828,7 +828,7 @@
     <value>石像</value>
   </data>
   <data name="EliteSkillSoldier" xml:space="preserve">
-    <value>精英技能士兵</value>
+    <value>任务经纪人</value>
   </data>
   <data name="GameMaster" xml:space="preserve">
     <value>游戏管理员</value>

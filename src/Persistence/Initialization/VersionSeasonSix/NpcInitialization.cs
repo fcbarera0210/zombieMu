@@ -239,7 +239,7 @@ internal partial class NpcInitialization : Version095d.NpcInitialization
         {
             var def = this.Context.CreateNew<MonsterDefinition>();
             def.Number = 372;
-            def.Designation = new LocalizedString("Mission Broker");
+            def.Designation = LocalizedString.FromResource(() => MonsterNames.EliteSkillSoldier);
             def.NpcWindow = NpcWindow.Undefined;
             def.ObjectKind = NpcObjectKind.PassiveNpc;
             this.GameConfiguration.Monsters.Add(def);
