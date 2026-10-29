@@ -406,4 +406,6 @@
   <data name="FixSeedSphereMaximumItemLevelUpdatePlugIn_Description" xml:space="preserve"><value>This update sets the maximum item level of the seed spheres to the highest option number of their element. The item level of a seed sphere defines its option, so seed spheres with other options than the first one could not be created, e.g. with the item chat command.</value></data>
   <data name="AddItemPriceDefinitionsPlugIn_Name" xml:space="preserve"><value>Add item price definitions</value></data>
   <data name="AddItemPriceDefinitionsPlugIn_Description" xml:space="preserve"><value>This update adds the price definitions of special items like jewels, potions and event tickets, which were hard-coded before. Without it, these items are priced like usual equipment.</value></data>
+  <data name="AddMissionBrokerUpdatePlugInSeason6_Name" xml:space="preserve"><value>Add Mission Broker NPC</value></data>
+  <data name="AddMissionBrokerUpdatePlugInSeason6_Description" xml:space="preserve"><value>Sets up Elite Skill Soldier (372) as the Mission Broker for custom quests, spawns him in Lorencia, configures the talk plugin, and adds a sample kill mission.</value></data>
 </root>

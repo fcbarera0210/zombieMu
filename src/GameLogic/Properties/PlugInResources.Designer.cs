@@ -1805,6 +1805,24 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("MediumShieldPotionConsumeHandlerPlugIn_Name", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Handles the dedicated Mission Broker NPC for custom kill missions. Configure quests on that NPC in the admin panel; players talk twice to accept, turn in or abandon (no chat commands).
+        /// </summary>
+        public static string MissionBrokerNpcPlugIn_Description {
+            get {
+                return ResourceManager.GetString("MissionBrokerNpcPlugIn_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mission Broker.
+        /// </summary>
+        public static string MissionBrokerNpcPlugIn_Name {
+            get {
+                return ResourceManager.GetString("MissionBrokerNpcPlugIn_Name", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Entrance closed message.

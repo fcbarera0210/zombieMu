@@ -971,5 +971,11 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
         /// <summary>Gets the localized AddItemPriceDefinitionsPlugIn_Description text.</summary>
         public static string AddItemPriceDefinitionsPlugIn_Description => ResourceManager.GetString("AddItemPriceDefinitionsPlugIn_Description", resourceCulture)!;
 
+        /// <summary>Gets the localized AddMissionBrokerUpdatePlugInSeason6_Name text.</summary>
+        public static string AddMissionBrokerUpdatePlugInSeason6_Name => ResourceManager.GetString("AddMissionBrokerUpdatePlugInSeason6_Name", resourceCulture)!;
+
+        /// <summary>Gets the localized AddMissionBrokerUpdatePlugInSeason6_Description text.</summary>
+        public static string AddMissionBrokerUpdatePlugInSeason6_Description => ResourceManager.GetString("AddMissionBrokerUpdatePlugInSeason6_Description", resourceCulture)!;
+
     }
 }

@@ -1747,4 +1747,10 @@
   <data name="DiscordIntegrationFeaturePlugIn_Description" xml:space="preserve">
     <value>Tells game clients which ask for it how the server is connected to Discord (invite link, Rich Presence application, account link, mirrored chats), lets players link their account from the client, and sends them messages written in Discord as such.</value>
   </data>
+  <data name="MissionBrokerNpcPlugIn_Name" xml:space="preserve">
+    <value>Mission Broker</value>
+  </data>
+  <data name="MissionBrokerNpcPlugIn_Description" xml:space="preserve">
+    <value>Handles the dedicated Mission Broker NPC for custom kill missions. Configure quests on that NPC in the admin panel; players talk twice to accept, turn in or abandon (no chat commands).</value>
+  </data>
 </root>

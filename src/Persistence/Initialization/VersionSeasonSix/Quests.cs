@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Quests;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.PlugIns.MissionBroker;
 using MUnique.OpenMU.GameServer.MessageHandler.Quests;
 using MUnique.OpenMU.Interfaces;
 using MUnique.OpenMU.Persistence.Initialization.CharacterClasses;
@@ -56,6 +57,24 @@ internal class Quests : InitializerBase
         this.IntoTheDarknessZone();
 
         this.CreateNewQuests();
+        this.CreateMissionBrokerQuests();
+    }
+
+    private void CreateMissionBrokerQuests()
+    {
+        // Group 200 is reserved for Mission Broker custom missions (no stock F6 UI).
+        this.CreateQuest(
+                new LocalizedString("Pest Control"),
+                MissionBrokerConstants.QuestGroup,
+                1,
+                1,
+                0,
+                1,
+                50,
+                MissionBrokerConstants.NpcNumber)
+            .WithMonsterKillRequirement(10, 3, this.Context, this.GameConfiguration)
+            .WithMoneyReward(10000, this.Context)
+            .WithExperienceReward(5000, this.Context);
     }
 
     private QuestDefinition CreateQuest(
