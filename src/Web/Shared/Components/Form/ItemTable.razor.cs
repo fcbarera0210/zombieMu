@@ -12,6 +12,8 @@ using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Composition;
+using MUnique.OpenMU.DataModel.Configuration;
+using MUnique.OpenMU.DataModel.Configuration.Quests;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.Shared;
 using MUnique.OpenMU.Web.Shared.Components.Form.Modal;
@@ -182,10 +184,21 @@ public partial class ItemTable<TItem>
         }
         else
         {
+            this.EnsureQuestLinkedToOwnerNpc(item, owner);
             this.Value ??= new List<TItem>();
             this.Value.Add(item);
             await this.PersistenceContext.SaveChangesAsync().ConfigureAwait(false);
             await this.InvokeAsync(this.StateHasChanged).ConfigureAwait(false);
+        }
+    }
+
+    private void EnsureQuestLinkedToOwnerNpc(TItem item, object? owner)
+    {
+        if (item is QuestDefinition quest && owner is MonsterDefinition monster)
+        {
+            // Runtime lists quests via MonsterDefinition.Quests (MonsterDefinitionId).
+            // Official data also sets QuestGiver; admin creates often only fill one of the two.
+            quest.QuestGiver = monster;
         }
     }
 

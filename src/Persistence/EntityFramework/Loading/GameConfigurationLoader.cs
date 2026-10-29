@@ -60,6 +60,7 @@ internal sealed partial class GameConfigurationLoader
         }
 
         this.Fixup();
+        this.SyncQuestNpcLinks();
         return this.LoadedGameConfigurations.ToList();
     }
 
@@ -68,6 +69,52 @@ internal sealed partial class GameConfigurationLoader
         while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
         {
             rows.Add((reader.GetGuid(0), reader.GetGuid(1)));
+        }
+    }
+
+    /// <summary>
+    /// Ensures quests created in the admin panel are reachable through <see cref="Model.MonsterDefinition.RawQuests"/>.
+    /// Admin edits may set only <c>QuestGiverId</c> or only <c>MonsterDefinitionId</c>; the game lists quests exclusively
+    /// via the monster's <c>Quests</c> collection (MonsterDefinitionId).
+    /// </summary>
+    private void SyncQuestNpcLinks()
+    {
+        foreach (var row in this._QuestDefinitionRows)
+        {
+            var quest = row.Entity;
+            // Row keys: Key0 = QualifiedCharacterId, Key1 = QuestGiverId, Key2 = MonsterDefinitionId.
+            var questGiverId = row.Key1;
+            var monsterDefinitionId = row.Key2;
+
+            if (monsterDefinitionId is { } collectionParentId
+                && this._MonsterDefinition.TryGetValue(collectionParentId, out var collectionParent))
+            {
+                if (!collectionParent.RawQuests.Contains(quest))
+                {
+                    collectionParent.RawQuests.Add(quest);
+                }
+
+                if (quest.RawQuestGiver is null)
+                {
+                    quest.RawQuestGiver = collectionParent;
+                }
+
+                continue;
+            }
+
+            if (questGiverId is { } giverId
+                && this._MonsterDefinition.TryGetValue(giverId, out var giver))
+            {
+                if (!giver.RawQuests.Contains(quest))
+                {
+                    giver.RawQuests.Add(quest);
+                }
+
+                if (quest.RawQuestGiver is null)
+                {
+                    quest.RawQuestGiver = giver;
+                }
+            }
         }
     }
 }

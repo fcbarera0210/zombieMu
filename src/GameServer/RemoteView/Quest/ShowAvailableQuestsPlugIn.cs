@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameServer.RemoteView.Quest;
 
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 using MUnique.OpenMU.GameLogic.Views.Quest;
 using MUnique.OpenMU.Network;
@@ -39,8 +40,21 @@ public class ShowAvailableQuestsPlugIn : IShowAvailableQuestsPlugIn
             return;
         }
 
+        var npc = this._player.OpenedNpc.Definition;
+        var linkedOnNpc = npc.Quests.Count;
         var totalQuests = this._player.GetAvailableQuestsOfOpenedNpc().ToList();
         var questCount = totalQuests.Count;
+
+        this._player.Logger.LogInformation(
+            "Available quests for NPC {NpcNumber} ({NpcName}): {AvailableCount} after filters (quests on monster collection: {LinkedCount}). Player level {Level}, class {Class}. Quests: {QuestList}",
+            npc.Number,
+            npc.Designation,
+            questCount,
+            linkedOnNpc,
+            this._player.Level,
+            this._player.SelectedCharacter?.CharacterClass?.Name,
+            string.Join("; ", totalQuests.Select(q => $"{q.Name}[G{q.Group}/S{q.StartingNumber}/N{q.Number} lvl {q.MinimumCharacterLevel}-{q.MaximumCharacterLevel}]")));
+
         int Write()
         {
             var size = AvailableQuestsRef.GetRequiredSize(questCount);
@@ -48,7 +62,7 @@ public class ShowAvailableQuestsPlugIn : IShowAvailableQuestsPlugIn
             var packet = new AvailableQuestsRef(span)
             {
                 QuestCount = (ushort)questCount,
-                QuestNpcNumber = (ushort)this._player.OpenedNpc.Definition.Number,
+                QuestNpcNumber = (ushort)npc.Number,
             };
 
             for (int i = 0; i < questCount; i++)

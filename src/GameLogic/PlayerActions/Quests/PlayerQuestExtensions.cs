@@ -43,13 +43,13 @@ public static class PlayerQuestExtensions
     /// <returns>The quest definition for the specified group and number depending on the players character class.</returns>
     public static QuestDefinition? GetQuest(this Player player, short group, short number)
     {
-        var possibleQuestsOfGroup = player.OpenedNpc?.Definition.Quests
+        var possibleQuestsOfGroup = GetQuestsLinkedToNpc(player, player.OpenedNpc?.Definition)
                 .Where(q => q.Group == group)
                 .Where(q => q.QualifiedCharacter is null || Equals(q.QualifiedCharacter, player.SelectedCharacter?.CharacterClass))
                 .Where(q => !q.EvolvesIntoInactiveClass(player))
                 .OrderBy(q => q.Number);
 
-        return possibleQuestsOfGroup?.FirstOrDefault(q => q.StartingNumber == number || q.Number == number);
+        return possibleQuestsOfGroup.FirstOrDefault(q => q.StartingNumber == number || q.Number == number);
     }
 
     /// <summary>
@@ -59,13 +59,17 @@ public static class PlayerQuestExtensions
     /// <returns>The available quests of the currently opened NPC depending on the players character class.</returns>
     public static IEnumerable<QuestDefinition> GetAvailableQuestsOfOpenedNpc(this Player player)
     {
-        return player.OpenedNpc?.Definition.Quests
-                   .Where(q => q.QualifiedCharacter is null
-                               || Equals(q.QualifiedCharacter, player.SelectedCharacter?.CharacterClass))
-                   .Where(q => q.MinimumCharacterLevel <= player.Level
-                               && (q.MaximumCharacterLevel == default || q.MaximumCharacterLevel >= player.Level))
-                   .Where(q => !q.EvolvesIntoInactiveClass(player))
-               ?? Enumerable.Empty<QuestDefinition>();
+        if (player.OpenedNpc?.Definition is not { } npc)
+        {
+            return Enumerable.Empty<QuestDefinition>();
+        }
+
+        return GetQuestsLinkedToNpc(player, npc)
+            .Where(q => q.QualifiedCharacter is null
+                        || Equals(q.QualifiedCharacter, player.SelectedCharacter?.CharacterClass))
+            .Where(q => q.MinimumCharacterLevel <= player.Level
+                        && (q.MaximumCharacterLevel == default || q.MaximumCharacterLevel >= player.Level))
+            .Where(q => !q.EvolvesIntoInactiveClass(player));
     }
 
     /// <summary>
@@ -79,5 +83,32 @@ public static class PlayerQuestExtensions
     {
         return player.SelectedCharacter?.CharacterClass?.NextGenerationClass is { IsActive: false }
                && quest.Rewards.Any(reward => reward.RewardType is QuestRewardType.CharacterEvolutionFirstToSecond or QuestRewardType.CharacterEvolutionSecondToThird);
+    }
+
+    /// <summary>
+    /// Collects quests assigned to the NPC via its <see cref="MonsterDefinition.Quests"/> collection
+    /// and via <see cref="QuestDefinition.QuestGiver"/> (admin-created quests may only set one of the two links).
+    /// </summary>
+    private static IEnumerable<QuestDefinition> GetQuestsLinkedToNpc(Player player, MonsterDefinition? npc)
+    {
+        if (npc is null)
+        {
+            return Enumerable.Empty<QuestDefinition>();
+        }
+
+        return npc.Quests
+            .Concat(player.GameContext.Configuration.Monsters.SelectMany(monster => monster.Quests)
+                .Where(quest => IsQuestGiver(quest, npc)))
+            .Distinct();
+    }
+
+    private static bool IsQuestGiver(QuestDefinition quest, MonsterDefinition npc)
+    {
+        if (quest.QuestGiver is null)
+        {
+            return false;
+        }
+
+        return ReferenceEquals(quest.QuestGiver, npc) || quest.QuestGiver.Number == npc.Number;
     }
 }

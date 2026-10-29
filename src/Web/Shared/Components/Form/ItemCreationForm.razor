@@ -3,8 +3,15 @@
    </copyright> *@
 
 @using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.DataModel.Configuration
+@using MUnique.OpenMU.DataModel.Configuration.Quests
 @using MUnique.OpenMU.DataModel.Entities
 @using MUnique.OpenMU.Web.Shared.Components.ItemEdit
+
+@if (this.Item is QuestDefinition quest && this.Owner is MonsterDefinition questNpc && quest.QuestGiver is null)
+{
+    quest.QuestGiver = questNpc;
+}
 
 @if (this.Item is Item item)
 {
