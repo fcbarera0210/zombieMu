@@ -39,5 +39,11 @@ public static class Exports
 
     private static IEnumerable<string> AdminPanelScripts => [];
 
-    private static IEnumerable<string> AdminPanelStylesheets => [];
+    private static IEnumerable<string> AdminPanelStylesheets
+    {
+        get
+        {
+            yield return $"_content/{typeof(Exports).Namespace}/css/zombie-mu.css";
+        }
+    }
 }

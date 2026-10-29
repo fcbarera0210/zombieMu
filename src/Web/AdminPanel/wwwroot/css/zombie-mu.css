@@ -1,0 +1,226 @@
+/* Zombie Mu admin branding — toxic green on charcoal, keeps Bootstrap structure. */
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap");
+
+:root,
+[data-bs-theme="light"],
+[data-bs-theme="dark"] {
+  --zm-acid: #7dff6b;
+  --zm-acid-dim: #4fcf5a;
+  --zm-acid-glow: rgba(125, 255, 107, 0.28);
+  --zm-bone: #e8eedf;
+  --bs-primary: #3f9e48;
+  --bs-primary-rgb: 63, 158, 72;
+  --bs-link-color: #3f9e48;
+  --bs-link-hover-color: #2f7a37;
+  --omu-link: #3f9e48;
+  --omu-link-primary: #3f9e48;
+  --omu-link-primary-border: #2f7a37;
+  --omu-spinner-dot: #3f9e48;
+  --omu-sidebar-gradient: linear-gradient(185deg, #07140f 0%, #0f1f16 42%, #152a1c 100%);
+}
+
+[data-bs-theme="light"] {
+  --omu-bg: #f3f6f2;
+  --omu-surface: #eef3eb;
+  --omu-surface-2: #ffffff;
+  --omu-surface-muted: #e6ede3;
+  --omu-surface-hover: #d9e5d4;
+  --omu-border: #c5d4c2;
+  --omu-text: #1a261c;
+  --omu-text-muted: #4d5c50;
+}
+
+[data-bs-theme="dark"] {
+  --omu-bg: #0a100d;
+  --omu-surface: #121a15;
+  --omu-surface-2: #162019;
+  --omu-surface-muted: #1b2720;
+  --omu-surface-hover: #24352a;
+  --omu-border: #2a3b31;
+  --omu-text: var(--zm-bone);
+  --omu-text-muted: #9aaf9e;
+  --omu-text-secondary: #a9bbaa;
+  --omu-link: var(--zm-acid);
+  --omu-link-primary: var(--zm-acid-dim);
+  --omu-link-primary-border: #3f9e48;
+  --bs-primary: #4fcf5a;
+  --bs-primary-rgb: 79, 207, 90;
+  --bs-link-color: var(--zm-acid);
+  --bs-link-hover-color: #b6ffaa;
+  --omu-sidebar-gradient: linear-gradient(185deg, #050b08 0%, #0c1811 45%, #132419 100%);
+}
+
+html,
+body {
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+.sidebar {
+  background-image: var(--omu-sidebar-gradient);
+  box-shadow: inset -1px 0 0 rgba(125, 255, 107, 0.12);
+}
+
+.sidebar > nav {
+  border-radius: 0 0 1rem 0 !important;
+  background:
+    radial-gradient(ellipse 90% 40% at 10% -10%, var(--zm-acid-glow), transparent 55%),
+    transparent;
+}
+
+.sidebar .top-row {
+  background: linear-gradient(90deg, rgba(7, 17, 12, 0.92), rgba(20, 40, 28, 0.75));
+  border-bottom: 1px solid rgba(125, 255, 107, 0.18);
+  min-height: 4rem;
+}
+
+.sidebar .navbar-brand {
+  font-family: Oxanium, "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: var(--zm-bone) !important;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px var(--zm-acid-glow);
+}
+
+.sidebar .navbar-brand::before {
+  content: "";
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.55rem;
+  border-radius: 50%;
+  background: var(--zm-acid);
+  box-shadow: 0 0 10px var(--zm-acid), 0 0 18px var(--zm-acid-glow);
+  vertical-align: middle;
+}
+
+.sidebar .nav-link {
+  border-radius: 0.5rem !important;
+  color: #c9d6c8 !important;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(125, 255, 107, 0.1) !important;
+  color: var(--zm-bone) !important;
+}
+
+.sidebar .nav-link.active {
+  background: linear-gradient(90deg, rgba(125, 255, 107, 0.28), rgba(125, 255, 107, 0.08)) !important;
+  color: #fff !important;
+  box-shadow: inset 3px 0 0 var(--zm-acid);
+}
+
+.main-header {
+  backdrop-filter: blur(8px);
+  border-bottom-color: var(--omu-border) !important;
+}
+
+.breadcrumb-bar {
+  background:
+    linear-gradient(90deg, rgba(125, 255, 107, 0.06), transparent 40%),
+    var(--omu-surface-2);
+}
+
+.content .btn-primary,
+.login-layout .btn-primary {
+  --bs-btn-bg: var(--bs-primary);
+  --bs-btn-border-color: var(--bs-primary);
+  --bs-btn-hover-bg: #348a3d;
+  --bs-btn-hover-border-color: #2f7a37;
+  --bs-btn-active-bg: #2f7a37;
+  --bs-btn-active-border-color: #286830;
+  font-weight: 600;
+}
+
+.dashboard .card,
+.content > .card,
+.login-layout .card {
+  border-color: var(--omu-border);
+  box-shadow: 0 8px 24px rgba(7, 17, 12, 0.08);
+}
+
+.dashboard .card {
+  border-top: 3px solid var(--zm-acid-dim);
+}
+
+.dashboard h1,
+.content > h1 {
+  font-family: Oxanium, "Segoe UI", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.login-layout {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(125, 255, 107, 0.16), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(63, 158, 72, 0.12), transparent 50%),
+    linear-gradient(160deg, #070e0a 0%, #101a14 45%, #0a1410 100%);
+  color: var(--zm-bone);
+}
+
+.login-layout .login-brand {
+  font-family: Oxanium, "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 2.35rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--zm-bone);
+  text-shadow: 0 0 24px var(--zm-acid-glow);
+  margin-bottom: 0.25rem;
+}
+
+.login-layout .login-brand-mark {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-right: 0.65rem;
+  border-radius: 50%;
+  background: var(--zm-acid);
+  box-shadow: 0 0 12px var(--zm-acid);
+  vertical-align: middle;
+}
+
+.login-layout .login-subtitle {
+  color: #9fbaa2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.login-layout .card {
+  background: rgba(16, 26, 20, 0.92);
+  border: 1px solid rgba(125, 255, 107, 0.22);
+  color: var(--zm-bone);
+  backdrop-filter: blur(10px);
+}
+
+.login-layout .card .form-label,
+.login-layout .card .card-title,
+.login-layout .card .form-check-label {
+  color: var(--zm-bone);
+}
+
+.login-layout .card .text-secondary,
+.login-layout .card .form-text {
+  color: #9fbaa2 !important;
+}
+
+.login-layout .form-control {
+  background-color: #0c1510;
+  border-color: #2a3b31;
+  color: var(--zm-bone);
+}
+
+.login-layout .form-control:focus {
+  background-color: #0c1510;
+  border-color: var(--zm-acid-dim);
+  color: var(--zm-bone);
+  box-shadow: 0 0 0 0.2rem var(--zm-acid-glow);
+}
+
+.login-layout .btn-link {
+  color: var(--zm-acid);
+}
