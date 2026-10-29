@@ -42,7 +42,7 @@ public class ShowCharacterListPlugIn : IShowCharacterListPlugIn
             return;
         }
 
-        var unlockFlags = (CharacterCreationUnlockFlags)CharacterClassCreationUnlock.GetUnlockFlags(
+        var unlockFlags = (CharacterCreationUnlockFlags)CharacterCreationUnlockEvaluator.GetUnlockFlags(
             account,
             this._player.GameContext.Configuration);
         await this.SendCharacterListAsync(connection, account, unlockFlags).ConfigureAwait(false);

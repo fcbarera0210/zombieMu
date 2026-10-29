@@ -70,13 +70,13 @@ public class CreateCharacterAction
             return null;
         }
 
-        if (!CharacterClassCreationUnlock.IsCreationUnlocked(account, characterClass))
+        if (!CharacterCreationUnlockEvaluator.IsCreationUnlocked(account, characterClass))
         {
             player.Logger.LogDebug(
                 "CreateCharacter denied for {0}: class {1} is locked (highest account level {2}, requirement {3}).",
                 account.LoginName,
                 characterClass.Name,
-                CharacterClassCreationUnlock.GetHighestCharacterLevel(account),
+                CharacterCreationUnlockEvaluator.GetHighestCharacterLevel(account),
                 characterClass.LevelRequirementByCreation);
             return null;
         }

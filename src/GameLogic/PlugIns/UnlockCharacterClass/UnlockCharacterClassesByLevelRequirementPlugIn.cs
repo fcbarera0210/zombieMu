@@ -10,7 +10,7 @@ using MUnique.OpenMU.PlugIns;
 /// <summary>
 /// Legacy plugin kept for compatibility. Character class creation unlock is evaluated
 /// dynamically from <see cref="CharacterClass.LevelRequirementByCreation"/> in
-/// <see cref="CharacterClassCreationUnlock"/> (character list and create character).
+/// <see cref="CharacterCreationUnlockEvaluator"/> (character list and create character).
 /// </summary>
 /// <remarks>
 /// Disabled by default. Per-account <see cref="Account.UnlockedCharacterClasses"/> is not
@@ -28,6 +28,6 @@ public class UnlockCharacterClassesByLevelRequirementPlugIn : ICharacterLevelUpP
     public void CharacterLeveledUp(Player player)
     {
         // Intentionally empty: unlock flags and create-character checks use
-        // CharacterClassCreationUnlock based on account character levels.
+        // CharacterCreationUnlockEvaluator based on account character levels.
     }
 }

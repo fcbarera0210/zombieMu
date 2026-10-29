@@ -1,4 +1,4 @@
-// <copyright file="CharacterClassCreationUnlock.cs" company="MUnique">
+// <copyright file="CharacterCreationUnlockEvaluator.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -14,7 +14,7 @@ using MUnique.OpenMU.GameLogic.Attributes;
 /// <see cref="Account.UnlockedCharacterClasses"/> is intentionally ignored for creation
 /// and character-list flags, so new accounts work without any per-account unlock setup.
 /// </remarks>
-public static class CharacterClassCreationUnlock
+public static class CharacterCreationUnlockEvaluator
 {
     /// <summary>
     /// Gets the highest character level of the account (0 when it has no characters).
