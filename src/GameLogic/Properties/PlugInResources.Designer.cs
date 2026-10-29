@@ -4005,7 +4005,7 @@ namespace MUnique.OpenMU.GameLogic.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlocks createable character classes (Summoner, Dark Lord, Magic Gladiator, Rage Fighter, …) when a character of the account reaches the Level Requirement By Creation configured on that character class in the admin panel..
+        ///   Looks up a localized string similar to Legacy plugin (disabled by default). Class creation unlock is evaluated from Level Requirement By Creation on the character class; per-account unlocked classes are ignored..
         /// </summary>
         public static string UnlockCharacterClassesByLevelRequirementPlugIn_Description {
             get {

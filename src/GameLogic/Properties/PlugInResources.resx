@@ -841,7 +841,7 @@
     <value>Unlock character classes by level requirement</value>
   </data>
   <data name="UnlockCharacterClassesByLevelRequirementPlugIn_Description" xml:space="preserve">
-    <value>Unlocks createable character classes (Summoner, Dark Lord, Magic Gladiator, Rage Fighter, …) when a character of the account reaches the Level Requirement By Creation configured on that character class in the admin panel.</value>
+    <value>Legacy plugin (disabled by default). Class creation unlock is evaluated from Level Requirement By Creation on the character class; per-account unlocked classes are ignored.</value>
   </data>
   <data name="WanderingMerchantsPlugIn_Name" xml:space="preserve">
     <value>Wandering Merchants</value>

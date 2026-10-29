@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameServer.RemoteView.Character;
 
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.DataModel.Entities;
+using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Views.Character;
 using MUnique.OpenMU.GameServer.RemoteView.Guild;
@@ -41,22 +42,14 @@ public class ShowCharacterListExtendedPlugIn : IShowCharacterListPlugIn
             return;
         }
 
-        var unlockFlags = CreateUnlockFlags(account);
+        var unlockFlags = (CharacterCreationUnlockFlags)CharacterClassCreationUnlock.GetUnlockFlags(
+            account,
+            this._player.GameContext.Configuration);
         await this.SendCharacterListAsync(connection, account, unlockFlags).ConfigureAwait(false);
         if (unlockFlags > CharacterCreationUnlockFlags.None)
         {
             await connection.SendCharacterClassCreationUnlockAsync(unlockFlags).ConfigureAwait(false);
         }
-    }
-
-    private static CharacterCreationUnlockFlags CreateUnlockFlags(Account account)
-    {
-        byte aggregatedFlags = 0;
-        var result = account.UnlockedCharacterClasses?
-            .Where(c => c.IsActive)
-            .Select(c => c.CreationAllowedFlag)
-            .Aggregate(aggregatedFlags, (current, flag) => (byte)(current | flag)) ?? 0;
-        return (CharacterCreationUnlockFlags)result;
     }
 
     private async ValueTask SendCharacterListAsync(IConnection connection, Account account, CharacterCreationUnlockFlags unlockFlags)

@@ -70,6 +70,17 @@ public class CreateCharacterAction
             return null;
         }
 
+        if (!CharacterClassCreationUnlock.IsCreationUnlocked(account, characterClass))
+        {
+            player.Logger.LogDebug(
+                "CreateCharacter denied for {0}: class {1} is locked (highest account level {2}, requirement {3}).",
+                account.LoginName,
+                characterClass.Name,
+                CharacterClassCreationUnlock.GetHighestCharacterLevel(account),
+                characterClass.LevelRequirementByCreation);
+            return null;
+        }
+
         var character = player.PersistenceContext.CreateNew<DataModel.Entities.Character>();
         character.Name = name;
         character.CharacterSlot = freeSlot.Value;
