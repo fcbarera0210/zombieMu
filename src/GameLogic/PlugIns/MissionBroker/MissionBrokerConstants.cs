@@ -10,10 +10,11 @@ namespace MUnique.OpenMU.GameLogic.PlugIns.MissionBroker;
 public static class MissionBrokerConstants
 {
     /// <summary>
-    /// NPC number of the Elite Skill Soldier model, used as the dedicated Mission Broker.
-    /// The client model id must exist in Monster.bmd; this number is unused by default gameplay.
+    /// NPC number used as the dedicated Mission Broker.
+    /// Uses the Fireworks Girl client model (379). Do not use 372 — that id is the Elite Skeleton
+    /// transformation skin and renders as an invisible/unclickable NPC.
     /// </summary>
-    public const short NpcNumber = 372;
+    public const short NpcNumber = 379;
 
     /// <summary>
     /// Quest group reserved for Mission Broker missions.

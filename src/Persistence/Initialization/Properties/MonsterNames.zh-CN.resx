@@ -363,7 +363,7 @@
     <value>流浪商人杰罗</value>
   </data>
   <data name="FireworksGirl" xml:space="preserve">
-    <value>烟花少女</value>
+    <value>任务经纪人</value>
   </data>
   <data name="MercenaryGuildFelicia" xml:space="preserve">
     <value>佣兵公会菲莉西亚</value>
@@ -828,7 +828,7 @@
     <value>石像</value>
   </data>
   <data name="EliteSkillSoldier" xml:space="preserve">
-    <value>任务经纪人</value>
+    <value>精英技能士兵</value>
   </data>
   <data name="GameMaster" xml:space="preserve">
     <value>游戏管理员</value>

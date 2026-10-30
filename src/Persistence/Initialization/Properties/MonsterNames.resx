@@ -363,7 +363,7 @@
     <value>Wandering Merchant Zyro</value>
   </data>
   <data name="FireworksGirl" xml:space="preserve">
-    <value>Fireworks Girl</value>
+    <value>Mission Broker</value>
   </data>
   <data name="MercenaryGuildFelicia" xml:space="preserve">
     <value>Mercenary Guild Felicia</value>
@@ -828,7 +828,7 @@
     <value>Stone Statue</value>
   </data>
   <data name="EliteSkillSoldier" xml:space="preserve">
-    <value>Mission Broker</value>
+    <value>Elite Skill Soldier</value>
   </data>
   <data name="GameMaster" xml:space="preserve">
     <value>GameMaster</value>

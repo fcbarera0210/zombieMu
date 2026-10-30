@@ -14,9 +14,13 @@ using MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Maps;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>
-/// Sets up the Mission Broker NPC (Elite Skill Soldier model), spawns it in Lorencia,
+/// Sets up the Mission Broker NPC (Fireworks Girl model 379), spawns it in Lorencia,
 /// configures the talk plugin, and adds a sample kill mission.
 /// </summary>
+/// <remarks>
+/// Version 1 used monster id 372, which is the Elite Skeleton transformation skin and does not
+/// render as a clickable NPC. Version 2 switches to 379.
+/// </remarks>
 [PlugIn]
 [Display(
     Name = nameof(PlugInResources.AddMissionBrokerUpdatePlugInSeason6_Name),
@@ -33,8 +37,9 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
     /// <summary>
     /// The plug in description.
     /// </summary>
-    internal const string PlugInDescription = "Sets up Elite Skill Soldier (372) as the Mission Broker for custom quests, spawns him in Lorencia, configures the talk plugin, and adds a sample kill mission.";
+    internal const string PlugInDescription = "Sets up Fireworks Girl (379) as the Mission Broker for custom quests, spawns her in Lorencia, configures the talk plugin, and adds a sample kill mission. Replaces the unusable Elite Skeleton model (372).";
 
+    private const short LegacyInvisibleNpcNumber = 372;
     private const short LorenciaSpawnNumber = 28;
     private const short SampleQuestNumber = 1;
     private const short SpiderMonsterNumber = 3;
@@ -52,7 +57,13 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
     public override bool IsMandatory => false;
 
     /// <inheritdoc />
+    public override int Version => 2;
+
+    /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <inheritdoc />
+    public override DateTime UpdatedAt => new(2026, 10, 30, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
@@ -63,11 +74,13 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
             return ValueTask.CompletedTask;
         }
 
-        npc.Designation = LocalizedString.FromResource(() => MonsterNames.EliteSkillSoldier);
+        npc.Designation = LocalizedString.FromResource(() => MonsterNames.FireworksGirl);
         npc.NpcWindow = NpcWindow.Undefined;
         npc.ObjectKind = NpcObjectKind.PassiveNpc;
         npc.MerchantStore = null;
 
+        RemoveLegacyInvisibleSpawn(gameConfiguration);
+        MigrateQuestsFromLegacyNpc(gameConfiguration, npc);
         EnsureLorenciaSpawn(context, gameConfiguration, npc);
         EnsureSampleQuest(context, gameConfiguration, npc);
         EnsurePlugInConfiguration(context, gameConfiguration, npc);
@@ -75,11 +88,55 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
         return ValueTask.CompletedTask;
     }
 
+    private static void RemoveLegacyInvisibleSpawn(GameConfiguration gameConfiguration)
+    {
+        var lorencia = gameConfiguration.Maps.FirstOrDefault(m => m.Number == Lorencia.Number && m.Discriminator == 0);
+        if (lorencia is null)
+        {
+            return;
+        }
+
+        var legacySpawns = lorencia.MonsterSpawns
+            .Where(s => s.MonsterDefinition?.Number == LegacyInvisibleNpcNumber)
+            .ToList();
+        foreach (var spawn in legacySpawns)
+        {
+            lorencia.MonsterSpawns.Remove(spawn);
+        }
+    }
+
+    private static void MigrateQuestsFromLegacyNpc(GameConfiguration gameConfiguration, MonsterDefinition npc)
+    {
+        var legacyNpc = gameConfiguration.Monsters.FirstOrDefault(m => m.Number == LegacyInvisibleNpcNumber);
+        if (legacyNpc is null)
+        {
+            return;
+        }
+
+        foreach (var quest in legacyNpc.Quests.ToList())
+        {
+            legacyNpc.Quests.Remove(quest);
+            if (!npc.Quests.Any(q => q.Group == quest.Group && q.Number == quest.Number))
+            {
+                npc.Quests.Add(quest);
+            }
+
+            quest.QuestGiver = npc;
+        }
+    }
+
     private static void EnsureLorenciaSpawn(IContext context, GameConfiguration gameConfiguration, MonsterDefinition npc)
     {
         var lorencia = gameConfiguration.Maps.FirstOrDefault(m => m.Number == Lorencia.Number && m.Discriminator == 0);
         if (lorencia is null
-            || lorencia.MonsterSpawns.Any(s => s.MonsterDefinition?.Number == MissionBrokerConstants.NpcNumber))
+            || lorencia.MonsterSpawns.Any(s => s.MonsterDefinition?.Number == MissionBrokerConstants.NpcNumber
+                                              && s.X1 == 145 && s.Y1 == 125))
+        {
+            return;
+        }
+
+        // Devias already has a 379 spawn; Lorencia needs its own Mission Broker spot.
+        if (lorencia.MonsterSpawns.Any(s => s.MonsterDefinition?.Number == MissionBrokerConstants.NpcNumber))
         {
             return;
         }
