@@ -78,6 +78,21 @@ public class ChatMessageSentPlugInTest
     }
 
     /// <summary>
+    /// Tests that a cancelled normal chat message isn't reported either.
+    /// </summary>
+    [Test]
+    public async Task CancelledNormalMessageIsNotReportedAsync()
+    {
+        var (sender, plugIn) = await CreateSenderAsync().ConfigureAwait(false);
+        var gameContext = (GameContext)sender.GameContext;
+        gameContext.PlugInManager.RegisterPlugInAtPlugInPoint<IChatMessageReceivedPlugIn>(new CancellingPlugIn());
+
+        await new ChatMessageAction().ChatMessageAsync(sender, sender.Name, "1", false).ConfigureAwait(false);
+
+        Assert.That(plugIn.Messages, Is.Empty);
+    }
+
+    /// <summary>
     /// Tests that a global notification of a player which isn't a game master isn't reported, because it isn't delivered.
     /// </summary>
     [Test]

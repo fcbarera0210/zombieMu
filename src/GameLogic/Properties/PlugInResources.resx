@@ -1751,6 +1751,6 @@
     <value>Mission Broker</value>
   </data>
   <data name="MissionBrokerNpcPlugIn_Description" xml:space="preserve">
-    <value>Handles the dedicated Mission Broker NPC for custom kill missions. Configure quests on that NPC in the admin panel; players talk twice to accept, turn in or abandon (no chat commands).</value>
+    <value>Handles the dedicated Mission Broker NPC for custom kill missions. Configure quests on that NPC in the admin panel; talk to see the list, then type the mission number (or ABANDON) in chat.</value>
   </data>
 </root>

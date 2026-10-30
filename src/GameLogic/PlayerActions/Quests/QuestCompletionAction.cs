@@ -92,7 +92,15 @@ public class QuestCompletionAction
 
         foreach (var reward in activeQuest.Rewards)
         {
-            await AddRewardAsync(player, reward, activeQuest).ConfigureAwait(false);
+            try
+            {
+                await AddRewardAsync(player, reward, activeQuest).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // One broken reward (e.g. Item without Definition) must not cancel the rest.
+                player.Logger.LogError(ex, "Failed to apply quest reward {Reward} of quest {Quest} for player {Player}.", reward, activeQuest, player);
+            }
         }
 
         await questState.ClearAsync(player.PersistenceContext).ConfigureAwait(false);
@@ -123,17 +131,26 @@ public class QuestCompletionAction
                 await player.InvokeViewPlugInAsync<ILegacyQuestRewardPlugIn>(p => p.ShowAsync(player, QuestRewardType.Attribute, reward.Value, attribute.Definition)).ConfigureAwait(false);
                 break;
             case QuestRewardType.Item:
-                var itemTemplate = reward.ItemReward
-                    ?? throw new InvalidOperationException($"Reward {reward.GetId()} is defined as item reward, but has no item assigned");
+                if (reward.ItemReward?.Definition is null)
+                {
+                    player.Logger.LogWarning(
+                        "Quest reward of quest {Quest} is Item but has no ItemReward.Definition. Skipping. (Changing ItemSlot alone does not select an item — set Definition.)",
+                        quest);
+                    await player.ShowBlueMessageAsync("[Quest] A configured item reward has no item Definition and was skipped.").ConfigureAwait(false);
+                    break;
+                }
 
-                // QuestReward.Value is the quantity (how often the item is rewarded). Treat 0 as 1 for
-                // legacy data that never set Value on item rewards.
+                var itemTemplate = reward.ItemReward;
+
+                // QuestReward.Value is how often the item template is awarded (usually 1).
+                // Piece count for stackables/jewels lives on Item.Durability of the template.
                 var itemCount = Math.Max(1, reward.Value);
                 for (var i = 0; i < itemCount; i++)
                 {
                     var item = player.PersistenceContext.CreateNew<Item>();
                     item.AssignValues(itemTemplate);
-                    EnsureRewardItemDurability(item);
+                    item.ItemSlot = 0;
+                    NormalizeRewardItemDurability(item);
 
                     if (await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
                     {
@@ -217,20 +234,36 @@ public class QuestCompletionAction
     }
 
     /// <summary>
-    /// Stackable rewards (jewels, etc.) often get Durability 0 from the admin item editor.
-    /// A stack of 0 is invisible / unusable, so force at least one piece.
+    /// Normalizes durability/piece count on a newly created reward item.
+    /// Wearables get a full durability bar; non-wearables use Durability as piece count,
+    /// capped to <see cref="ItemDefinition.Durability"/> (1 for jewels, higher for potions).
+    /// Admin templates sometimes keep an arbitrary Durability (e.g. 10) that must not be awarded as-is.
     /// </summary>
-    private static void EnsureRewardItemDurability(Item item)
+    private static void NormalizeRewardItemDurability(Item item)
     {
-        if (item.IsStackable() && item.Durability < 1)
+        if (item.Definition is null)
         {
-            item.Durability = 1;
             return;
         }
 
-        if (!item.IsStackable() && item.Definition is not null && item.Durability < 1)
+        if (item.IsWearable())
         {
-            item.Durability = item.GetMaximumDurabilityOfOnePiece();
+            if (item.Durability < 1)
+            {
+                item.Durability = item.GetMaximumDurabilityOfOnePiece();
+            }
+
+            return;
+        }
+
+        var maxPieces = Math.Max(1, (int)item.Definition.Durability);
+        if (item.Durability < 1)
+        {
+            item.Durability = 1;
+        }
+        else if (item.Durability > maxPieces)
+        {
+            item.Durability = maxPieces;
         }
     }
 }

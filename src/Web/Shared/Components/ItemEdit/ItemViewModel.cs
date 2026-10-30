@@ -143,7 +143,9 @@ public class ItemViewModel : INotifyPropertyChanged
                 return;
             }
 
-            var maxDurability = this.Item.IsStackable() ? this.Definition?.Durability ?? 0 : this.Item.GetMaximumDurabilityOfOnePiece();
+            var maxDurability = this.Item.IsWearable()
+                ? this.Item.GetMaximumDurabilityOfOnePiece()
+                : Math.Max(1, this.Definition?.Durability ?? 1);
 
             this.Item.Durability = Math.Min(value, maxDurability);
             this.OnPropertyChanged();
@@ -733,8 +735,10 @@ public class ItemViewModel : INotifyPropertyChanged
 
         this.AncientSet = null;
 
-        // Reassigning the durability will limit it to the maximum value.
-        this.Durability = this.Item.GetMaximumDurabilityOfOnePiece();
+        // Wearables: full durability bar. Non-wearables (jewels, potions): piece count, default 1.
+        this.Durability = this.Item.IsWearable()
+            ? this.Item.GetMaximumDurabilityOfOnePiece()
+            : 1;
 
         var possibleOptions = this.Definition.PossibleItemOptions.SelectMany(pio => pio.PossibleOptions).ToHashSet();
         var impossibleOptions = this.ItemOptions.Where(iol => iol.ItemOption is null || possibleOptions.Contains(iol.ItemOption)).ToList();

@@ -4,86 +4,88 @@
 
 namespace MUnique.OpenMU.GameLogic.PlugIns.MissionBroker;
 
+using MUnique.OpenMU.DataModel.Configuration.Quests;
+
 /// <summary>
-/// Pending confirmation while talking to the Mission Broker (accept or abandon).
+/// Kind of Mission Broker menu currently open for chat input.
 /// </summary>
-internal enum MissionBrokerPendingAction
+internal enum MissionBrokerMenuKind
 {
     /// <summary>
-    /// No pending confirmation.
+    /// No menu is open.
     /// </summary>
     None,
 
     /// <summary>
-    /// The next talk will accept the offered mission.
+    /// Numbered available missions; the player can type an index to accept.
     /// </summary>
-    Accept,
+    Offers,
 
     /// <summary>
-    /// The next talk will abandon the active mission.
+    /// Active mission progress; the player can type ABANDON to quit.
     /// </summary>
     Abandon,
 }
 
 /// <summary>
-/// Per-character talk state for the Mission Broker NPC.
+/// Per-character talk/chat state for the Mission Broker NPC.
 /// </summary>
 internal sealed class MissionBrokerInteractionState
 {
     /// <summary>
-    /// Gets or sets the pending action.
+    /// Gets or sets the open menu kind.
     /// </summary>
-    public MissionBrokerPendingAction PendingAction { get; set; }
+    public MissionBrokerMenuKind MenuKind { get; set; }
 
     /// <summary>
-    /// Gets or sets the quest group of the pending action.
-    /// </summary>
-    public short QuestGroup { get; set; }
-
-    /// <summary>
-    /// Gets or sets the quest number of the pending action.
-    /// </summary>
-    public short QuestNumber { get; set; }
-
-    /// <summary>
-    /// Gets or sets when the pending confirmation expires (UTC).
+    /// Gets or sets when the open menu expires (UTC).
     /// </summary>
     public DateTime ExpiresUtc { get; set; }
 
     /// <summary>
-    /// Gets or sets the last offered mission index (for cycling available missions).
+    /// Gets the missions shown in the last offer list (1-based chat index maps into this list).
     /// </summary>
-    public int LastOfferIndex { get; set; } = -1;
+    public IList<QuestDefinition> OfferedMissions { get; } = new List<QuestDefinition>();
 
     /// <summary>
-    /// Gets a value indicating whether the pending confirmation is still valid.
+    /// Gets a value indicating whether a chat menu is still valid.
     /// </summary>
-    public bool HasValidPending =>
-        this.PendingAction != MissionBrokerPendingAction.None
+    public bool HasOpenMenu =>
+        this.MenuKind != MissionBrokerMenuKind.None
         && DateTime.UtcNow <= this.ExpiresUtc;
 
     /// <summary>
-    /// Clears the pending confirmation.
+    /// Clears the open menu.
     /// </summary>
-    public void ClearPending()
+    public void ClearMenu()
     {
-        this.PendingAction = MissionBrokerPendingAction.None;
-        this.QuestGroup = 0;
-        this.QuestNumber = 0;
+        this.MenuKind = MissionBrokerMenuKind.None;
         this.ExpiresUtc = DateTime.MinValue;
+        this.OfferedMissions.Clear();
     }
 
     /// <summary>
-    /// Sets a pending confirmation.
+    /// Opens the numbered offer menu with the given missions.
     /// </summary>
-    /// <param name="action">The action.</param>
-    /// <param name="group">The quest group.</param>
-    /// <param name="number">The quest number.</param>
-    public void SetPending(MissionBrokerPendingAction action, short group, short number)
+    /// <param name="missions">The missions shown to the player.</param>
+    public void OpenOffers(IReadOnlyList<QuestDefinition> missions)
     {
-        this.PendingAction = action;
-        this.QuestGroup = group;
-        this.QuestNumber = number;
-        this.ExpiresUtc = DateTime.UtcNow.Add(MissionBrokerConstants.ConfirmationTimeout);
+        this.MenuKind = MissionBrokerMenuKind.Offers;
+        this.ExpiresUtc = DateTime.UtcNow.Add(MissionBrokerConstants.MenuTimeout);
+        this.OfferedMissions.Clear();
+        foreach (var mission in missions)
+        {
+            this.OfferedMissions.Add(mission);
+        }
+    }
+
+    /// <summary>
+    /// Opens the abandon prompt for the active mission.
+    /// </summary>
+    public void OpenAbandonPrompt()
+    {
+        this.MenuKind = MissionBrokerMenuKind.Abandon;
+        this.ExpiresUtc = DateTime.UtcNow.Add(MissionBrokerConstants.MenuTimeout);
+        this.OfferedMissions.Clear();
     }
 }

@@ -23,8 +23,13 @@ public static class MissionBrokerConstants
     public const short QuestGroup = 200;
 
     /// <summary>
-    /// How long a pending accept/abandon confirmation stays valid.
-    /// After it expires, the next talk cycles to the next available mission instead of confirming.
+    /// How long the numbered mission menu (or abandon prompt) stays valid after talking to the NPC.
+    /// During this window the player can type a mission number or ABANDON in normal chat.
     /// </summary>
-    public static readonly TimeSpan ConfirmationTimeout = TimeSpan.FromSeconds(12);
+    public static readonly TimeSpan MenuTimeout = TimeSpan.FromSeconds(60);
+
+    /// <summary>
+    /// Chat keyword to abandon the active mission while the abandon menu is open.
+    /// </summary>
+    public const string AbandonKeyword = "abandon";
 }

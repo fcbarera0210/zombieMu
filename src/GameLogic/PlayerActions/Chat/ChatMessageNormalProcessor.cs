@@ -4,6 +4,8 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.Chat;
 
+using System.ComponentModel;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views;
 
 /// <summary>
@@ -14,6 +16,13 @@ public class ChatMessageNormalProcessor : BannableChatMessageBaseProcessor
     /// <inheritdoc/>
     public override async ValueTask SubclassProcessMessageAsync(Player sender, (string Message, string PlayerName) content)
     {
+        var eventArgs = new CancelEventArgs();
+        sender.GameContext.PlugInManager.GetPlugInPoint<IChatMessageReceivedPlugIn>()?.ChatMessageReceived(sender, content.Message, eventArgs);
+        if (eventArgs.Cancel)
+        {
+            return;
+        }
+
         sender.Logger.LogDebug("Sending Chat Message to Observers, Count: {0}", sender.Observers.Count);
         await sender.ForEachWorldObserverAsync<IChatViewPlugIn>(p => p.ChatMessageAsync(content.Message, sender.SelectedCharacter!.Name, ChatMessageType.Normal), true).ConfigureAwait(false);
         await sender.NotifyChatMessageSentAsync(content.Message, ChatMessageType.Normal).ConfigureAwait(false);

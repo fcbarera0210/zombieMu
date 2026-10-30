@@ -32,13 +32,19 @@ internal static class MissionBrokerQuestService
 
     /// <summary>
     /// Gets missions the player can accept from this NPC.
+    /// Does not require <see cref="Player.OpenedNpc"/> so chat selection still works after the talk dialog closes.
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="npc">The NPC.</param>
     /// <returns>The available missions.</returns>
     public static IList<QuestDefinition> GetAvailableMissions(Player player, MonsterDefinition npc)
     {
-        return player.GetAvailableQuestsOfOpenedNpc()
+        var characterClass = player.SelectedCharacter?.CharacterClass;
+        return GetQuestsLinkedToNpc(player, npc)
+            .Where(quest => quest.QualifiedCharacter is null || Equals(quest.QualifiedCharacter, characterClass))
+            .Where(quest => quest.MinimumCharacterLevel <= player.Level
+                            && (quest.MaximumCharacterLevel == default || quest.MaximumCharacterLevel >= player.Level))
+            .Where(quest => !quest.EvolvesIntoInactiveClass(player))
             .Where(quest => IsMissionOfNpc(quest, npc))
             .Where(quest => CanAccept(player, quest))
             .OrderBy(quest => quest.Number)
@@ -230,6 +236,14 @@ internal static class MissionBrokerQuestService
         return true;
     }
 
+    private static IEnumerable<QuestDefinition> GetQuestsLinkedToNpc(Player player, MonsterDefinition npc)
+    {
+        return npc.Quests
+            .Concat(player.GameContext.Configuration.Monsters.SelectMany(monster => monster.Quests)
+                .Where(quest => IsQuestGiver(quest, npc)))
+            .Distinct();
+    }
+
     private static bool IsMissionOfNpc(QuestDefinition quest, MonsterDefinition npc)
     {
         if (npc.Quests.Contains(quest))
@@ -237,6 +251,11 @@ internal static class MissionBrokerQuestService
             return true;
         }
 
+        return IsQuestGiver(quest, npc);
+    }
+
+    private static bool IsQuestGiver(QuestDefinition quest, MonsterDefinition npc)
+    {
         if (quest.QuestGiver is null)
         {
             return false;
