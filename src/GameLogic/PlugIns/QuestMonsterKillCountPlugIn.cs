@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameLogic.PlugIns;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.GameLogic.NPC;
+using MUnique.OpenMU.GameLogic.PlugIns.MissionBroker;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>
@@ -65,6 +66,19 @@ public class QuestMonsterKillCountPlugIn : IAttackableGotKilledPlugIn, ISupportC
                         killRequirement.MinimumNumber);
 
                     await player.ShowBlueMessageAsync(message).ConfigureAwait(false);
+                }
+
+                // Golden notice once objectives are met (Mission Broker has no F6 UI).
+                if (questState.ActiveQuest.Group == MissionBrokerConstants.QuestGroup
+                    && requirementState.KillCount == killRequirement.MinimumNumber
+                    && MissionBrokerQuestService.IsReadyToComplete(questState))
+                {
+                    var questName = questState.ActiveQuest.Name.GetTranslation(player.Culture)
+                                    ?? questState.ActiveQuest.Name.ToString()
+                                    ?? "Mission";
+                    await player.ShowGoldenMessageAsync(
+                        $"[Mission Broker] '{questName}' ready — talk to the Mission Broker for your reward.")
+                        .ConfigureAwait(false);
                 }
             }
         }
