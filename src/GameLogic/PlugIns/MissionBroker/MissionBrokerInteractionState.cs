@@ -68,7 +68,7 @@ internal sealed class MissionBrokerInteractionState
     /// Opens the numbered offer menu with the given missions.
     /// </summary>
     /// <param name="missions">The missions shown to the player.</param>
-    public void OpenOffers(IReadOnlyList<QuestDefinition> missions)
+    public void OpenOffers(IEnumerable<QuestDefinition> missions)
     {
         this.MenuKind = MissionBrokerMenuKind.Offers;
         this.ExpiresUtc = DateTime.UtcNow.Add(MissionBrokerConstants.MenuTimeout);

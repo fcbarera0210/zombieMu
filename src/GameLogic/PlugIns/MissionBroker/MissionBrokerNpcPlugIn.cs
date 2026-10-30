@@ -94,6 +94,41 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
         await this.HandleOfferAsync(player, npc, state).ConfigureAwait(false);
     }
 
+    private static NonPlayerCharacter? FindNearbyMissionBroker(Player player)
+    {
+        if (player.CurrentMap is null || player.SelectedCharacter is null)
+        {
+            return null;
+        }
+
+        return player.CurrentMap
+            .GetNpcsInRange(player.Position, 10)
+            .FirstOrDefault(npc => npc.Definition.Number == MissionBrokerConstants.NpcNumber);
+    }
+
+    private static string GetQuestName(Player player, QuestDefinition quest)
+        => quest.Name.GetTranslation(player.Culture) ?? quest.Name.ToString() ?? "Mission";
+
+    private static string FormatMissionSummary(Player player, QuestDefinition quest, int index)
+    {
+        var name = GetQuestName(player, quest);
+        var level = quest.MaximumCharacterLevel > 0
+            ? $"Lv {quest.MinimumCharacterLevel}-{quest.MaximumCharacterLevel}"
+            : $"Lv {quest.MinimumCharacterLevel}+";
+        var repeat = quest.Repeatable ? "repeatable" : "once";
+        var kills = string.Join(
+            ", ",
+            quest.RequiredMonsterKills.Select(r =>
+            {
+                var monster = r.Monster?.Designation.GetTranslation(player.Culture)
+                              ?? r.Monster?.Designation.ToString()
+                              ?? "?";
+                return $"{r.MinimumNumber}x {monster}";
+            }));
+
+        return $"{index}) {name} ({level}, {repeat}) — {kills}";
+    }
+
     private async ValueTask HandleActiveMissionAsync(
         Player player,
         NonPlayerCharacter npc,
@@ -215,40 +250,5 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
         {
             player.Logger.LogError(ex, "Mission Broker abandon failed for {Player}", player.SelectedCharacter?.Name);
         }
-    }
-
-    private static NonPlayerCharacter? FindNearbyMissionBroker(Player player)
-    {
-        if (player.CurrentMap is null || player.SelectedCharacter is null)
-        {
-            return null;
-        }
-
-        return player.CurrentMap
-            .GetNpcsInRange(player.Position, 10)
-            .FirstOrDefault(npc => npc.Definition.Number == MissionBrokerConstants.NpcNumber);
-    }
-
-    private static string GetQuestName(Player player, QuestDefinition quest)
-        => quest.Name.GetTranslation(player.Culture) ?? quest.Name.ToString() ?? "Mission";
-
-    private static string FormatMissionSummary(Player player, QuestDefinition quest, int index)
-    {
-        var name = GetQuestName(player, quest);
-        var level = quest.MaximumCharacterLevel > 0
-            ? $"Lv {quest.MinimumCharacterLevel}-{quest.MaximumCharacterLevel}"
-            : $"Lv {quest.MinimumCharacterLevel}+";
-        var repeat = quest.Repeatable ? "repeatable" : "once";
-        var kills = string.Join(
-            ", ",
-            quest.RequiredMonsterKills.Select(r =>
-            {
-                var monster = r.Monster?.Designation.GetTranslation(player.Culture)
-                              ?? r.Monster?.Designation.ToString()
-                              ?? "?";
-                return $"{r.MinimumNumber}x {monster}";
-            }));
-
-        return $"{index}) {name} ({level}, {repeat}) — {kills}";
     }
 }
