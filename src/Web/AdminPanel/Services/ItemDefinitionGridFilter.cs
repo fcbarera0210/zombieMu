@@ -123,6 +123,6 @@ public static class ItemDefinitionGridFilter
         }
 
         return slots.Any(slot =>
-            slot is >= InventoryConstants.HelmSlot and <= InventoryConstants.BootsSlot);
+            slot >= InventoryConstants.HelmSlot && slot <= InventoryConstants.BootsSlot);
     }
 }
