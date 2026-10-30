@@ -94,10 +94,13 @@ internal static class QuestDefinitionExtensions
     {
         var reward = context.CreateNew<QuestReward>();
         reward.RewardType = QuestRewardType.Item;
+        reward.Value = 1;
         var item = context.CreateNew<Item>();
         item.Definition = gameConfiguration.Items.First(def => def.Group == itemGroup && def.Number == itemNumber);
         item.HasSkill = item.Definition.Skill != null && hasSkill;
-        item.Durability = item.IsWearable() ? item.GetMaximumDurabilityOfOnePiece() : item.Durability;
+        item.Durability = item.IsWearable()
+            ? item.GetMaximumDurabilityOfOnePiece()
+            : item.IsStackable() ? 1 : item.Definition.Durability;
         item.Level = itemLevel;
         if (hasLuck
             && item.Definition.PossibleItemOptions.SelectMany(o => o.PossibleOptions)

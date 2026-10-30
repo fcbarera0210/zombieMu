@@ -123,19 +123,30 @@ public class QuestCompletionAction
                 await player.InvokeViewPlugInAsync<ILegacyQuestRewardPlugIn>(p => p.ShowAsync(player, QuestRewardType.Attribute, reward.Value, attribute.Definition)).ConfigureAwait(false);
                 break;
             case QuestRewardType.Item:
-                var item = player.PersistenceContext.CreateNew<Item>();
-                item.AssignValues(reward.ItemReward ?? throw new InvalidOperationException($"Reward {reward.GetId()} is defined as item reward, but has no item assigned"));
-                if (await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
+                var itemTemplate = reward.ItemReward
+                    ?? throw new InvalidOperationException($"Reward {reward.GetId()} is defined as item reward, but has no item assigned");
+
+                // QuestReward.Value is the quantity (how often the item is rewarded). Treat 0 as 1 for
+                // legacy data that never set Value on item rewards.
+                var itemCount = Math.Max(1, reward.Value);
+                for (var i = 0; i < itemCount; i++)
                 {
-                    await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(item)).ConfigureAwait(false);
-                }
-                else if (player.CurrentMap is { } currentMap)
-                {
-                    await currentMap.AddAsync(new DroppedItem(item, player.Position, currentMap, player, player.GetAsEnumerable())).ConfigureAwait(false);
-                }
-                else
-                {
-                    player.Logger.LogWarning("Quest reward item {Item} of player {Player} is lost: the inventory is full and the player is on no map.", item, player);
+                    var item = player.PersistenceContext.CreateNew<Item>();
+                    item.AssignValues(itemTemplate);
+                    EnsureRewardItemDurability(item);
+
+                    if (await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
+                    {
+                        await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(item)).ConfigureAwait(false);
+                    }
+                    else if (player.CurrentMap is { } currentMap)
+                    {
+                        await currentMap.AddAsync(new DroppedItem(item, player.Position, currentMap, player, player.GetAsEnumerable())).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        player.Logger.LogWarning("Quest reward item {Item} of player {Player} is lost: the inventory is full and the player is on no map.", item, player);
+                    }
                 }
 
                 break;
@@ -202,6 +213,24 @@ public class QuestCompletionAction
             default:
                 player.Logger.LogWarning("Unknown reward type: {0}", reward.RewardType);
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Stackable rewards (jewels, etc.) often get Durability 0 from the admin item editor.
+    /// A stack of 0 is invisible / unusable, so force at least one piece.
+    /// </summary>
+    private static void EnsureRewardItemDurability(Item item)
+    {
+        if (item.IsStackable() && item.Durability < 1)
+        {
+            item.Durability = 1;
+            return;
+        }
+
+        if (!item.IsStackable() && item.Definition is not null && item.Durability < 1)
+        {
+            item.Durability = item.GetMaximumDurabilityOfOnePiece();
         }
     }
 }
