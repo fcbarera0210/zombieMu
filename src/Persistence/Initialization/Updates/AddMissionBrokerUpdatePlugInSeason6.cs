@@ -57,13 +57,13 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
     public override bool IsMandatory => false;
 
     /// <inheritdoc />
-    public override int Version => 2;
+    public override int Version => 3;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 10, 30, 0, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 10, 30, 12, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
@@ -79,30 +79,12 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
         npc.ObjectKind = NpcObjectKind.PassiveNpc;
         npc.MerchantStore = null;
 
-        RemoveLegacyInvisibleSpawn(gameConfiguration);
         MigrateQuestsFromLegacyNpc(gameConfiguration, npc);
         EnsureLorenciaSpawn(context, gameConfiguration, npc);
         EnsureSampleQuest(context, gameConfiguration, npc);
         EnsurePlugInConfiguration(context, gameConfiguration, npc);
 
         return ValueTask.CompletedTask;
-    }
-
-    private static void RemoveLegacyInvisibleSpawn(GameConfiguration gameConfiguration)
-    {
-        var lorencia = gameConfiguration.Maps.FirstOrDefault(m => m.Number == Lorencia.Number && m.Discriminator == 0);
-        if (lorencia is null)
-        {
-            return;
-        }
-
-        var legacySpawns = lorencia.MonsterSpawns
-            .Where(s => s.MonsterDefinition?.Number == LegacyInvisibleNpcNumber)
-            .ToList();
-        foreach (var spawn in legacySpawns)
-        {
-            lorencia.MonsterSpawns.Remove(spawn);
-        }
     }
 
     private static void MigrateQuestsFromLegacyNpc(GameConfiguration gameConfiguration, MonsterDefinition npc)
@@ -128,23 +110,29 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
     private static void EnsureLorenciaSpawn(IContext context, GameConfiguration gameConfiguration, MonsterDefinition npc)
     {
         var lorencia = gameConfiguration.Maps.FirstOrDefault(m => m.Number == Lorencia.Number && m.Discriminator == 0);
-        if (lorencia is null
-            || lorencia.MonsterSpawns.Any(s => s.MonsterDefinition?.Number == MissionBrokerConstants.NpcNumber
-                                              && s.X1 == 145 && s.Y1 == 125))
+        if (lorencia is null)
         {
             return;
         }
 
-        // Devias already has a 379 spawn; Lorencia needs its own Mission Broker spot.
-        if (lorencia.MonsterSpawns.Any(s => s.MonsterDefinition?.Number == MissionBrokerConstants.NpcNumber))
+        var spawnId = GuidHelper.CreateGuid<MonsterSpawnArea>(Lorencia.Number, LorenciaSpawnNumber);
+
+        // Prefer reusing the v1 spawn (same Id) or any leftover 372 spawn — never remove+recreate
+        // with the same key, or EF throws an identity conflict while both instances are tracked.
+        var spawn = lorencia.MonsterSpawns.FirstOrDefault(s => s.GetId() == spawnId)
+                    ?? lorencia.MonsterSpawns.FirstOrDefault(s => s.MonsterDefinition?.Number == LegacyInvisibleNpcNumber)
+                    ?? lorencia.MonsterSpawns.FirstOrDefault(s =>
+                        s.MonsterDefinition?.Number == MissionBrokerConstants.NpcNumber
+                        && s.X1 == 145 && s.Y1 == 125);
+
+        if (spawn is null)
         {
-            return;
+            spawn = context.CreateNew<MonsterSpawnArea>();
+            lorencia.MonsterSpawns.Add(spawn);
+            spawn.SetGuid(Lorencia.Number, LorenciaSpawnNumber);
+            spawn.GameMap = lorencia;
         }
 
-        var spawn = context.CreateNew<MonsterSpawnArea>();
-        lorencia.MonsterSpawns.Add(spawn);
-        spawn.SetGuid(Lorencia.Number, LorenciaSpawnNumber);
-        spawn.GameMap = lorencia;
         spawn.MonsterDefinition = npc;
         spawn.Quantity = 1;
         spawn.SpawnTrigger = SpawnTrigger.Automatic;
