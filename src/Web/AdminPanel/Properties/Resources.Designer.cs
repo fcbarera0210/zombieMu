@@ -7360,6 +7360,60 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Requirements.
+        /// </summary>
+        public static string Requirements {
+            get {
+                return ResourceManager.GetString("Requirements", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string ItemCategory {
+            get {
+                return ResourceManager.GetString("ItemCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Weapons.
+        /// </summary>
+        public static string CategoryWeapons {
+            get {
+                return ResourceManager.GetString("CategoryWeapons", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Armor.
+        /// </summary>
+        public static string CategoryArmor {
+            get {
+                return ResourceManager.GetString("CategoryArmor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wings.
+        /// </summary>
+        public static string CategoryWings {
+            get {
+                return ResourceManager.GetString("CategoryWings", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All wearable.
+        /// </summary>
+        public static string CategoryAllWearable {
+            get {
+                return ResourceManager.GetString("CategoryAllWearable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Saving Configuration ....
         /// </summary>
         public static string SavingConfigurationInfo {

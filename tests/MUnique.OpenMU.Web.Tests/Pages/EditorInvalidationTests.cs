@@ -13,6 +13,7 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.Pages;
 using MUnique.OpenMU.Web.AdminPanel.Properties;
+using MUnique.OpenMU.Web.AdminPanel.Services;
 using MUnique.OpenMU.Web.Shared.Components.Modal;
 using MUnique.OpenMU.Web.Shared.Components.Toast;
 using MUnique.OpenMU.Web.Shared.Services;
@@ -187,6 +188,7 @@ public sealed class EditorInvalidationTests
     private static Mock<IToastService> Configure(BunitContext context, IDataSource<GameConfiguration> source, IPersistenceContextProvider provider)
     {
         var toast = new Mock<IToastService>();
+        var coordinator = new ConfigurationEditCoordinator();
         context.Services.AddSingleton(source);
         context.Services.AddSingleton(provider);
         context.Services.AddSingleton(toast.Object);
@@ -194,6 +196,9 @@ public sealed class EditorInvalidationTests
         context.Services.AddSingleton<LoadingOverlayService>();
         context.Services.AddSingleton<NavigationHistory>();
         context.Services.AddSingleton<IChangeNotificationService, ChangeNotificationService>();
+        context.Services.AddSingleton(coordinator);
+        context.Services.AddSingleton(new AdminOperationCircuitState(coordinator));
+        context.Services.AddSingleton(sp => new ConfigurationEditParticipant(sp.GetRequiredService<AdminOperationCircuitState>()));
         context.Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>()
             .NavigateTo("/edit-config/" + typeof(GameConfiguration).FullName + "?search=ExperienceRate");
         return toast;

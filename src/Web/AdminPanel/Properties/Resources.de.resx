@@ -2587,4 +2587,22 @@
   <data name="SaveOrDiscardChangesFirst" xml:space="preserve">
     <value>Speichere oder verwirf zuerst die ausstehenden Änderungen.</value>
   </data>
+  <data name="Requirements" xml:space="preserve">
+    <value>Anforderungen</value>
+  </data>
+  <data name="ItemCategory" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="CategoryWeapons" xml:space="preserve">
+    <value>Waffen</value>
+  </data>
+  <data name="CategoryArmor" xml:space="preserve">
+    <value>Rüstung</value>
+  </data>
+  <data name="CategoryWings" xml:space="preserve">
+    <value>Flügel</value>
+  </data>
+  <data name="CategoryAllWearable" xml:space="preserve">
+    <value>Gesamte Ausrüstung</value>
+  </data>
 </root>

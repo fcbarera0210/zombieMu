@@ -13,12 +13,15 @@ using Microsoft.AspNetCore.Components.QuickGrid;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Configuration;
+using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.Properties;
+using MUnique.OpenMU.Web.AdminPanel.Services;
 using MUnique.OpenMU.Web.Shared;
 using MUnique.OpenMU.Web.Shared.Components.Modal;
 using MUnique.OpenMU.Web.Shared.Components.Toast;
 using MUnique.OpenMU.Web.Shared.Services;
+using static MUnique.OpenMU.Web.AdminPanel.Services.ItemDefinitionGridFilter;
 
 /// <summary>
 /// Razor page which shows objects of the specified type in a grid.
@@ -31,6 +34,9 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
     private CancellationTokenSource? _disposeCts;
 
     private List<ViewModel>? _viewModels;
+    private List<CharacterClass> _characterClasses = [];
+    private string _selectedClassId = string.Empty;
+    private ItemCategory _selectedCategory = ItemCategory.All;
 
     /// <summary>
     /// Gets or sets the <see cref="Type.FullName"/> of the object which should be edited.
@@ -87,22 +93,82 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
     public LoadingOverlayService LoadingService { get; set; } = null!;
 
     /// <summary>
+    /// Gets or sets the shared configuration edit coordinator.
+    /// </summary>
+    [Inject]
+    public ConfigurationEditCoordinator EditCoordinator { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the per-circuit edit participant identity.
+    /// </summary>
+    [Inject]
+    public ConfigurationEditParticipant EditParticipant { get; set; } = null!;
+
+    /// <summary>
     /// Gets or sets the type.
     /// </summary>
     private Type? Type { get; set; }
+
+    private bool IsItemDefinitionGrid => this.Type == typeof(ItemDefinition);
+
+    private IReadOnlyList<CharacterClass> CharacterClasses => this._characterClasses;
+
+    private string SelectedClassId
+    {
+        get => this._selectedClassId;
+        set
+        {
+            if (this._selectedClassId == value)
+            {
+                return;
+            }
+
+            this._selectedClassId = value ?? string.Empty;
+            _ = this.ResetPaginationAsync();
+        }
+    }
+
+    private ItemCategory SelectedCategory
+    {
+        get => this._selectedCategory;
+        set
+        {
+            if (this._selectedCategory == value)
+            {
+                return;
+            }
+
+            this._selectedCategory = value;
+            _ = this.ResetPaginationAsync();
+        }
+    }
 
     private IQueryable<ViewModel>? ViewModels
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(this.NameFilter))
+            var viewModels = this._viewModels?.AsEnumerable();
+            if (viewModels is null)
             {
-                return this._viewModels?.AsQueryable();
+                return null;
             }
 
-            return this._viewModels?
-                .Where(vm => vm.Name.Contains(this.NameFilter.Trim(), StringComparison.InvariantCultureIgnoreCase))
-                .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(this.NameFilter))
+            {
+                var nameFilter = this.NameFilter.Trim();
+                viewModels = viewModels.Where(vm => vm.Name.Contains(nameFilter, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            if (this.IsItemDefinitionGrid)
+            {
+                var selectedClass = this.ResolveSelectedClass();
+                viewModels = viewModels.Where(vm =>
+                    vm.ItemDefinition is { } item
+                    && MatchesClass(item, selectedClass)
+                    && MatchesCategory(item, this._selectedCategory));
+            }
+
+            return viewModels.AsQueryable();
         }
     }
 
@@ -112,6 +178,7 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         this.CreationPanelService.ItemCreated -= this.OnItemCreatedAsync;
+        this.EditCoordinator.SharedContextReset -= this.OnSharedContextReset;
 
         await (this._disposeCts?.CancelAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         this._disposeCts?.Dispose();
@@ -136,12 +203,16 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
     {
         base.OnInitialized();
         this.CreationPanelService.ItemCreated += this.OnItemCreatedAsync;
+        this.EditCoordinator.SharedContextReset += this.OnSharedContextReset;
     }
 
     /// <inheritdoc />
     protected override async Task OnParametersSetAsync()
     {
         this.NameFilter = string.Empty;
+        this._selectedClassId = string.Empty;
+        this._selectedCategory = ItemCategory.All;
+        this._characterClasses = [];
         this.Type = this.DetermineTypeByTypeString();
         var cts = new CancellationTokenSource();
         this._disposeCts = cts;
@@ -160,6 +231,17 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
 
         IEnumerable data;
         var gameConfiguration = await this.DataSource.GetOwnerAsync(default, cancellationToken).ConfigureAwait(true);
+        if (this.IsItemDefinitionGrid)
+        {
+            this._characterClasses = gameConfiguration.CharacterClasses
+                .OrderBy(c => c.Number)
+                .ToList();
+        }
+        else
+        {
+            this._characterClasses = [];
+        }
+
         if (this.DataSource.IsSupporting(this.Type))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -182,6 +264,23 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
             this.StateHasChanged();
         }).ConfigureAwait(false);
     }
+
+    private CharacterClass? ResolveSelectedClass()
+    {
+        if (string.IsNullOrEmpty(this._selectedClassId) || !Guid.TryParse(this._selectedClassId, out var id))
+        {
+            return null;
+        }
+
+        return this._characterClasses.FirstOrDefault(c => c.GetId() == id);
+    }
+
+    private Task ResetPaginationAsync()
+        => this.InvokeAsync(async () =>
+        {
+            await this._pagination.SetCurrentPageIndexAsync(0).ConfigureAwait(true);
+            this.StateHasChanged();
+        });
 
     private Type? DetermineTypeByTypeString()
     {
@@ -211,7 +310,11 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
 
             await deleteContext.DeleteAsync(toDelete).ConfigureAwait(false);
             await deleteContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            await this.DataSource.ForceDiscardChangesAsync().ConfigureAwait(false);
+            if (!await this.TryForceDiscardSharedContextAsync().ConfigureAwait(false))
+            {
+                return;
+            }
+
             this.ToastService.ShowSuccess(string.Format(Resources.DeletedSuccessfully, viewModel.Name));
             this._viewModels = null;
             this._loadTask = Task.Run(() => this.LoadDataAsync(cancellationToken), cancellationToken);
@@ -225,6 +328,12 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
 
     private async Task OnCreateButtonClickAsync()
     {
+        if (!this.EditCoordinator.CanMutateSharedContext(this.EditParticipant.Id))
+        {
+            this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+            return;
+        }
+
         var cancellationToken = this._disposeCts?.Token ?? default;
         var gameConfiguration = await this.DataSource.GetOwnerAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
         var creationContext = this.PersistenceContextProvider.CreateNewTypedContext(this.Type!, true, gameConfiguration);
@@ -242,7 +351,11 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
                 SaveAsync = async () =>
                 {
                     await creationContext.SaveChangesAsync().ConfigureAwait(false);
-                    await this.DataSource.ForceDiscardChangesAsync().ConfigureAwait(false);
+                    if (!await this.TryForceDiscardSharedContextAsync().ConfigureAwait(false))
+                    {
+                        return;
+                    }
+
                     this.ToastService.ShowSuccess(Resources.CreatedSuccessfully);
                 },
             };
@@ -280,6 +393,12 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
     {
         try
         {
+            if (!this.EditCoordinator.CanMutateSharedContext(this.EditParticipant.Id))
+            {
+                this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+                return;
+            }
+
             var cancellationToken = this._disposeCts?.Token ?? default;
             var gameConfiguration = await this.DataSource.GetOwnerAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             var context = this.PersistenceContextProvider.CreateNewTypedContext(this.Type!, true, gameConfiguration);
@@ -311,7 +430,11 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
                     SaveAsync = async () =>
                     {
                         await context.SaveChangesAsync().ConfigureAwait(false);
-                        await this.DataSource.ForceDiscardChangesAsync().ConfigureAwait(false);
+                        if (!await this.TryForceDiscardSharedContextAsync().ConfigureAwait(false))
+                        {
+                            return;
+                        }
+
                         this.ToastService.ShowSuccess(string.Format(Resources.DuplicatedSuccessfully, duplicatedName));
                     },
                 };
@@ -455,6 +578,31 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
         prop.SetValue(target, sourceValueToSet);
     }
 
+    private void OnSharedContextReset(object? sender, EventArgs e)
+    {
+        _ = this.InvokeAsync(() =>
+        {
+            var cancellationToken = this._disposeCts?.Token ?? default;
+            this._viewModels = null;
+            this.StateHasChanged();
+            this._loadTask = Task.Run(() => this.LoadDataAsync(cancellationToken), cancellationToken);
+            return Task.CompletedTask;
+        });
+    }
+
+    private async ValueTask<bool> TryForceDiscardSharedContextAsync()
+    {
+        if (!this.EditCoordinator.CanMutateSharedContext(this.EditParticipant.Id))
+        {
+            this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+            return false;
+        }
+
+        await this.DataSource.ForceDiscardChangesAsync().ConfigureAwait(false);
+        this.EditCoordinator.NotifySharedContextReset();
+        return true;
+    }
+
     /// <summary>
     /// The view model for the grid.
     /// We use this instead of the objects, because it makes the code simpler.
@@ -472,6 +620,12 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
             this.Parent = parent;
             this.Id = parent.GetId();
             this.Name = parent.GetName();
+            if (parent is ItemDefinition itemDefinition)
+            {
+                this.ItemDefinition = itemDefinition;
+                this.DropLevel = itemDefinition.DropLevel;
+                this.RequirementsText = FormatRequirements(itemDefinition.Requirements);
+            }
         }
 
         /// <summary>
@@ -479,6 +633,12 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
         /// </summary>
         [Browsable(false)]
         public object Parent { get; }
+
+        /// <summary>
+        /// Gets the item definition when this row represents one.
+        /// </summary>
+        [Browsable(false)]
+        public ItemDefinition? ItemDefinition { get; }
 
         /// <summary>
         /// Gets or sets the identifier of the object.
@@ -490,5 +650,15 @@ public partial class EditConfigGrid : ComponentBase, IAsyncDisposable
         /// </summary>
         [System.ComponentModel.DataAnnotations.Display(Name = nameof(Resources.ConfigurationEntryName), ResourceType = typeof(Resources))]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets the item drop level, when available.
+        /// </summary>
+        public byte? DropLevel { get; }
+
+        /// <summary>
+        /// Gets the formatted requirements text, when available.
+        /// </summary>
+        public string RequirementsText { get; } = string.Empty;
     }
 }

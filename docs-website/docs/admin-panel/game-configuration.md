@@ -103,8 +103,16 @@ learn a skill, the master skill definitions and their dependencies.
 Route `edit-config-grid/…ItemDefinition/`
 
 Item definitions with their requirements, level tables, possible options, sockets
-and the classes which may equip them. Items use a dedicated editor with a
-graphical representation instead of the plain generic form.
+and the classes which may equip them. The list can be filtered by character class
+and category (weapons, armor, wings, all wearable). Extra columns show
+`DropLevel` and stat requirements so early-game gear is easier to spot for
+merchant stock. When a class filter is active, items without qualified classes
+are hidden.
+
+You can keep the items list open in one browser tab while editing a merchant in
+another. Only one tab at a time may hold pending shared-configuration edits;
+destructive reloads from the other tab are blocked until those changes are saved
+or discarded.
 
 ### Item prices
 

@@ -1,7 +1,10 @@
 ﻿@page "/edit-config-grid/{typeString}"
 
 @using MUnique.OpenMU.DataModel
+@using MUnique.OpenMU.DataModel.Configuration
+@using MUnique.OpenMU.Persistence
 @using MUnique.OpenMU.Web.AdminPanel.Properties
+@using MUnique.OpenMU.Web.AdminPanel.Services
 @using Microsoft.AspNetCore.Components.QuickGrid
 
 @if (this.Type is not null)
@@ -16,6 +19,29 @@
 @if (this.ViewModels is null)
 {
     return;
+}
+
+@if (this.IsItemDefinitionGrid)
+{
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <label class="form-label mb-0" for="item-class-filter">@Resources.CharacterClass</label>
+        <select id="item-class-filter" class="form-select w-auto" @bind="this.SelectedClassId" @bind:event="onchange">
+            <option value="">@Resources.All</option>
+            @foreach (var characterClass in this.CharacterClasses)
+            {
+                <option value="@characterClass.GetId()">@(characterClass.Name.ToString())</option>
+            }
+        </select>
+
+        <label class="form-label mb-0 ms-2" for="item-category-filter">@Resources.ItemCategory</label>
+        <select id="item-category-filter" class="form-select w-auto" @bind="this.SelectedCategory" @bind:event="onchange">
+            <option value="@ItemDefinitionGridFilter.ItemCategory.All">@Resources.All</option>
+            <option value="@ItemDefinitionGridFilter.ItemCategory.Weapons">@Resources.CategoryWeapons</option>
+            <option value="@ItemDefinitionGridFilter.ItemCategory.Armor">@Resources.CategoryArmor</option>
+            <option value="@ItemDefinitionGridFilter.ItemCategory.Wings">@Resources.CategoryWings</option>
+            <option value="@ItemDefinitionGridFilter.ItemCategory.AllWearable">@Resources.CategoryAllWearable</option>
+        </select>
+    </div>
 }
 
 <div>
@@ -34,6 +60,12 @@
                 </div>
             </HeaderTemplate>
         </PropertyColumn>
+
+        @if (this.IsItemDefinitionGrid)
+        {
+            <PropertyColumn Title="@Resources.DropLevel" Property="@(c => c.DropLevel)" Sortable="true" />
+            <PropertyColumn Title="@Resources.Requirements" Property="@(c => c.RequirementsText)" Sortable="true" />
+        }
 
         <TemplateColumn Align="Align.Start">
             @{

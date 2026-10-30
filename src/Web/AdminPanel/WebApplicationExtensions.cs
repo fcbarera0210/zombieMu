@@ -82,11 +82,13 @@ public static class WebApplicationExtensions
         services.AddScoped<ILookupController, PersistentObjectsLookupController>();
         services.AddScoped<CreationPanelService>();
 
+        services.AddSingleton<ConfigurationEditCoordinator>();
         services.AddAdminPanelAuth(builder.Configuration);
 
         services.AddSingleton<IDataSource<GameConfiguration>, GameConfigurationDataSource>();
         services.AddSingleton<IDataSource<Account>, AccountDataSource>();
         services.AddSingleton<ConfigurationSearchIndexCache>();
+        services.AddScoped<ConfigurationEditParticipant>();
         services.AddScoped<IAdminReadModel, AdminReadModel>();
         services.AddAdminReadOperations();
         services.AddSingleton(new AdminLogAccess { LocalFilesAvailable = includeMapApp });

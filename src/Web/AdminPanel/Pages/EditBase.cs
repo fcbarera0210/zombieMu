@@ -13,6 +13,7 @@ using Microsoft.JSInterop;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.Properties;
+using MUnique.OpenMU.Web.AdminPanel.Services;
 using MUnique.OpenMU.Web.Shared;
 using MUnique.OpenMU.Web.Shared.Components.Modal;
 using MUnique.OpenMU.Web.Shared.Components.Toast;
@@ -32,6 +33,7 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
     private Task? _loadTask;
     private IDisposable? _modalDisposable;
     private IDisposable? _navigationLockDisposable;
+    private bool _holdsWriterLease;
 
     private enum DataLoadingState
     {
@@ -117,6 +119,18 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
     public ILogger<EditBase>? Logger { get; set; }
 
     /// <summary>
+    /// Gets or sets the shared configuration edit coordinator.
+    /// </summary>
+    [Inject]
+    public ConfigurationEditCoordinator EditCoordinator { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the per-circuit edit participant identity.
+    /// </summary>
+    [Inject]
+    public ConfigurationEditParticipant EditParticipant { get; set; } = null!;
+
+    /// <summary>
     /// Gets the data source of the type which is edited.
     /// </summary>
     protected virtual IDataSource EditDataSource => this.ConfigDataSource;
@@ -157,10 +171,27 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
         this._disposeCts = null;
 
         await (this._loadTask ?? Task.CompletedTask).ConfigureAwait(false);
-        if (await this.HasCurrentContextAsync().ConfigureAwait(false))
+        if (this._holdsWriterLease
+            && await this.HasCurrentContextAsync().ConfigureAwait(false))
         {
-            await this.EditDataSource.DiscardChangesAsync().ConfigureAwait(false);
+            var hadChanges = false;
+            try
+            {
+                hadChanges = this._persistenceContext?.HasChanges is true;
+            }
+            catch (ObjectDisposedException)
+            {
+                // Context already gone; nothing left to discard.
+            }
+
+            if (hadChanges)
+            {
+                await this.EditDataSource.DiscardChangesAsync().ConfigureAwait(false);
+                this.EditCoordinator.NotifySharedContextReset();
+            }
         }
+
+        this.ReleaseWriterLease();
 
         if (this._isOwningContext)
         {
@@ -232,6 +263,12 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
     {
         try
         {
+            if (!this._isOwningContext && !this._holdsWriterLease)
+            {
+                this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+                return;
+            }
+
             if (!await this.HasCurrentContextAsync().ConfigureAwait(true))
             {
                 this.ShowContextChangedMessage();
@@ -276,7 +313,17 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
         // StateHasChanged below requires the renderer context after asynchronous data-source waits.
         if (await this.HasCurrentContextAsync().ConfigureAwait(true))
         {
+            if (!this._isOwningContext && !this.EditCoordinator.CanMutateSharedContext(this.EditParticipant.Id))
+            {
+                this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+                return;
+            }
+
             await this.EditDataSource.ForceDiscardChangesAsync().ConfigureAwait(true);
+            if (this._holdsWriterLease)
+            {
+                this.EditCoordinator.NotifySharedContextReset();
+            }
         }
 
         this._loadingState = DataLoadingState.LoadingStarted;
@@ -344,15 +391,28 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
                 this._persistenceContext?.Dispose();
                 this._persistenceContext = null;
             }
-            else if (!stale)
+            else if (!stale && this._holdsWriterLease)
             {
                 await this.EditDataSource.DiscardChangesAsync().ConfigureAwait(true);
+                this.EditCoordinator.NotifySharedContextReset();
+                this.ReleaseWriterLease();
             }
             else
             {
                 // The replacement context may contain another editor's pending changes.
             }
         }
+    }
+
+    private void ReleaseWriterLease()
+    {
+        if (!this._holdsWriterLease)
+        {
+            return;
+        }
+
+        this.EditCoordinator.ReleaseWriter(this.EditParticipant.Id);
+        this._holdsWriterLease = false;
     }
 
     private string? GetDownloadMarkup()
@@ -384,10 +444,20 @@ public abstract class EditBase : ComponentBase, IAsyncDisposable
 
             await this.LoadOwnerAsync(cancellationToken).ConfigureAwait(true);
             cancellationToken.ThrowIfCancellationRequested();
+            this.ReleaseWriterLease();
             if (this.EditDataSource.IsSupporting(this.Type))
             {
                 this._isOwningContext = false;
                 this._persistenceContext = await this.EditDataSource.GetContextAsync(cancellationToken).ConfigureAwait(true);
+                if (this.EditCoordinator.TryAcquireWriter(this.EditParticipant.Id))
+                {
+                    this._holdsWriterLease = true;
+                }
+                else
+                {
+                    // Another tab already edits the shared configuration; allow read-only viewing.
+                    await this.InvokeAsync(() => this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst)).ConfigureAwait(false);
+                }
             }
             else
             {

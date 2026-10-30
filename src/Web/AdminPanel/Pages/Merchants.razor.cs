@@ -15,6 +15,7 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.Properties;
+using MUnique.OpenMU.Web.AdminPanel.Services;
 using MUnique.OpenMU.Web.Shared.Components.Toast;
 using MUnique.OpenMU.Web.Shared.Services;
 
@@ -32,6 +33,7 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
     private MerchantStorageViewModel? _selectedMerchant;
     private IContext? _persistenceContext;
     private IDisposable? _navigationLockDisposable;
+    private bool _holdsWriterLease;
 
     /// <summary>
     /// Gets or sets the data source.
@@ -75,6 +77,18 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
     [Inject]
     public LoadingOverlayService LoadingService { get; set; } = null!;
 
+    /// <summary>
+    /// Gets or sets the shared configuration edit coordinator.
+    /// </summary>
+    [Inject]
+    public ConfigurationEditCoordinator EditCoordinator { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the per-circuit edit participant identity.
+    /// </summary>
+    [Inject]
+    public ConfigurationEditParticipant EditParticipant { get; set; } = null!;
+
     private IQueryable<MerchantStorageViewModel>? ViewModels => this._viewModels?.AsQueryable();
 
     /// <inheritdoc />
@@ -99,11 +113,15 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
         {
             // and we should not throw exceptions in the dispose method ...
         }
+
+        this.ReleaseWriterLease();
+        this.EditCoordinator.SharedContextReset -= this.OnSharedContextReset;
     }
 
     /// <inheritdoc />
     protected override Task OnInitializedAsync()
     {
+        this.EditCoordinator.SharedContextReset += this.OnSharedContextReset;
         this._navigationLockDisposable = this.NavigationManager.RegisterLocationChangingHandler(this.OnBeforeInternalNavigationAsync);
         return base.OnInitializedAsync();
     }
@@ -136,6 +154,8 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
         else
         {
             await this.DataSource.DiscardChangesAsync().ConfigureAwait(true);
+            this.EditCoordinator.NotifySharedContextReset();
+            this.ReleaseWriterLease();
         }
     }
 
@@ -170,6 +190,13 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
 
     private async Task OnMerchantEditClickAsync(MerchantStorageViewModel context)
     {
+        if (!this._holdsWriterLease && !this.EditCoordinator.TryAcquireWriter(this.EditParticipant.Id))
+        {
+            this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+            return;
+        }
+
+        this._holdsWriterLease = true;
         this._selectedMerchant = context;
         await this.InvokeAsync(async () => await this._itemPagination.SetCurrentPageIndexAsync(0).ConfigureAwait(true)).ConfigureAwait(true);
     }
@@ -178,6 +205,12 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
     {
         try
         {
+            if (!this._holdsWriterLease)
+            {
+                this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+                return;
+            }
+
             if (this._persistenceContext is { } context)
             {
                 var success = await context.SaveChangesAsync().ConfigureAwait(true);
@@ -200,8 +233,15 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
     {
         if (this._persistenceContext?.HasChanges is true)
         {
+            if (!this.EditCoordinator.CanMutateSharedContext(this.EditParticipant.Id))
+            {
+                this.ToastService.ShowError(Resources.SaveOrDiscardChangesFirst);
+                return;
+            }
+
             var previousMerchantId = this._selectedMerchant?.Id;
             await this.DataSource.DiscardChangesAsync().ConfigureAwait(true);
+            this.EditCoordinator.NotifySharedContextReset();
             await this.LoadDataAsync(this._disposeCts?.Token ?? default).ConfigureAwait(true);
             if (previousMerchantId is { } id && this._viewModels is not null)
             {
@@ -228,6 +268,37 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
         }
 
         this._selectedMerchant = null;
+        this.ReleaseWriterLease();
+    }
+
+    private void ReleaseWriterLease()
+    {
+        if (!this._holdsWriterLease)
+        {
+            return;
+        }
+
+        this.EditCoordinator.ReleaseWriter(this.EditParticipant.Id);
+        this._holdsWriterLease = false;
+    }
+
+    private void OnSharedContextReset(object? sender, EventArgs e)
+    {
+        if (this._holdsWriterLease)
+        {
+            // This circuit caused the reset (cancel / navigation discard).
+            return;
+        }
+
+        _ = this.InvokeAsync(() =>
+        {
+            this._selectedMerchant = null;
+            var cancellationToken = this._disposeCts?.Token ?? default;
+            this._viewModels = null;
+            this.StateHasChanged();
+            this._loadTask = Task.Run(() => this.LoadDataAsync(cancellationToken), cancellationToken);
+            return Task.CompletedTask;
+        });
     }
 
     /// <summary>

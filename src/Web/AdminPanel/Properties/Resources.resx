@@ -2692,4 +2692,22 @@
   <data name="SaveOrDiscardChangesFirst" xml:space="preserve">
     <value>Save or discard the pending changes first.</value>
   </data>
+  <data name="Requirements" xml:space="preserve">
+    <value>Requirements</value>
+  </data>
+  <data name="ItemCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="CategoryWeapons" xml:space="preserve">
+    <value>Weapons</value>
+  </data>
+  <data name="CategoryArmor" xml:space="preserve">
+    <value>Armor</value>
+  </data>
+  <data name="CategoryWings" xml:space="preserve">
+    <value>Wings</value>
+  </data>
+  <data name="CategoryAllWearable" xml:space="preserve">
+    <value>All wearable</value>
+  </data>
 </root>
