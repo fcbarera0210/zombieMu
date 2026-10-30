@@ -6,13 +6,13 @@ namespace MUnique.OpenMU.Web.Tests.Services;
 
 using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel;
-using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Web.AdminPanel.Services;
 using static MUnique.OpenMU.Web.AdminPanel.Services.ItemDefinitionGridFilter;
+using BasicAttributeRequirement = MUnique.OpenMU.Persistence.BasicModel.AttributeRequirement;
+using BasicCharacterClass = MUnique.OpenMU.Persistence.BasicModel.CharacterClass;
 using BasicItemDefinition = MUnique.OpenMU.Persistence.BasicModel.ItemDefinition;
 using BasicItemSlotType = MUnique.OpenMU.Persistence.BasicModel.ItemSlotType;
-using BasicAttributeRequirement = MUnique.OpenMU.Persistence.BasicModel.AttributeRequirement;
 
 /// <summary>Unit tests for <see cref="ItemDefinitionGridFilter"/>.</summary>
 [TestFixture]
@@ -66,7 +66,7 @@ public sealed class ItemDefinitionGridFilterTests
         Assert.That(MatchesCategory(weapon, ItemCategory.Armor), Is.False);
     }
 
-    /// <summary>Wings category uses <see cref="ItemExtensions.IsWing"/>.</summary>
+    /// <summary>Wings category uses <see cref="ItemExtensions.IsWing(ItemDefinition)"/>.</summary>
     [Test]
     public void MatchesCategoryWings()
     {
@@ -103,7 +103,7 @@ public sealed class ItemDefinitionGridFilterTests
         Assert.That(FormatRequirements(null), Is.EqualTo(string.Empty));
     }
 
-    private static CharacterClass CreateClass(byte number, string name)
+    private static BasicCharacterClass CreateClass(byte number, string name)
         => new() { Number = number, Name = name };
 
     private static BasicItemDefinition CreateItem(byte group = 0, byte width = 1, byte height = 1, byte maxLevel = 0, byte durability = 1)

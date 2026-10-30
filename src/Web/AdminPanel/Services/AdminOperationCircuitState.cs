@@ -38,7 +38,8 @@ public sealed class AdminOperationCircuitState : CircuitHandler
     public override Task OnCircuitOpenedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
         this.IsOpen = true;
-        this.CircuitId = circuit.Id;
+        // Tests call this with a null circuit because Circuit has no public constructor.
+        this.CircuitId = circuit?.Id;
         return Task.CompletedTask;
     }
 
@@ -46,7 +47,11 @@ public sealed class AdminOperationCircuitState : CircuitHandler
     public override Task OnCircuitClosedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
         this.IsOpen = false;
-        this._editCoordinator?.OnCircuitClosed(circuit.Id);
+        if (circuit?.Id is { } circuitId)
+        {
+            this._editCoordinator?.OnCircuitClosed(circuitId);
+        }
+
         this.CircuitId = null;
         return Task.CompletedTask;
     }
