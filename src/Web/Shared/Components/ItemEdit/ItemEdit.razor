@@ -26,7 +26,7 @@
     else if (this._viewModel.Definition is not null)
     {
         @* Jewels have Definition.Durability == 1 (not IsStackable), but Amount must still be editable for quest rewards. *@
-        <ByteField @bind-Value="@this._viewModel.Amount" Min="1" Max="@((byte)Math.Max(1, this._viewModel.Definition.Durability))" />
+        <ByteField @bind-Value="@this._viewModel.Amount" Min="1" Max="@((byte)Math.Max(1, (int)this._viewModel.Definition.Durability))" />
     }
     
     @if (this._viewModel.Definition?.IsTrainablePet() ?? false)

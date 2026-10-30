@@ -236,7 +236,7 @@ public class QuestCompletionAction
     /// <summary>
     /// Normalizes durability/piece count on a newly created reward item.
     /// Wearables get a full durability bar; non-wearables use Durability as piece count,
-    /// capped to <see cref="ItemDefinition.Durability"/> (1 for jewels, higher for potions).
+    /// capped to the item definition durability (1 for jewels, higher for potions).
     /// Admin templates sometimes keep an arbitrary Durability (e.g. 10) that must not be awarded as-is.
     /// </summary>
     private static void NormalizeRewardItemDurability(Item item)

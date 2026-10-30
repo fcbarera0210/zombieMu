@@ -145,7 +145,7 @@ public class ItemViewModel : INotifyPropertyChanged
 
             var maxDurability = this.Item.IsWearable()
                 ? this.Item.GetMaximumDurabilityOfOnePiece()
-                : Math.Max(1, this.Definition?.Durability ?? 1);
+                : Math.Max(1, (int)(this.Definition?.Durability ?? 1));
 
             this.Item.Durability = Math.Min(value, maxDurability);
             this.OnPropertyChanged();
