@@ -9,6 +9,7 @@ using MUnique.OpenMU.DataModel.Configuration.Quests;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic.NPC;
 using MUnique.OpenMU.GameLogic.PlayerActions.Quests;
+using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.GameLogic.Views.NPC;
 
@@ -244,6 +245,16 @@ internal static class MissionBrokerQuestService
     /// <returns>The task.</returns>
     public static ValueTask SayAsync(Player player, NonPlayerCharacter npc, string message)
         => player.InvokeViewPlugInAsync<IShowMessageOfObjectPlugIn>(p => p.ShowMessageOfObjectAsync(message, npc));
+
+    /// <summary>
+    /// Sends mission details to the player's chat window (private whisper; max sender length 10).
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="message">The message.</param>
+    /// <returns>The task.</returns>
+    public static ValueTask ShowChatAsync(Player player, string message)
+        => player.InvokeViewPlugInAsync<IChatViewPlugIn>(
+            p => p.ChatMessageAsync(message, "MissionBrk", ChatMessageType.Whisper));
 
     private static bool CanAccept(Player player, QuestDefinition quest, MonsterDefinition npc)
     {

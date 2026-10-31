@@ -159,7 +159,7 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
             else
             {
                 await MissionBrokerQuestService.SayAsync(player, npc, "I cannot reward you yet. Check your inventory space.").ConfigureAwait(false);
-                await player.ShowBlueMessageAsync("[Mission Broker] Free inventory space and talk again.").ConfigureAwait(false);
+                await MissionBrokerQuestService.ShowChatAsync(player, "[Mission Broker] Free inventory space and talk again.").ConfigureAwait(false);
                 return;
             }
         }
@@ -192,13 +192,17 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
         {
             await player.ShowGoldenMessageAsync(
                 $"[Mission Broker] Active missions ({actives.Count}/{MissionBrokerConstants.MaxActiveMissions}):").ConfigureAwait(false);
+            await MissionBrokerQuestService.ShowChatAsync(
+                player,
+                $"[Mission Broker] Active missions ({actives.Count}/{MissionBrokerConstants.MaxActiveMissions}):").ConfigureAwait(false);
             for (var i = 0; i < actives.Count; i++)
             {
                 var progress = MissionBrokerQuestService.FormatProgress(player, actives[i]);
-                await player.ShowBlueMessageAsync($"  A{i + 1}) {progress}").ConfigureAwait(false);
+                await MissionBrokerQuestService.ShowChatAsync(player, $"  A{i + 1}) {progress}").ConfigureAwait(false);
             }
 
-            await player.ShowBlueMessageAsync(
+            await MissionBrokerQuestService.ShowChatAsync(
+                player,
                 actives.Count == 1
                     ? "[Mission Broker] Type ABANDON in chat within 60s to quit the active mission."
                     : "[Mission Broker] Type ABANDON N in chat within 60s (N = A1, A2, …).").ConfigureAwait(false);
@@ -225,10 +229,10 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
         }
 
         await player.ShowGoldenMessageAsync("[Mission Broker] Type a number in chat to accept (e.g. 1).").ConfigureAwait(false);
-        await player.ShowBlueMessageAsync("[Mission Broker] Available missions:").ConfigureAwait(false);
+        await MissionBrokerQuestService.ShowChatAsync(player, "[Mission Broker] Available missions:").ConfigureAwait(false);
         for (var i = 0; i < available.Count; i++)
         {
-            await player.ShowBlueMessageAsync(FormatMissionSummary(player, available[i], i + 1)).ConfigureAwait(false);
+            await MissionBrokerQuestService.ShowChatAsync(player, FormatMissionSummary(player, available[i], i + 1)).ConfigureAwait(false);
         }
     }
 
@@ -261,7 +265,7 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
 
                 foreach (var hint in MissionBrokerSpawnHint.FormatHuntHints(player, quest))
                 {
-                    await player.ShowBlueMessageAsync($"[Mission Broker] {hint}").ConfigureAwait(false);
+                    await MissionBrokerQuestService.ShowChatAsync(player, $"[Mission Broker] {hint}").ConfigureAwait(false);
                 }
             }
             else
