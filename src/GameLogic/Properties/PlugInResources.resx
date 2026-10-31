@@ -633,6 +633,12 @@
   <data name="ListCommand_Description" xml:space="preserve">
     <value>Lists all the commands.</value>
   </data>
+  <data name="MissionsChatCommandPlugIn_Name" xml:space="preserve">
+    <value>Missions chat command</value>
+  </data>
+  <data name="MissionsChatCommandPlugIn_Description" xml:space="preserve">
+    <value>Handles the chat command '/missions'. Lists the player's active Mission Broker missions, kill progress and hunt-zone hints in chat.</value>
+  </data>
   <data name="MoveChatCommandPlugIn_Name" xml:space="preserve">
     <value>Move chat command</value>
   </data>

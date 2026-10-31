@@ -22,18 +22,30 @@ using MUnique.OpenMU.GameLogic.Views.NPC;
 internal static class MissionBrokerQuestService
 {
     /// <summary>
-    /// Gets all active Mission Broker quest states for the player.
+    /// Gets all active Mission Broker quest states for the player (any map; by quest group).
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <returns>Active mission states.</returns>
+    public static IList<CharacterQuestState> GetActiveMissionStates(Player player)
+    {
+        return player.SelectedCharacter?.QuestStates
+                   .Where(state => state.ActiveQuest is { Group: MissionBrokerConstants.QuestGroup })
+                   .OrderBy(state => state.ActiveQuest!.Number)
+                   .ToList()
+               ?? (IList<CharacterQuestState>)Array.Empty<CharacterQuestState>();
+    }
+
+    /// <summary>
+    /// Gets all active Mission Broker quest states linked to the given NPC.
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="npc">The Mission Broker NPC definition.</param>
     /// <returns>Active mission states.</returns>
     public static IList<CharacterQuestState> GetActiveMissionStates(Player player, MonsterDefinition npc)
     {
-        return player.SelectedCharacter?.QuestStates
-                   .Where(state => state.ActiveQuest is { } quest && IsMissionOfNpc(quest, npc))
-                   .OrderBy(state => state.ActiveQuest!.Number)
-                   .ToList()
-               ?? (IList<CharacterQuestState>)Array.Empty<CharacterQuestState>();
+        return GetActiveMissionStates(player)
+            .Where(state => state.ActiveQuest is { } quest && IsMissionOfNpc(quest, npc))
+            .ToList();
     }
 
     /// <summary>

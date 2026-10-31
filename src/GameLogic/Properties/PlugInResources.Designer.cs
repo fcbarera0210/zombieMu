@@ -1823,7 +1823,25 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("MissionBrokerNpcPlugIn_Name", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Handles the chat command &apos;/missions&apos;. Lists the player&apos;s active Mission Broker missions, kill progress and hunt-zone hints in chat..
+        /// </summary>
+        public static string MissionsChatCommandPlugIn_Description {
+            get {
+                return ResourceManager.GetString("MissionsChatCommandPlugIn_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missions chat command.
+        /// </summary>
+        public static string MissionsChatCommandPlugIn_Name {
+            get {
+                return ResourceManager.GetString("MissionsChatCommandPlugIn_Name", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Entrance closed message.
         /// </summary>
