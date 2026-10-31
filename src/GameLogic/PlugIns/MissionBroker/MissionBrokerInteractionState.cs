@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameLogic.PlugIns.MissionBroker;
 
 using MUnique.OpenMU.DataModel.Configuration.Quests;
+using MUnique.OpenMU.DataModel.Entities;
 
 /// <summary>
 /// Kind of Mission Broker menu currently open for chat input.
@@ -17,14 +18,9 @@ internal enum MissionBrokerMenuKind
     None,
 
     /// <summary>
-    /// Numbered available missions; the player can type an index to accept.
+    /// Accept offers and/or abandon actives via chat.
     /// </summary>
-    Offers,
-
-    /// <summary>
-    /// Active mission progress; the player can type ABANDON to quit.
-    /// </summary>
-    Abandon,
+    Selection,
 }
 
 /// <summary>
@@ -48,6 +44,11 @@ internal sealed class MissionBrokerInteractionState
     public IList<QuestDefinition> OfferedMissions { get; } = new List<QuestDefinition>();
 
     /// <summary>
+    /// Gets the active missions shown for abandon (1-based index after the keyword ABANDON).
+    /// </summary>
+    public IList<CharacterQuestState> ActiveMissions { get; } = new List<CharacterQuestState>();
+
+    /// <summary>
     /// Gets a value indicating whether a chat menu is still valid.
     /// </summary>
     public bool HasOpenMenu =>
@@ -62,30 +63,28 @@ internal sealed class MissionBrokerInteractionState
         this.MenuKind = MissionBrokerMenuKind.None;
         this.ExpiresUtc = DateTime.MinValue;
         this.OfferedMissions.Clear();
+        this.ActiveMissions.Clear();
     }
 
     /// <summary>
-    /// Opens the numbered offer menu with the given missions.
+    /// Opens the selection menu with available offers and optional actives for abandon.
     /// </summary>
-    /// <param name="missions">The missions shown to the player.</param>
-    public void OpenOffers(IEnumerable<QuestDefinition> missions)
+    /// <param name="offers">Missions that can be accepted.</param>
+    /// <param name="actives">Active mission states (for abandon N).</param>
+    public void OpenSelection(IEnumerable<QuestDefinition> offers, IEnumerable<CharacterQuestState> actives)
     {
-        this.MenuKind = MissionBrokerMenuKind.Offers;
+        this.MenuKind = MissionBrokerMenuKind.Selection;
         this.ExpiresUtc = DateTime.UtcNow.Add(MissionBrokerConstants.MenuTimeout);
         this.OfferedMissions.Clear();
-        foreach (var mission in missions)
+        this.ActiveMissions.Clear();
+        foreach (var offer in offers)
         {
-            this.OfferedMissions.Add(mission);
+            this.OfferedMissions.Add(offer);
         }
-    }
 
-    /// <summary>
-    /// Opens the abandon prompt for the active mission.
-    /// </summary>
-    public void OpenAbandonPrompt()
-    {
-        this.MenuKind = MissionBrokerMenuKind.Abandon;
-        this.ExpiresUtc = DateTime.UtcNow.Add(MissionBrokerConstants.MenuTimeout);
-        this.OfferedMissions.Clear();
+        foreach (var active in actives)
+        {
+            this.ActiveMissions.Add(active);
+        }
     }
 }

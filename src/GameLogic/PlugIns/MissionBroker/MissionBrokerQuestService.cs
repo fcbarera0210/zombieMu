@@ -15,24 +15,40 @@ using MUnique.OpenMU.GameLogic.Views.NPC;
 /// <summary>
 /// Starts, completes and abandons Mission Broker quests without opening the stock F6 quest UI.
 /// Progress still uses <see cref="CharacterQuestState"/> so kill tracking and persistence work as usual.
+/// Multiple active missions in group <see cref="MissionBrokerConstants.QuestGroup"/> are supported
+/// (one state row per active mission).
 /// </summary>
 internal static class MissionBrokerQuestService
 {
     /// <summary>
-    /// Gets the active Mission Broker quest for the player, if any.
+    /// Gets all active Mission Broker quest states for the player.
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="npc">The Mission Broker NPC definition.</param>
-    /// <returns>The quest state with an active mission, or <c>null</c>.</returns>
-    public static CharacterQuestState? GetActiveMissionState(Player player, MonsterDefinition npc)
+    /// <returns>Active mission states.</returns>
+    public static IList<CharacterQuestState> GetActiveMissionStates(Player player, MonsterDefinition npc)
     {
         return player.SelectedCharacter?.QuestStates
-            .FirstOrDefault(state => state.ActiveQuest is { } quest && IsMissionOfNpc(quest, npc));
+                   .Where(state => state.ActiveQuest is { } quest && IsMissionOfNpc(quest, npc))
+                   .OrderBy(state => state.ActiveQuest!.Number)
+                   .ToList()
+               ?? (IList<CharacterQuestState>)Array.Empty<CharacterQuestState>();
+    }
+
+    /// <summary>
+    /// Gets the quest state for a specific active Mission Broker quest.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="quest">The quest.</param>
+    /// <returns>The state, or <c>null</c>.</returns>
+    public static CharacterQuestState? GetMissionState(Player player, QuestDefinition quest)
+    {
+        return player.SelectedCharacter?.QuestStates
+            .FirstOrDefault(state => state.Group == quest.Group && object.Equals(state.ActiveQuest, quest));
     }
 
     /// <summary>
     /// Gets missions the player can accept from this NPC.
-    /// Does not require <see cref="Player.OpenedNpc"/> so chat selection still works after the talk dialog closes.
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="npc">The NPC.</param>
@@ -46,7 +62,7 @@ internal static class MissionBrokerQuestService
                             && (quest.MaximumCharacterLevel == default || quest.MaximumCharacterLevel >= player.Level))
             .Where(quest => !quest.EvolvesIntoInactiveClass(player))
             .Where(quest => IsMissionOfNpc(quest, npc))
-            .Where(quest => CanAccept(player, quest))
+            .Where(quest => CanAccept(player, quest, npc))
             .OrderBy(quest => quest.Number)
             .ToList();
     }
@@ -120,8 +136,9 @@ internal static class MissionBrokerQuestService
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="quest">The quest.</param>
+    /// <param name="npc">The Mission Broker NPC definition (for accept checks).</param>
     /// <returns>A task with a value indicating whether the mission was started.</returns>
-    public static async ValueTask<bool> StartAsync(Player player, QuestDefinition quest)
+    public static async ValueTask<bool> StartAsync(Player player, QuestDefinition quest, MonsterDefinition npc)
     {
         if (player.SelectedCharacter is null)
         {
@@ -134,20 +151,7 @@ internal static class MissionBrokerQuestService
             return false;
         }
 
-        if (!CanAccept(player, quest))
-        {
-            return false;
-        }
-
-        var questState = player.SelectedCharacter.QuestStates.FirstOrDefault(q => q.Group == quest.Group);
-        if (questState is null)
-        {
-            questState = player.PersistenceContext.CreateNew<CharacterQuestState>();
-            questState.Group = quest.Group;
-            player.SelectedCharacter.QuestStates.Add(questState);
-        }
-
-        if (questState.ActiveQuest != null)
+        if (!CanAccept(player, quest, npc))
         {
             return false;
         }
@@ -163,6 +167,19 @@ internal static class MissionBrokerQuestService
             await player.InvokeViewPlugInAsync<IUpdateMoneyPlugIn>(p => p.UpdateMoneyAsync()).ConfigureAwait(false);
         }
 
+        // One CharacterQuestState per active mission (same Group allowed).
+        // Reuse an unused row only when it has no finish history, so LastFinishedQuest stays intact.
+        var questState = player.SelectedCharacter.QuestStates
+            .FirstOrDefault(state => state.Group == quest.Group
+                                     && state.ActiveQuest is null
+                                     && state.LastFinishedQuest is null);
+        if (questState is null)
+        {
+            questState = player.PersistenceContext.CreateNew<CharacterQuestState>();
+            questState.Group = quest.Group;
+            player.SelectedCharacter.QuestStates.Add(questState);
+        }
+
         await questState.ClearAsync(player.PersistenceContext).ConfigureAwait(false);
         questState.ActiveQuest = quest;
         return true;
@@ -176,7 +193,7 @@ internal static class MissionBrokerQuestService
     /// <returns>A task with a value indicating whether completion succeeded.</returns>
     public static async ValueTask<bool> CompleteAsync(Player player, QuestDefinition quest)
     {
-        var stateBefore = player.GetQuestState(quest.Group);
+        var stateBefore = GetMissionState(player, quest);
         if (stateBefore?.ActiveQuest is null || !object.Equals(stateBefore.ActiveQuest, quest))
         {
             return false;
@@ -189,7 +206,7 @@ internal static class MissionBrokerQuestService
 
         var completion = new QuestCompletionAction();
         await completion.CompleteQuestAsync(player, quest.Group, quest.Number).ConfigureAwait(false);
-        return player.GetQuestState(quest.Group)?.ActiveQuest is null;
+        return GetMissionState(player, quest) is null;
     }
 
     /// <summary>
@@ -200,13 +217,21 @@ internal static class MissionBrokerQuestService
     /// <returns>A task with a value indicating whether the mission was abandoned.</returns>
     public static async ValueTask<bool> AbandonAsync(Player player, QuestDefinition quest)
     {
-        var questState = player.GetQuestState(quest.Group);
+        var questState = GetMissionState(player, quest);
         if (questState?.ActiveQuest is null || !object.Equals(questState.ActiveQuest, quest))
         {
             return false;
         }
 
         await questState.ClearAsync(player.PersistenceContext).ConfigureAwait(false);
+
+        // Drop empty states that only existed for this active mission (no finish history).
+        if (questState.LastFinishedQuest is null && player.SelectedCharacter is { } character)
+        {
+            character.QuestStates.Remove(questState);
+            await player.PersistenceContext.DeleteAsync(questState).ConfigureAwait(false);
+        }
+
         return true;
     }
 
@@ -220,15 +245,22 @@ internal static class MissionBrokerQuestService
     public static ValueTask SayAsync(Player player, NonPlayerCharacter npc, string message)
         => player.InvokeViewPlugInAsync<IShowMessageOfObjectPlugIn>(p => p.ShowMessageOfObjectAsync(message, npc));
 
-    private static bool CanAccept(Player player, QuestDefinition quest)
+    private static bool CanAccept(Player player, QuestDefinition quest, MonsterDefinition npc)
     {
-        var questState = player.GetQuestState(quest.Group);
-        if (questState?.ActiveQuest != null)
+        if (GetMissionState(player, quest) is not null)
         {
             return false;
         }
 
-        if (!quest.Repeatable && object.Equals(questState?.LastFinishedQuest, quest))
+        var actives = GetActiveMissionStates(player, npc);
+        if (actives.Count >= MissionBrokerConstants.MaxActiveMissions)
+        {
+            return false;
+        }
+
+        if (!quest.Repeatable
+            && player.SelectedCharacter?.QuestStates.Any(state =>
+                state.Group == quest.Group && object.Equals(state.LastFinishedQuest, quest)) == true)
         {
             return false;
         }

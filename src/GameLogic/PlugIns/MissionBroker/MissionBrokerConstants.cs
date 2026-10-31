@@ -18,17 +18,24 @@ public static class MissionBrokerConstants
 
     /// <summary>
     /// Quest group reserved for Mission Broker missions.
-    /// Keeps them out of the stock F6 quest UI and allows only one active mission at a time.
+    /// Keeps them out of the stock F6 quest UI. Multiple active missions in this group are allowed
+    /// (one <see cref="DataModel.Entities.CharacterQuestState"/> per active mission).
     /// </summary>
     public const short QuestGroup = 200;
 
     /// <summary>
-    /// Chat keyword to abandon the active mission while the abandon menu is open.
+    /// Maximum number of Mission Broker missions a character may have active at once.
+    /// </summary>
+    public const int MaxActiveMissions = 5;
+
+    /// <summary>
+    /// Chat keyword to abandon an active mission while the menu is open.
+    /// Use "abandon" for a single active mission, or "abandon N" to pick one by list index.
     /// </summary>
     public const string AbandonKeyword = "abandon";
 
     /// <summary>
-    /// How long the numbered mission menu (or abandon prompt) stays valid after talking to the NPC.
+    /// How long the numbered mission menu stays valid after talking to the NPC.
     /// During this window the player can type a mission number or ABANDON in normal chat.
     /// </summary>
     public static readonly TimeSpan MenuTimeout = TimeSpan.FromSeconds(60);
