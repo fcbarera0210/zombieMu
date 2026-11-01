@@ -170,7 +170,8 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
             await this.DataSource.GetOwnerAsync(cancellationToken: cancellationToken).ConfigureAwait(true);
 
             var data = this.DataSource.GetAll<MonsterDefinition>()
-                .Where(m => m is { ObjectKind: NpcObjectKind.PassiveNpc, MerchantStore: { } });
+                .Where(m => m.MerchantStore is not null
+                            || m.NpcWindow is NpcWindow.Merchant or NpcWindow.Merchant1);
             this._viewModels = data
                 .Select(o => new MerchantStorageViewModel(o))
                 .OrderBy(o => o.Name)
@@ -338,6 +339,6 @@ public partial class Merchants : ComponentBase, IAsyncDisposable
         /// Gets the items of the merchant.
         /// </summary>
         [System.ComponentModel.DataAnnotations.Display(Name = nameof(Resources.Items), ResourceType = typeof(Resources))]
-        public ICollection<Item> Items => this.Merchant.MerchantStore!.Items;
+        public ICollection<Item> Items => this.Merchant.MerchantStore?.Items ?? [];
     }
 }

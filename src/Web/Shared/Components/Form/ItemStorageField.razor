@@ -11,6 +11,21 @@
 
 @if (this.CurrentValue is null)
 {
+    @if (this.EditContext.Model is MonsterDefinition)
+    {
+        <div class="card mb-3">
+            @if (!this.HideLabel)
+            {
+                <h5 class="card-header">
+                    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression"/>
+                </h5>
+            }
+            <div class="card-body card-text">
+                <button type="button" class="btn btn-primary" @onclick="this.OnCreateStorageClick">@Resources.Create</button>
+            </div>
+        </div>
+    }
+
     return;
 }
 
@@ -163,6 +178,11 @@
     protected override string FormatValueAsString(ItemStorage? value)
     {
         return value is null ? string.Empty : string.Join(';', value);
+    }
+
+    private void OnCreateStorageClick()
+    {
+        this.CurrentValue = this.PersistenceContext.CreateNew<ItemStorage>();
     }
 
     private void OnSelectedItemChanged(Item? item)
