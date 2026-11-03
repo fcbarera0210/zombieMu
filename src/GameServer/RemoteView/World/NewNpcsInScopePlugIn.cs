@@ -22,18 +22,21 @@ using MUnique.OpenMU.PlugIns;
 [MinimumClient(5, 0, ClientLanguage.Invariant)]
 public class NewNpcsInScopePlugIn : INewNpcsInScopePlugIn
 {
-    private readonly RemotePlayer _player;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="NewNpcsInScopePlugIn"/> class.
     /// </summary>
     /// <param name="player">The player.</param>
-    public NewNpcsInScopePlugIn(RemotePlayer player) => this._player = player;
+    public NewNpcsInScopePlugIn(RemotePlayer player) => this.Player = player;
+
+    /// <summary>
+    /// Gets the player of this view.
+    /// </summary>
+    protected RemotePlayer Player { get; }
 
     /// <inheritdoc/>
     public async ValueTask NewNpcsInScopeAsync(IEnumerable<NonPlayerCharacter> newObjects, bool isSpawned = true)
     {
-        var connection = this._player.Connection;
+        var connection = this.Player.Connection;
         if (connection is null || newObjects is null || !newObjects.Any())
         {
             return;
@@ -45,7 +48,7 @@ public class NewNpcsInScopePlugIn : INewNpcsInScopePlugIn
         if (npcs.Any())
         {
             await connection.SendAsync(
-                () => WriteNpcsInScope(isSpawned, connection, npcs, this._player)).ConfigureAwait(false);
+                () => this.WriteNpcsInScope(isSpawned, connection, npcs)).ConfigureAwait(false);
         }
 
         if (summons.Any())
@@ -54,11 +57,34 @@ public class NewNpcsInScopePlugIn : INewNpcsInScopePlugIn
         }
     }
 
-    private static int WriteNpcsInScope(
+    /// <summary>
+    /// Gets the type number which should be sent for the specified NPC to the observer.
+    /// </summary>
+    /// <param name="npc">The NPC.</param>
+    /// <param name="observer">The observing player.</param>
+    /// <returns>The type number.</returns>
+    protected static ushort GetNpcTypeNumber(NonPlayerCharacter npc, Player observer)
+    {
+        var typeNumber = (ushort)(npc.Definition?.Number ?? 0);
+        if (npc is IObserverDependentNpcTypeNumber observerDependentTypeNumber)
+        {
+            typeNumber |= observerDependentTypeNumber.GetTypeNumberFlags(observer);
+        }
+
+        return typeNumber;
+    }
+
+    /// <summary>
+    /// Writes the NPCs which came into scope into the connection output.
+    /// </summary>
+    /// <param name="isSpawned">If set to <c>true</c>, the NPCs are marked as newly spawned.</param>
+    /// <param name="connection">The connection.</param>
+    /// <param name="npcs">The NPCs.</param>
+    /// <returns>The number of written bytes.</returns>
+    protected virtual int WriteNpcsInScope(
         bool isSpawned,
         IConnection connection,
-        ICollection<NonPlayerCharacter> npcs,
-        Player observer)
+        ICollection<NonPlayerCharacter> npcs)
     {
         var size = AddNpcsToScopeRef.GetRequiredSize(npcs.Count);
         var span = connection.Output.GetSpan(size)[..size];
@@ -77,7 +103,7 @@ public class NewNpcsInScopePlugIn : INewNpcsInScopePlugIn
                 npcBlock.Id |= 0x8000;
             }
 
-            npcBlock.TypeNumber = GetNpcTypeNumber(npc, observer);
+            npcBlock.TypeNumber = GetNpcTypeNumber(npc, this.Player);
             npcBlock.CurrentPositionX = npc.Position.X;
             npcBlock.CurrentPositionY = npc.Position.Y;
 
@@ -99,17 +125,6 @@ public class NewNpcsInScopePlugIn : INewNpcsInScopePlugIn
         }
 
         return size;
-    }
-
-    private static ushort GetNpcTypeNumber(NonPlayerCharacter npc, Player observer)
-    {
-        var typeNumber = (ushort)(npc.Definition?.Number ?? 0);
-        if (npc is IObserverDependentNpcTypeNumber observerDependentTypeNumber)
-        {
-            typeNumber |= observerDependentTypeNumber.GetTypeNumberFlags(observer);
-        }
-
-        return typeNumber;
     }
 
     private static async ValueTask SummonedMonstersInScopeAsync(bool isSpawned, IConnection connection, ICollection<ISummonable> summons)

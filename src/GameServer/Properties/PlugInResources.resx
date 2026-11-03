@@ -1719,6 +1719,12 @@
   <data name="NewNpcsInScopePlugIn095_Description" xml:space="preserve">
     <value>The default implementation of the INewNpcsInScopePlugIn which is forwarding everything to the game client with specific data packets for version 0.75.</value>
   </data>
+  <data name="NewNpcsInScopeExtendedPlugIn_Name" xml:space="preserve">
+    <value>New NPCs In Scope Extended</value>
+  </data>
+  <data name="NewNpcsInScopeExtendedPlugIn_Description" xml:space="preserve">
+    <value>The extended implementation of the INewNpcsInScopePlugIn which additionally sends instance level and absolute health for attackable NPCs.</value>
+  </data>
   <data name="NewPlayersInScopeExtendedPlugIn_Name" xml:space="preserve">
     <value>New Players In Scope Extended</value>
   </data>

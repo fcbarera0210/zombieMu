@@ -1654,6 +1654,12 @@
   <data name="NewNpcsInScopePlugIn095_Description" xml:space="preserve">
     <value>INewNpcsInScopePlugIn 的默认实现，通过专用数据包将相关信息发送至游戏客户端。适用于 0.75 版本。</value>
   </data>
+  <data name="NewNpcsInScopeExtendedPlugIn_Name" xml:space="preserve">
+    <value>视野内新增NPC通知（扩展版）</value>
+  </data>
+  <data name="NewNpcsInScopeExtendedPlugIn_Description" xml:space="preserve">
+    <value>INewNpcsInScopePlugIn 的扩展实现，额外发送可攻击NPC的实例等级与绝对生命值。</value>
+  </data>
   <data name="NewPlayersInScopeExtendedPlugIn_Name" xml:space="preserve">
     <value>视野内新增玩家通知（扩展版）</value>
   </data>

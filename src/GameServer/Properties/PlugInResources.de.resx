@@ -1713,6 +1713,12 @@
   <data name="NewNpcsInScopePlugIn095_Description" xml:space="preserve">
     <value>Die Standardimplementierung von INewNpcsInScopePlugIn, die alles mit spezifischen Datenpaketen für Version 0.75. an den Spielclient weiterleitet.</value>
   </data>
+  <data name="NewNpcsInScopeExtendedPlugIn_Name" xml:space="preserve">
+    <value>Neue NPCs im Sichtbereich (erweitert)</value>
+  </data>
+  <data name="NewNpcsInScopeExtendedPlugIn_Description" xml:space="preserve">
+    <value>Die erweiterte Implementierung von INewNpcsInScopePlugIn, die zusätzlich Instanzlevel und absolute Lebenspunkte für angreifbare NPCs sendet.</value>
+  </data>
   <data name="NewPlayersInScopeExtendedPlugIn_Name" xml:space="preserve">
     <value>Neue Spieler im Sichtbereich (erweitert)</value>
   </data>

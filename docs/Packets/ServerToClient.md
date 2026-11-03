@@ -15,6 +15,7 @@
   * [C2 12 - AddCharactersToScope075 (by server)](C2-12-AddCharactersToScope075_by-server.md)
   * [C2 12 - AddCharactersToScope095 (by server)](C2-12-AddCharactersToScope095_by-server.md)
   * [C2 13 - AddNpcsToScope (by server)](C2-13-AddNpcsToScope_by-server.md)
+  * [C2 13 - AddNpcsToScopeExtended (by server)](C2-13-AddNpcsToScopeExtended_by-server.md)
   * [C2 13 - AddNpcsToScope075 (by server)](C2-13-AddNpcsToScope075_by-server.md)
   * [C2 13 - AddNpcsToScope095 (by server)](C2-13-AddNpcsToScope095_by-server.md)
   * [C1 14 - MapObjectOutOfScope (by server)](C1-14-MapObjectOutOfScope_by-server.md)

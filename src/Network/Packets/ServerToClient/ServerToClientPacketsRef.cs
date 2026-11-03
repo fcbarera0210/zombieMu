@@ -1799,6 +1799,214 @@ public readonly ref struct NpcDataRef
 
 
 /// <summary>
+/// Is sent by the server when: One or more NPCs got into the observed scope of the player. Extended variant for custom clients that need instance level and absolute health without waiting for a hit.
+/// Causes reaction on client side: The client adds the NPCs to the shown map and can show level and health on the enemy panel immediately.
+/// </summary>
+public readonly ref struct AddNpcsToScopeExtendedRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddNpcsToScopeExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public AddNpcsToScopeExtendedRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddNpcsToScopeExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private AddNpcsToScopeExtendedRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0x13;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the npc count.
+    /// </summary>
+    public byte NpcCount
+    {
+        get => this._data[4];
+        set => this._data[4] = value;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="NpcDataRef"/> of the specified index.
+    /// </summary>
+        public NpcDataRef this[int index] => new (this._data[(5 + index * NpcDataRef.Length)..]);
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="AddNpcsToScopeExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator AddNpcsToScopeExtendedRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="AddNpcsToScopeExtended"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(AddNpcsToScopeExtendedRef packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified count of <see cref="NpcDataRef"/>.
+    /// </summary>
+    /// <param name="nPCsCount">The count of <see cref="NpcDataRef"/> from which the size will be calculated.</param>
+        
+    public static int GetRequiredSize(int nPCsCount) => nPCsCount * NpcDataRef.Length + 5;
+
+
+/// <summary>
+/// Contains the data of an NPC, including effective instance level and absolute health. The first 10 bytes match the Season 6 NpcData layout; Level, CurrentHealth and MaximumHealth are appended. For non-attackable NPCs these three fields are 0..
+/// </summary>
+public readonly ref struct NpcDataRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NpcDataRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public NpcDataRef(Span<byte> data)
+    {
+        this._data = data;
+    }
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 20;
+
+    /// <summary>
+    /// Gets or sets the id.
+    /// </summary>
+    public ushort Id
+    {
+        get => ReadUInt16BigEndian(this._data);
+        set => WriteUInt16BigEndian(this._data, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the type number.
+    /// </summary>
+    public ushort TypeNumber
+    {
+        get => ReadUInt16BigEndian(this._data[2..]);
+        set => WriteUInt16BigEndian(this._data[2..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the current position x.
+    /// </summary>
+    public byte CurrentPositionX
+    {
+        get => this._data[4];
+        set => this._data[4] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the current position y.
+    /// </summary>
+    public byte CurrentPositionY
+    {
+        get => this._data[5];
+        set => this._data[5] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the target position x.
+    /// </summary>
+    public byte TargetPositionX
+    {
+        get => this._data[6];
+        set => this._data[6] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the target position y.
+    /// </summary>
+    public byte TargetPositionY
+    {
+        get => this._data[7];
+        set => this._data[7] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the rotation.
+    /// </summary>
+    public byte Rotation
+    {
+        get => this._data[8..].GetByteValue(4, 4);
+        set => this._data[8..].SetByteValue(value, 4, 4);
+    }
+
+    /// <summary>
+    /// Gets or sets defines the number of effects which would be sent after this field. This is currently not supported.
+    /// </summary>
+    public byte EffectCount
+    {
+        get => this._data[9];
+        set => this._data[9] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets effective combat level of this NPC instance (includes multipliers / event scaling). 0 when not applicable.
+    /// </summary>
+    public ushort Level
+    {
+        get => ReadUInt16LittleEndian(this._data[10..]);
+        set => WriteUInt16LittleEndian(this._data[10..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets current absolute health of this NPC instance. 0 when not applicable.
+    /// </summary>
+    public uint CurrentHealth
+    {
+        get => ReadUInt32LittleEndian(this._data[12..]);
+        set => WriteUInt32LittleEndian(this._data[12..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets maximum absolute health of this NPC instance. 0 when not applicable.
+    /// </summary>
+    public uint MaximumHealth
+    {
+        get => ReadUInt32LittleEndian(this._data[16..]);
+        set => WriteUInt32LittleEndian(this._data[16..], value);
+    }
+}
+}
+
+
+/// <summary>
 /// Is sent by the server when: One or more NPCs got into the observed scope of the player.
 /// Causes reaction on client side: The client adds the NPCs to the shown map.
 /// </summary>

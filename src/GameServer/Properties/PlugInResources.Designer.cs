@@ -4453,6 +4453,24 @@ namespace MUnique.OpenMU.GameServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The extended implementation of the INewNpcsInScopePlugIn which additionally sends instance level and absolute health for attackable NPCs..
+        /// </summary>
+        public static string NewNpcsInScopeExtendedPlugIn_Description {
+            get {
+                return ResourceManager.GetString("NewNpcsInScopeExtendedPlugIn_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to New NPCs In Scope Extended.
+        /// </summary>
+        public static string NewNpcsInScopeExtendedPlugIn_Name {
+            get {
+                return ResourceManager.GetString("NewNpcsInScopeExtendedPlugIn_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The extended implementation of the INewPlayersInScopePlugIn which is forwarding everything to the game client with specific data packets..
         /// </summary>
         public static string NewPlayersInScopeExtendedPlugIn_Description {
@@ -4460,7 +4478,7 @@ namespace MUnique.OpenMU.GameServer.Properties {
                 return ResourceManager.GetString("NewPlayersInScopeExtendedPlugIn_Description", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Players In Scope Extended.
         /// </summary>
