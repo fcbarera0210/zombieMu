@@ -82,9 +82,15 @@ public sealed class BloodCastleContext : MiniGameContext
     /// <summary>
     /// Dialog numbers for different interactions with the NPC.
     /// </summary>
+    /// <remarks>
+    /// Dialog <c>0x17</c> (event winner speech) is intentionally not sent on a successful
+    /// hand-in: the Season 6 client opens that message box and the Blood Castle score window
+    /// (<c>C1 93</c>) almost at once, and the overlapping modals leave the score OK button
+    /// unusable so players cannot pick up the reward items. The score window already shows
+    /// the congratulations text. The original game server spaced the two packets further apart.
+    /// </remarks>
     private enum DialogNumber : byte
     {
-        EventWinner = 0x17,
         EventNotRunning = 0x18,
         EventQuestItemMissing = 0x18,
         EventFinished = 0x2E,
@@ -121,7 +127,10 @@ public sealed class BloodCastleContext : MiniGameContext
         }
 
         this._winner = player;
-        await player.InvokeViewPlugInAsync<IShowDialogPlugIn>(p => p.ShowDialogAsync(DialogCategoryMain, (byte)DialogNumber.EventWinner)).ConfigureAwait(false);
+
+        // Do not send the Archangel winner speech dialog (ServerCommand 1/0x17) here.
+        // FinishEvent leads to BloodCastleScore (C1 93) which already shows the success UI;
+        // sending both back-to-back traps the client so the score OK cannot be clicked.
         this.FinishEvent();
     }
 
