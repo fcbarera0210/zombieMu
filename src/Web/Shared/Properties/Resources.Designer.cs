@@ -745,6 +745,42 @@ namespace MUnique.OpenMU.Web.Shared.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Items of this reward.
+        /// </summary>
+        public static string MiniGameRewardItems {
+            get {
+                return ResourceManager.GetString("MiniGameRewardItems", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Create items for this reward.
+        /// </summary>
+        public static string MiniGameRewardCreateItems {
+            get {
+                return ResourceManager.GetString("MiniGameRewardCreateItems", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This item list is also used by another reward. Copy it before changing it, so the other event stays the same.
+        /// </summary>
+        public static string MiniGameRewardSharedGroup {
+            get {
+                return ResourceManager.GetString("MiniGameRewardSharedGroup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy for this event.
+        /// </summary>
+        public static string MiniGameRewardCopyGroup {
+            get {
+                return ResourceManager.GetString("MiniGameRewardCopyGroup", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No more available.
         /// </summary>
         public static string NoMoreAvailable {

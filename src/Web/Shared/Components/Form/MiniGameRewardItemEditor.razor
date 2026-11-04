@@ -1,0 +1,28 @@
+@using MUnique.OpenMU.DataModel.Configuration
+@using MUnique.OpenMU.DataModel.Configuration.Items
+@using MUnique.OpenMU.Persistence
+
+@inject IDataSource<GameConfiguration> GameConfigurationSource
+
+<div class="mb-3">
+    <label class="form-label">@Resources.MiniGameRewardItems</label>
+    @if (this._group is null)
+    {
+        <button type="button" class="btn btn-outline-secondary" @onclick="this.CreateGroupAsync">@Resources.MiniGameRewardCreateItems</button>
+    }
+    else if (this._sharedWithAnotherReward)
+    {
+        <p class="field-hint">@Resources.MiniGameRewardSharedGroup</p>
+        <button type="button" class="btn btn-outline-secondary" @onclick="this.CopyGroupForThisRewardAsync">@Resources.MiniGameRewardCopyGroup</button>
+    }
+    else
+    {
+        <LocalizedStringField @bind-Value="this.Group.Description" />
+        <NumberField TNumber="double" @bind-Value="this.Group.Chance" />
+        <EnumField TValue="SpecialItemType" @bind-Value="this.Group.ItemType" />
+        <NullableByteField @bind-Value="this.Group.ItemLevel" />
+        <NullableByteField @bind-Value="this.Group.MinimumMonsterLevel" />
+        <NullableByteField @bind-Value="this.Group.MaximumMonsterLevel" />
+        <ItemTable TItem="ItemDefinition" @bind-Value="this.PossibleItems" />
+    }
+</div>

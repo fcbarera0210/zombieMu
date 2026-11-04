@@ -405,6 +405,18 @@
   <data name="ModalDeferredSaveHint" xml:space="preserve">
     <value>提交会保留本页上的值。请使用页面上的保存来写入它们。</value>
   </data>
+  <data name="MiniGameRewardItems" xml:space="preserve">
+    <value>此奖励的物品</value>
+  </data>
+  <data name="MiniGameRewardCreateItems" xml:space="preserve">
+    <value>为此奖励创建物品</value>
+  </data>
+  <data name="MiniGameRewardSharedGroup" xml:space="preserve">
+    <value>此物品列表也被其他奖励使用。请先复制，再修改，以免影响其他活动。</value>
+  </data>
+  <data name="MiniGameRewardCopyGroup" xml:space="preserve">
+    <value>仅复制到此活动</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>没有更多可选项</value>
   </data>

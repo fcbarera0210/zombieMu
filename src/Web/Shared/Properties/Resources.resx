@@ -436,6 +436,18 @@ Level: {2} - {3}</value>
   <data name="ModalDeferredSaveHint" xml:space="preserve">
     <value>Submit keeps these values on this page. Save the page to store them.</value>
   </data>
+  <data name="MiniGameRewardItems" xml:space="preserve">
+    <value>Items of this reward</value>
+  </data>
+  <data name="MiniGameRewardCreateItems" xml:space="preserve">
+    <value>Create items for this reward</value>
+  </data>
+  <data name="MiniGameRewardSharedGroup" xml:space="preserve">
+    <value>This item list is also used by another reward. Copy it before changing it, so the other event stays the same.</value>
+  </data>
+  <data name="MiniGameRewardCopyGroup" xml:space="preserve">
+    <value>Copy for this event</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>No more available</value>
   </data>

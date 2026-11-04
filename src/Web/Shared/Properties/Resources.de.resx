@@ -381,6 +381,18 @@
   <data name="ModalDeferredSaveHint" xml:space="preserve">
     <value>Absenden behält die Werte auf dieser Seite. Speichern auf der Seite schreibt sie.</value>
   </data>
+  <data name="MiniGameRewardItems" xml:space="preserve">
+    <value>Gegenstände dieser Belohnung</value>
+  </data>
+  <data name="MiniGameRewardCreateItems" xml:space="preserve">
+    <value>Gegenstände für diese Belohnung anlegen</value>
+  </data>
+  <data name="MiniGameRewardSharedGroup" xml:space="preserve">
+    <value>Diese Gegenstandsliste wird auch von einer anderen Belohnung verwendet. Kopieren Sie sie, bevor Sie sie ändern, damit das andere Event gleich bleibt.</value>
+  </data>
+  <data name="MiniGameRewardCopyGroup" xml:space="preserve">
+    <value>Für dieses Event kopieren</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>Keine weiteren verfügbar</value>
   </data>
