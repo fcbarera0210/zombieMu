@@ -49,7 +49,7 @@ public sealed class EditorInvalidationTests
         oldContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         newContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         newContext.SetupGet(c => c.HasChanges).Returns(true);
-        await editor.Find("button.btn-secondary").ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs()).ConfigureAwait(false);
+        await editor.Find("button.btn-outline-secondary").ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs()).ConfigureAwait(false);
         editor.WaitForState(() => editor.FindAll("#ExperienceRate").Any(input => input.GetAttribute("value") == "6"));
         newContext.Verify(c => c.Dispose(), Times.Never);
         await editor.Find("#ExperienceRate").ChangeAsync(new Microsoft.AspNetCore.Components.ChangeEventArgs { Value = "7" }).ConfigureAwait(false);
@@ -160,7 +160,7 @@ public sealed class EditorInvalidationTests
         var editor = context.Render<EditConfig>(p => p.Add(e => e.TypeString, typeof(GameConfiguration).FullName!));
         editor.WaitForState(() => editor.FindAll("#ExperienceRate").Any(input => input.GetAttribute("value") == "3"));
         suspend = true;
-        var refresh = editor.Find("button.btn-secondary").ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+        var refresh = editor.Find("button.btn-outline-secondary").ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
         try
         {
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);

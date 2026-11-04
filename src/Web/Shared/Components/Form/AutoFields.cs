@@ -184,6 +184,7 @@ public class AutoFields : ComponentBase
 
     private int RenderFieldGrid(RenderTreeBuilder builder, IEnumerable<PropertyInfo> properties, int currentIndex)
     {
+#pragma warning disable ASP0006 // Sequence numbers are allocated from one increasing counter for this render pass.
         builder.OpenElement(currentIndex++, "div");
         builder.AddAttribute(currentIndex++, "class", "field-grid");
         foreach (var propertyInfo in properties)
@@ -194,6 +195,7 @@ public class AutoFields : ComponentBase
             currentIndex = this.RenderProperty(builder, propertyInfo, currentIndex);
             builder.CloseElement();
         }
+#pragma warning restore ASP0006
 
         builder.CloseElement();
         return currentIndex;
