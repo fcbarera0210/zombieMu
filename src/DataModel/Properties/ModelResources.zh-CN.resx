@@ -2363,49 +2363,49 @@
     <value>编号</value>
   </data>
   <data name="ItemDefinition_Number_Description" xml:space="preserve">
-    <value></value>
+    <value>该物品在组内的编号。与“组”一起决定客户端图标和协议中的物品编号。</value>
   </data>
   <data name="ItemDefinition_ItemSlot_Caption" xml:space="preserve">
     <value>物品栏位</value>
   </data>
   <data name="ItemDefinition_ItemSlot_Description" xml:space="preserve">
-    <value></value>
+    <value>装备位置。服务器和客户端都用它判断物品可以穿在哪里。</value>
   </data>
   <data name="ItemDefinition_Width_Caption" xml:space="preserve">
     <value>宽度</value>
   </data>
   <data name="ItemDefinition_Width_Description" xml:space="preserve">
-    <value></value>
+    <value>在背包中横向占用的格子数。不会改变图标文件。</value>
   </data>
   <data name="ItemDefinition_Height_Caption" xml:space="preserve">
     <value>高度</value>
   </data>
   <data name="ItemDefinition_Height_Description" xml:space="preserve">
-    <value></value>
+    <value>在背包中纵向占用的格子数。不会改变图标文件。</value>
   </data>
   <data name="ItemDefinition_DropsFromMonsters_Caption" xml:space="preserve">
     <value>可由怪物掉落</value>
   </data>
   <data name="ItemDefinition_DropsFromMonsters_Description" xml:space="preserve">
-    <value></value>
+    <value>怪物是否可以掉落此物品。与“可丢弃到地面”不同，后者只控制玩家把物品丢到地上。</value>
   </data>
   <data name="ItemDefinition_IsAmmunition_Caption" xml:space="preserve">
     <value>弹药</value>
   </data>
   <data name="ItemDefinition_IsAmmunition_Description" xml:space="preserve">
-    <value></value>
+    <value>此物品是否作为已装备武器的弹药。</value>
   </data>
   <data name="ItemDefinition_IsBoundToCharacter_Caption" xml:space="preserve">
     <value>绑定角色</value>
   </data>
   <data name="ItemDefinition_IsBoundToCharacter_Description" xml:space="preserve">
-    <value></value>
+    <value>绑定物品不能交易、不能放入仓库或个人商店，也不能被其他玩家拾取。</value>
   </data>
   <data name="ItemDefinition_StorageLimitPerCharacter_Caption" xml:space="preserve">
     <value>每个角色存储数量上限</value>
   </data>
   <data name="ItemDefinition_StorageLimitPerCharacter_Description" xml:space="preserve">
-    <value></value>
+    <value>一个角色背包中最多能存放此物品的数量。0 表示不限制。</value>
   </data>
   <data name="ItemDefinition_IsTradable_Caption" xml:space="preserve">
     <value>可交易</value>
@@ -2447,103 +2447,103 @@
     <value>名称</value>
   </data>
   <data name="ItemDefinition_Name_Description" xml:space="preserve">
-    <value></value>
+    <value>服务器显示的名称。客户端仍可能按相同的组和编号显示自己的名称。</value>
   </data>
   <data name="ItemDefinition_DropLevel_Caption" xml:space="preserve">
     <value>掉落等级</value>
   </data>
   <data name="ItemDefinition_DropLevel_Description" xml:space="preserve">
-    <value></value>
+    <value>可以掉落此物品的最低怪物等级。属性配置也会把它用作需求公式的基数。</value>
   </data>
   <data name="ItemDefinition_MaximumDropLevel_Caption" xml:space="preserve">
     <value>最高掉落等级</value>
   </data>
   <data name="ItemDefinition_MaximumDropLevel_Description" xml:space="preserve">
-    <value></value>
+    <value>可以掉落此物品的最高怪物等级。留空表示没有上限。</value>
   </data>
   <data name="ItemDefinition_MaximumItemLevel_Caption" xml:space="preserve">
     <value>最高物品等级</value>
   </data>
   <data name="ItemDefinition_MaximumItemLevel_Description" xml:space="preserve">
-    <value></value>
+    <value>此物品可以达到的最高强化等级（+N）。</value>
   </data>
   <data name="ItemDefinition_Durability_Caption" xml:space="preserve">
     <value>耐久度</value>
   </data>
   <data name="ItemDefinition_Durability_Description" xml:space="preserve">
-    <value></value>
+    <value>物品等级为 0 时的耐久度。对可堆叠物品和宝石，它也限制数量。</value>
   </data>
   <data name="ItemDefinition_Group_Caption" xml:space="preserve">
     <value>组</value>
   </data>
   <data name="ItemDefinition_Group_Description" xml:space="preserve">
-    <value></value>
+    <value>物品组（0-15）。与编号一起决定客户端图标和协议中的物品编号。</value>
   </data>
   <data name="ItemDefinition_Value_Caption" xml:space="preserve">
     <value>数值</value>
   </data>
   <data name="ItemDefinition_Value_Description" xml:space="preserve">
-    <value></value>
+    <value>未设置价格定义时，自动装备价格所使用的价值。</value>
   </data>
   <data name="ItemDefinition_PetExperienceFormula_Caption" xml:space="preserve">
     <value>宠物经验公式</value>
   </data>
   <data name="ItemDefinition_PetExperienceFormula_Description" xml:space="preserve">
-    <value></value>
+    <value>可训练宠物的经验公式。变量是 level。不是可训练宠物时留空。</value>
   </data>
   <data name="ItemDefinition_ConsumeEffect_Caption" xml:space="preserve">
     <value>使用效果</value>
   </data>
   <data name="ItemDefinition_ConsumeEffect_Description" xml:space="preserve">
-    <value></value>
+    <value>消耗此物品时施加的效果。设置后不需要再写消耗处理插件。</value>
   </data>
   <data name="ItemDefinition_MaximumSockets_Caption" xml:space="preserve">
     <value>镶嵌孔数量上限</value>
   </data>
   <data name="ItemDefinition_MaximumSockets_Description" xml:space="preserve">
-    <value></value>
+    <value>此物品实例最多可以有的镶嵌孔数量。</value>
   </data>
   <data name="ItemDefinition_Skill_Caption" xml:space="preserve">
     <value>技能</value>
   </data>
   <data name="ItemDefinition_Skill_Description" xml:space="preserve">
-    <value></value>
+    <value>装备时赋予的技能，或消耗时学会的技能。目前仍用同一个属性表示这两种用途。</value>
   </data>
   <data name="ItemDefinition_QualifiedCharacters_Caption" xml:space="preserve">
     <value>适用职业</value>
   </data>
   <data name="ItemDefinition_QualifiedCharacters_Description" xml:space="preserve">
-    <value></value>
+    <value>允许装备此物品的职业。</value>
   </data>
   <data name="ItemDefinition_PossibleItemSetGroups_Caption" xml:space="preserve">
     <value>可选套装组</value>
   </data>
   <data name="ItemDefinition_PossibleItemSetGroups_Description" xml:space="preserve">
-    <value></value>
+    <value>此物品可以加入的套装组，包括远古套装和额外穿戴加成。</value>
   </data>
   <data name="ItemDefinition_PossibleItemOptions_Caption" xml:space="preserve">
     <value>可选物品属性</value>
   </data>
   <data name="ItemDefinition_PossibleItemOptions_Description" xml:space="preserve">
-    <value></value>
+    <value>此物品实例可以获得的属性。每个属性的效果定义在属性本身，而不是这里。</value>
   </data>
   <data name="ItemDefinition_Requirements_Caption" xml:space="preserve">
     <value>要求</value>
   </data>
   <data name="ItemDefinition_Requirements_Description" xml:space="preserve">
-    <value></value>
+    <value>装备此物品所需的属性，可以选择从某个物品等级开始生效。</value>
   </data>
   <data name="ItemDefinition_BasePowerUpAttributes_Caption" xml:space="preserve">
     <value>基础加成属性</value>
   </data>
   <data name="ItemDefinition_BasePowerUpAttributes_Description" xml:space="preserve">
-    <value></value>
+    <value>基础战斗数值，例如攻击或防御，包括每个物品等级的加成表。</value>
   </data>
   <data name="ItemDefinition_DropItems_Caption" xml:space="preserve">
     <value>掉落物品</value>
   </data>
   <data name="ItemDefinition_DropItems_Description" xml:space="preserve">
-    <value></value>
+    <value>玩家丢弃此物品时生成的物品组，通常每个物品等级一组。用于宝箱。</value>
   </data>
   <data name="ItemDropEffect_TypeCaption" xml:space="preserve">
     <value>物品掉落效果</value>
