@@ -1,0 +1,100 @@
+@if (this._missing)
+{
+    <div class="item-sprite-missing" title="@this.RelativeUrl">@this.Group:@this.Number</div>
+}
+else
+{
+    <div class="item-sprite-frame" style="@this.FrameStyle">
+        <img src="@this.RelativeUrl" alt="@this.Group:@this.Number" @onerror="this.OnImageError" />
+    </div>
+}
+
+@code {
+    private bool _missing;
+    private string _loadedUrl = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the item group.
+    /// </summary>
+    [Parameter]
+    public byte Group { get; set; }
+
+    /// <summary>
+    /// Gets or sets the item number inside the group.
+    /// </summary>
+    [Parameter]
+    public short Number { get; set; }
+
+    /// <summary>
+    /// Gets or sets the inventory width in slots.
+    /// </summary>
+    [Parameter]
+    public byte Width { get; set; } = 1;
+
+    /// <summary>
+    /// Gets or sets the inventory height in slots.
+    /// </summary>
+    [Parameter]
+    public byte Height { get; set; } = 1;
+
+    /// <summary>
+    /// Gets or sets the item level used to pick the picture.
+    /// </summary>
+    [Parameter]
+    public byte Level { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the excellent picture is requested.
+    /// </summary>
+    [Parameter]
+    public bool IsExcellent { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the ancient picture is requested.
+    /// </summary>
+    [Parameter]
+    public bool IsAncient { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item can be equipped.
+    /// </summary>
+    [Parameter]
+    public bool IsWearable { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item is a wing or a trainable pet.
+    /// </summary>
+    [Parameter]
+    public bool IsWingOrTrainablePet { get; set; }
+
+    private string RelativeUrl => ItemSpritePath.GetRelativeUrl(
+        this.Group,
+        this.Number,
+        ItemSpritePath.GetEffectLevel(this.Level, this.IsWearable, this.IsWingOrTrainablePet),
+        ItemSpritePath.GetOptionSuffix(this.Group, this.IsExcellent, this.IsAncient));
+
+    private string FrameStyle
+    {
+        get
+        {
+            var width = Math.Max((int)this.Width, 1) * 42;
+            var height = Math.Max((int)this.Height, 1) * 42;
+            return $"width:{width}px;height:{height}px;";
+        }
+    }
+
+    /// <inheritdoc />
+    protected override void OnParametersSet()
+    {
+        if (!string.Equals(this._loadedUrl, this.RelativeUrl, StringComparison.Ordinal))
+        {
+            this._loadedUrl = this.RelativeUrl;
+            this._missing = false;
+        }
+    }
+
+    private void OnImageError()
+    {
+        this._missing = true;
+    }
+}

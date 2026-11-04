@@ -39,6 +39,8 @@ public partial class ItemTable<TItem>
 
     private readonly int _searchThreshold = 10;
 
+    private readonly HashSet<TItem> _expandedRows = new();
+
     private bool _isEditable;
 
     private bool _isInlineEditable;
@@ -126,6 +128,19 @@ public partial class ItemTable<TItem>
     private void OnToggleCollapseClick()
     {
         this._isCollapsed = !this._isCollapsed;
+    }
+
+    private bool IsRowExpanded(TItem item)
+    {
+        return this._expandedRows.Contains(item);
+    }
+
+    private void ToggleRow(TItem item)
+    {
+        if (!this._expandedRows.Add(item))
+        {
+            this._expandedRows.Remove(item);
+        }
     }
 
     private async Task OnAddClickAsync()

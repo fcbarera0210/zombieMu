@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -2639,49 +2639,49 @@
     <value>Number</value>
   </data>
   <data name="ItemDefinition_Number_Description" xml:space="preserve">
-    <value></value>
+    <value>Identity of the item inside its group. Together with Group it selects the client sprite and the protocol id.</value>
   </data>
   <data name="ItemDefinition_ItemSlot_Caption" xml:space="preserve">
     <value>Item Slot</value>
   </data>
   <data name="ItemDefinition_ItemSlot_Description" xml:space="preserve">
-    <value></value>
+    <value>Equipment position. The server and the client both use it to decide where the item can be worn.</value>
   </data>
   <data name="ItemDefinition_Width_Caption" xml:space="preserve">
     <value>Width</value>
   </data>
   <data name="ItemDefinition_Width_Description" xml:space="preserve">
-    <value></value>
+    <value>Inventory slots used horizontally. This does not change the sprite file.</value>
   </data>
   <data name="ItemDefinition_Height_Caption" xml:space="preserve">
     <value>Height</value>
   </data>
   <data name="ItemDefinition_Height_Description" xml:space="preserve">
-    <value></value>
+    <value>Inventory slots used vertically. This does not change the sprite file.</value>
   </data>
   <data name="ItemDefinition_DropsFromMonsters_Caption" xml:space="preserve">
     <value>Drops From Monsters</value>
   </data>
   <data name="ItemDefinition_DropsFromMonsters_Description" xml:space="preserve">
-    <value></value>
+    <value>Whether monsters can drop this item. This is separate from Droppable, which controls a player dropping it on the ground.</value>
   </data>
   <data name="ItemDefinition_IsAmmunition_Caption" xml:space="preserve">
     <value>Is Ammunition</value>
   </data>
   <data name="ItemDefinition_IsAmmunition_Description" xml:space="preserve">
-    <value></value>
+    <value>Whether this item is ammunition for an equipped weapon.</value>
   </data>
   <data name="ItemDefinition_IsBoundToCharacter_Caption" xml:space="preserve">
     <value>Is Bound To Character</value>
   </data>
   <data name="ItemDefinition_IsBoundToCharacter_Description" xml:space="preserve">
-    <value></value>
+    <value>Bound items cannot be traded, stored in the vault or a personal shop, or picked up by other players.</value>
   </data>
   <data name="ItemDefinition_StorageLimitPerCharacter_Caption" xml:space="preserve">
     <value>Storage Limit Per Character</value>
   </data>
   <data name="ItemDefinition_StorageLimitPerCharacter_Description" xml:space="preserve">
-    <value></value>
+    <value>Maximum number of this item a character inventory can hold. 0 means no limit.</value>
   </data>
   <data name="ItemDefinition_IsTradable_Caption" xml:space="preserve">
     <value>Tradable</value>
@@ -2723,7 +2723,7 @@
     <value>Name</value>
   </data>
   <data name="ItemDefinition_Name_Description" xml:space="preserve">
-    <value></value>
+    <value>Name shown by the server. The client may still display its own name for the same group and number.</value>
   </data>
   <data name="ItemDefinition_IsActive_Caption" xml:space="preserve">
     <value>Active</value>
@@ -2741,43 +2741,43 @@
     <value>Drop Level</value>
   </data>
   <data name="ItemDefinition_DropLevel_Description" xml:space="preserve">
-    <value></value>
+    <value>Minimum monster level which can drop this item. Stat profiles also use it as the base of requirement formulas.</value>
   </data>
   <data name="ItemDefinition_MaximumDropLevel_Caption" xml:space="preserve">
     <value>Maximum Drop Level</value>
   </data>
   <data name="ItemDefinition_MaximumDropLevel_Description" xml:space="preserve">
-    <value></value>
+    <value>Highest monster level which can drop this item. Empty means no upper limit.</value>
   </data>
   <data name="ItemDefinition_MaximumItemLevel_Caption" xml:space="preserve">
     <value>Maximum Item Level</value>
   </data>
   <data name="ItemDefinition_MaximumItemLevel_Description" xml:space="preserve">
-    <value></value>
+    <value>Highest enhancement level (+N) this item can have.</value>
   </data>
   <data name="ItemDefinition_Durability_Caption" xml:space="preserve">
     <value>Durability</value>
   </data>
   <data name="ItemDefinition_Durability_Description" xml:space="preserve">
-    <value></value>
+    <value>Durability at item level 0. For stackable items and jewels it also limits the amount.</value>
   </data>
   <data name="ItemDefinition_Group_Caption" xml:space="preserve">
     <value>Group</value>
   </data>
   <data name="ItemDefinition_Group_Description" xml:space="preserve">
-    <value></value>
+    <value>Item group (0-15). Together with Number it selects the client sprite and the protocol id.</value>
   </data>
   <data name="ItemDefinition_Value_Caption" xml:space="preserve">
     <value>Value</value>
   </data>
   <data name="ItemDefinition_Value_Description" xml:space="preserve">
-    <value></value>
+    <value>Worth used by the automatic equipment price when no price definition is set.</value>
   </data>
   <data name="ItemDefinition_PetExperienceFormula_Caption" xml:space="preserve">
     <value>Pet Experience Formula</value>
   </data>
   <data name="ItemDefinition_PetExperienceFormula_Description" xml:space="preserve">
-    <value></value>
+    <value>Experience formula of a trainable pet. The variable is level. Leave empty when the item is not a trainable pet.</value>
   </data>
   <data name="ItemDefinition_PriceDefinition_Caption" xml:space="preserve">
     <value>Price Definition</value>
@@ -2789,55 +2789,55 @@
     <value>Consume Effect</value>
   </data>
   <data name="ItemDefinition_ConsumeEffect_Description" xml:space="preserve">
-    <value></value>
+    <value>Effect applied when the item is consumed. A consume-handler plugin is not required when this is set.</value>
   </data>
   <data name="ItemDefinition_MaximumSockets_Caption" xml:space="preserve">
     <value>Maximum Sockets</value>
   </data>
   <data name="ItemDefinition_MaximumSockets_Description" xml:space="preserve">
-    <value></value>
+    <value>Maximum sockets an instance of this item can have.</value>
   </data>
   <data name="ItemDefinition_Skill_Caption" xml:space="preserve">
     <value>Skill</value>
   </data>
   <data name="ItemDefinition_Skill_Description" xml:space="preserve">
-    <value></value>
+    <value>Skill granted while the item is worn, or learned when the item is consumed. One property still covers both uses.</value>
   </data>
   <data name="ItemDefinition_QualifiedCharacters_Caption" xml:space="preserve">
     <value>Qualified Characters</value>
   </data>
   <data name="ItemDefinition_QualifiedCharacters_Description" xml:space="preserve">
-    <value></value>
+    <value>Character classes allowed to equip this item.</value>
   </data>
   <data name="ItemDefinition_PossibleItemSetGroups_Caption" xml:space="preserve">
     <value>Possible Item Set Groups</value>
   </data>
   <data name="ItemDefinition_PossibleItemSetGroups_Description" xml:space="preserve">
-    <value></value>
+    <value>Set groups this item can belong to, including ancient sets and extra wear bonuses.</value>
   </data>
   <data name="ItemDefinition_PossibleItemOptions_Caption" xml:space="preserve">
     <value>Possible Item Options</value>
   </data>
   <data name="ItemDefinition_PossibleItemOptions_Description" xml:space="preserve">
-    <value></value>
+    <value>Options an instance of this item can receive. The effect of each option is defined on the option, not here.</value>
   </data>
   <data name="ItemDefinition_Requirements_Caption" xml:space="preserve">
     <value>Requirements</value>
   </data>
   <data name="ItemDefinition_Requirements_Description" xml:space="preserve">
-    <value></value>
+    <value>Attributes required to equip the item, optionally starting at an item level.</value>
   </data>
   <data name="ItemDefinition_BasePowerUpAttributes_Caption" xml:space="preserve">
     <value>Base Power Up Attributes</value>
   </data>
   <data name="ItemDefinition_BasePowerUpAttributes_Description" xml:space="preserve">
-    <value></value>
+    <value>Base combat values, such as damage or defense, including the bonus table per item level.</value>
   </data>
   <data name="ItemDefinition_DropItems_Caption" xml:space="preserve">
     <value>Drop Items</value>
   </data>
   <data name="ItemDefinition_DropItems_Description" xml:space="preserve">
-    <value></value>
+    <value>Item groups generated when a player drops this item, usually one group per item level. Used by boxes.</value>
   </data>
   <data name="ItemDropEffect_TypeCaption" xml:space="preserve">
     <value>Item Drop Effect</value>
@@ -6505,4 +6505,67 @@
   <data name="ItemPriceRounding_Tens_Description" xml:space="preserve">
     <value>Rounded down to a multiple of 10, and the durability doesn't reduce the price, e.g. for potions.</value>
   </data>
+  <data name="ItemDefinition_IsQuestItem_Caption" xml:space="preserve">
+    <value>Quest Item</value>
+  </data>
+  <data name="ItemDefinition_IsQuestItem_Description" xml:space="preserve">
+    <value>Quest items can only be picked up by a character with the matching quest, even when that character is in the party which killed the monster.</value>
+  </data>
+  <data name="ItemDefinition_IsQuestItem_Impact" xml:space="preserve">
+    <value>Drop</value>
+  </data>
+  <data name="ItemDefinition_Number_Impact" xml:space="preserve"><value>Client</value></data>
+  <data name="ItemDefinition_Group_Impact" xml:space="preserve"><value>Client</value></data>
+  <data name="ItemDefinition_ItemSlot_Impact" xml:space="preserve"><value>Equipment</value></data>
+  <data name="ItemDefinition_Width_Impact" xml:space="preserve"><value>Inventory</value></data>
+  <data name="ItemDefinition_Height_Impact" xml:space="preserve"><value>Inventory</value></data>
+  <data name="ItemDefinition_Name_Impact" xml:space="preserve"><value>Client</value></data>
+  <data name="ItemDefinition_DropLevel_Impact" xml:space="preserve"><value>Drop, stats</value></data>
+  <data name="ItemDefinition_MaximumDropLevel_Impact" xml:space="preserve"><value>Drop</value></data>
+  <data name="ItemDefinition_DropsFromMonsters_Impact" xml:space="preserve"><value>Drop</value></data>
+  <data name="ItemDefinition_MaximumItemLevel_Impact" xml:space="preserve"><value>Item</value></data>
+  <data name="ItemDefinition_Durability_Impact" xml:space="preserve"><value>Item</value></data>
+  <data name="ItemDefinition_Value_Impact" xml:space="preserve"><value>Price</value></data>
+  <data name="ItemDefinition_PriceDefinition_Impact" xml:space="preserve"><value>Price</value></data>
+  <data name="ItemDefinition_StatProfile_Impact" xml:space="preserve"><value>Stats</value></data>
+  <data name="ItemDefinition_ExcellentBonus_Impact" xml:space="preserve"><value>Excellent</value></data>
+  <data name="ItemDefinition_ExcellentRaisesLevel_Impact" xml:space="preserve"><value>Excellent</value></data>
+  <data name="ItemDefinition_IsActive_Impact" xml:space="preserve"><value>Content</value></data>
+  <data name="ItemDefinition_IntroducedIn_Impact" xml:space="preserve"><value>Content</value></data>
+  <data name="ItemDefinition_IsTradable_Impact" xml:space="preserve"><value>Trade</value></data>
+  <data name="ItemDefinition_IsDroppable_Impact" xml:space="preserve"><value>Trade</value></data>
+  <data name="ItemDefinition_IsStorable_Impact" xml:space="preserve"><value>Trade</value></data>
+  <data name="ItemDefinition_IsSellableToNpc_Impact" xml:space="preserve"><value>Trade</value></data>
+  <data name="ItemDefinition_IsPersonalStoreSellable_Impact" xml:space="preserve"><value>Trade</value></data>
+  <data name="ItemDefinition_IsRepairable_Impact" xml:space="preserve"><value>Item</value></data>
+  <data name="ItemDefinition_IsBoundToCharacter_Impact" xml:space="preserve"><value>Trade</value></data>
+  <data name="ItemDefinition_IsAmmunition_Impact" xml:space="preserve"><value>Equipment</value></data>
+  <data name="ItemDefinition_StorageLimitPerCharacter_Impact" xml:space="preserve"><value>Inventory</value></data>
+  <data name="ItemDefinition_Skill_Impact" xml:space="preserve"><value>Skill</value></data>
+  <data name="ItemDefinition_QualifiedCharacters_Impact" xml:space="preserve"><value>Equipment</value></data>
+  <data name="ItemDefinition_PossibleItemOptions_Impact" xml:space="preserve"><value>Options</value></data>
+  <data name="ItemDefinition_PossibleItemSetGroups_Impact" xml:space="preserve"><value>Sets</value></data>
+  <data name="ItemDefinition_Requirements_Impact" xml:space="preserve"><value>Equipment</value></data>
+  <data name="ItemDefinition_BasePowerUpAttributes_Impact" xml:space="preserve"><value>Stats</value></data>
+  <data name="ItemDefinition_DropItems_Impact" xml:space="preserve"><value>Drop</value></data>
+  <data name="ItemDefinition_ConsumeEffect_Impact" xml:space="preserve"><value>Item</value></data>
+  <data name="ItemDefinition_MaximumSockets_Impact" xml:space="preserve"><value>Item</value></data>
+  <data name="ItemDefinition_PetExperienceFormula_Impact" xml:space="preserve"><value>Pet</value></data>
+  <data name="GameConfiguration_Group_Levels_Caption" xml:space="preserve"><value>Levels</value></data>
+  <data name="GameConfiguration_Group_Rates_Caption" xml:space="preserve"><value>Rates</value></data>
+  <data name="GameConfiguration_Group_Money_Caption" xml:space="preserve"><value>Money</value></data>
+  <data name="GameConfiguration_Group_Items_Caption" xml:space="preserve"><value>Items</value></data>
+  <data name="GameConfiguration_Group_Characters_Caption" xml:space="preserve"><value>Characters</value></data>
+  <data name="GameConfiguration_Group_Letters_Caption" xml:space="preserve"><value>Letters</value></data>
+  <data name="GameConfiguration_Group_Events_Caption" xml:space="preserve"><value>Events</value></data>
+  <data name="GameConfiguration_Group_Lists_Caption" xml:space="preserve"><value>Lists</value></data>
+  <data name="MonsterDefinition_Group_Identity_Caption" xml:space="preserve"><value>Identity</value></data>
+  <data name="MonsterDefinition_Group_Combat_Caption" xml:space="preserve"><value>Combat</value></data>
+  <data name="MonsterDefinition_Group_Drops_Caption" xml:space="preserve"><value>Drops</value></data>
+  <data name="MonsterDefinition_Group_Role_Caption" xml:space="preserve"><value>Role</value></data>
+  <data name="Skill_Group_Identity_Caption" xml:space="preserve"><value>Identity</value></data>
+  <data name="Skill_Group_Damage_Caption" xml:space="preserve"><value>Damage</value></data>
+  <data name="Skill_Group_Targeting_Caption" xml:space="preserve"><value>Targeting</value></data>
+  <data name="Skill_Group_Requirements_Caption" xml:space="preserve"><value>Requirements</value></data>
+  <data name="Skill_Group_Effects_Caption" xml:space="preserve"><value>Effects</value></data>
 </root>

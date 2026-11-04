@@ -98,3 +98,33 @@ label > details.info-popup > div {
   color: var(--omu-text-muted);
   pointer-events: none;
 }
+
+.field-heading {
+  margin-bottom: 0.25rem;
+}
+
+.field-impact {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0 0.4rem;
+  border: 1px solid var(--omu-border);
+  border-radius: 1rem;
+  color: var(--omu-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.field-hint {
+  color: var(--omu-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.auto-form-group > summary {
+  cursor: pointer;
+}
+
+.auto-form-group > summary::before {
+  content: none;
+}

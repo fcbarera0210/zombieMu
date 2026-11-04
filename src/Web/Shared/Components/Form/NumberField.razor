@@ -5,7 +5,7 @@
 @inherits NotifyableInputBase<TNumber>
 
 <div class="mb-3">
-    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" />
+    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" HideLabel="@this.HideLabel" />
     <InputNumber DisplayName="@(this.Label ?? FieldCaption.Get(this.FieldIdentifier))" ParsingErrorMessage="@MUnique.OpenMU.Web.Shared.Properties.Resources.InvalidNumber" class="form-control" id="@this.FieldIdentifier.FieldName" @bind-Value="@CurrentValue" min=@(Min ?? MinOfType) max=@(Max ?? MaxOfType) />
     <ValidationMessage For=@this.ValueExpression />
 </div>
@@ -17,6 +17,12 @@
     /// </summary>
     [Parameter]
     public string? Label { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the label is hidden.
+    /// </summary>
+    [Parameter]
+    public bool HideLabel { get; set; }
 
     /// <summary>
     /// Gets or sets the minimum value.

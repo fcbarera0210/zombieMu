@@ -154,6 +154,22 @@ public static class ModelResourceProvider
     }
 
     /// <summary>
+    /// Gets the localized impact label for a property of the specified model <paramref name="modelType"/>.
+    /// Returns an empty string when no resource entry is found.
+    /// The impact label names the part of the game the value changes, for example drop or trade.
+    /// </summary>
+    /// <param name="modelType">The model type containing the property.</param>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="cultureInfo">Optional culture to use. If null, <see cref="CultureInfo.CurrentUICulture"/> is used.</param>
+    /// <returns>The localized impact label or an empty string.</returns>
+    public static string GetPropertyImpact(this Type modelType, string propertyName, CultureInfo? cultureInfo = null)
+    {
+        cultureInfo ??= CultureInfo.CurrentUICulture;
+        var resourceKey = $"{propertyName}_Impact";
+        return GetModelResourceString(modelType, resourceKey, cultureInfo) ?? string.Empty;
+    }
+
+    /// <summary>
     /// Gets the localized caption for an enum value of the generic enum type <typeparamref name="TEnum"/>.
     /// Falls back to a spaced version of the enum value name when no resource entry is found.
     /// </summary>

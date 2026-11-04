@@ -25,6 +25,12 @@ public partial class LookupField<TObject>
     public string? Label { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the label is hidden.
+    /// </summary>
+    [Parameter]
+    public bool HideLabel { get; set; }
+
+    /// <summary>
     /// Gets or sets the persistence context.
     /// </summary>
     [CascadingParameter]

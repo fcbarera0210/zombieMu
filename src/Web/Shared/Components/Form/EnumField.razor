@@ -3,7 +3,7 @@
 @inherits NotifyableInputBase<TValue>
 
 <div class="mb-3">
-    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" />
+    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" HideLabel="@this.HideLabel" />
     <EnumSelect class="form-select" Id="@this.FieldIdentifier.FieldName"  @bind-Value="@CurrentValue" />
     <ValidationMessage For="@this.ValueExpression" />
 </div>
@@ -15,6 +15,12 @@
     /// </summary>
     [Parameter]
     public string? Label { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the label is hidden.
+    /// </summary>
+    [Parameter]
+    public bool HideLabel { get; set; }
 
     /// <inheritdoc />
     protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out TValue result, [NotNullWhen(false)] out string? validationErrorMessage)

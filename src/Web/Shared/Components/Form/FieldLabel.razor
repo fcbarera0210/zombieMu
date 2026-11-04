@@ -5,30 +5,52 @@
 
 @typeparam TValue
 
-@if (!string.IsNullOrWhiteSpace(this._actualLabel))
+@if (!this.HideLabel && !string.IsNullOrWhiteSpace(this._actualLabel))
 {
-    <label for="@this._fieldIdentifier.FieldName">
-        @this._actualLabel
+    <div class="field-heading">
+        <label for="@this._fieldIdentifier.FieldName">
+            @this._actualLabel
+            @if (!string.IsNullOrWhiteSpace(this._impact))
+            {
+                <span class="field-impact">@this._impact</span>
+            }
+            @if (this._usePopup)
+            {
+                <details class="info-popup ms-2" @onclick:stopPropagation>
+                    <summary></summary>
+                    <div class="alert alert-secondary shadow me-3"><span class="oi oi-info" aria-hidden="true"></span> @this._description</div>
+                </details>
+            }
+        </label>
         @if (!string.IsNullOrWhiteSpace(this._description))
         {
-            <details class="info-popup ms-2" @onclick:stopPropagation>
-                <summary></summary>
-                <div class="alert alert-secondary shadow me-3"><span class="oi oi-info" aria-hidden="true"></span> @this._description</div>
-            </details>
+            <div class="field-hint">@(this._usePopup ? this._shortHint : this._description)</div>
         }
-    </label>
+    </div>
 }
 
 @code {
+    private const int PopupThreshold = 180;
+
     private string _actualLabel = null!;
     private FieldIdentifier _fieldIdentifier;
     private string? _description;
+    private string? _impact;
+    private string? _shortHint;
+    private bool _usePopup;
 
     /// <summary>
     /// Gets or sets the text.
     /// </summary>
     [Parameter]
     public string? Text { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the label and the impact hint are hidden.
+    /// Used by compact tables which already have column headers.
+    /// </summary>
+    [Parameter]
+    public bool HideLabel { get; set; }
 
     /// <summary>
     /// Gets or sets an expression that identifies the bound value.
@@ -51,6 +73,11 @@
                 ? displayAttribute?.GetName() ?? type.GetPropertyCaption(property.Name)
                 : this.Text;
             this._description = displayAttribute?.GetDescription() ?? type.GetPropertyDescription(property.Name);
+            this._impact = type.GetPropertyImpact(property.Name);
+            this._usePopup = this._description.Length > PopupThreshold;
+            this._shortHint = this._usePopup
+                ? this._description[..PopupThreshold].TrimEnd() + "..."
+                : this._description;
         }
     }
 }

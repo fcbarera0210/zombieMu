@@ -2,7 +2,7 @@
 @inherits NotifyableInputBase<byte?>
 
 <div class="mb-3">
-    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" />
+    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" HideLabel="@this.HideLabel" />
     <InputNullableByte class="form-control" id="@this.FieldIdentifier.FieldName" @bind-Value="@CurrentValue" Min="@Min" Max="@(Max ?? byte.MaxValue)"/>
     <ValidationMessage For=@this.ValueExpression />
 </div>
@@ -14,6 +14,12 @@
     /// </summary>
     [Parameter]
     public string? Label { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the label is hidden.
+    /// </summary>
+    [Parameter]
+    public bool HideLabel { get; set; }
 
     /// <summary>
     /// Gets or sets the minimum value.

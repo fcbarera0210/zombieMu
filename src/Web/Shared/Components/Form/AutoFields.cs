@@ -135,24 +135,81 @@ public class AutoFields : ComponentBase
     /// <inheritdoc />
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        int i = 0;
-        foreach (var propertyInfo in this.Properties)
+        var properties = this.Properties.ToList();
+        var ungrouped = new List<PropertyInfo>();
+        var groups = new List<(string Name, List<PropertyInfo> Properties)>();
+        var indexByName = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var propertyInfo in properties)
         {
-            IComponentBuilder? componentBuilder = null;
-            try
+            var groupName = FormGroupCatalog.GetGroupName(this.Context.Model.GetType(), propertyInfo);
+            if (string.IsNullOrEmpty(groupName))
             {
-                componentBuilder = Builders.FirstOrDefault(b => b.CanBuildComponent(propertyInfo));
-                if (componentBuilder != null)
-                {
-                    // TODO: Build something around groups (same DisplayAttribute.GroupName)
-                    i = componentBuilder.BuildComponent(this.Context.Model, propertyInfo, builder, i, this.NotificationService);
-                }
+                ungrouped.Add(propertyInfo);
+                continue;
             }
-            catch (Exception ex)
+
+            if (!indexByName.TryGetValue(groupName, out var groupIndex))
             {
-                this.Logger.LogError(ex, $"Error building component for property {this.Context.Model.GetType().Name}.{propertyInfo.Name} with component builder {componentBuilder}: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+                groupIndex = groups.Count;
+                indexByName[groupName] = groupIndex;
+                groups.Add((groupName, new List<PropertyInfo>()));
+            }
+
+            groups[groupIndex].Properties.Add(propertyInfo);
+        }
+
+        int i = 0;
+        foreach (var propertyInfo in ungrouped)
+        {
+            i = this.RenderProperty(builder, propertyInfo, i);
+        }
+
+        var openGroups = !string.IsNullOrWhiteSpace(this.SearchTerm);
+#pragma warning disable ASP0006 // Sequence numbers are allocated from one increasing counter for this render pass.
+        foreach (var group in groups)
+        {
+            builder.OpenElement(i++, "details");
+            builder.AddAttribute(i++, "class", "auto-form-group card mb-3");
+            if (openGroups)
+            {
+                builder.AddAttribute(i++, "open", true);
+            }
+
+            builder.OpenElement(i++, "summary");
+            builder.AddAttribute(i++, "class", "card-header");
+            builder.AddContent(i++, FormGroupCatalog.GetCaption(this.Context.Model.GetType(), group.Name));
+            builder.CloseElement();
+
+            builder.OpenElement(i++, "div");
+            builder.AddAttribute(i++, "class", "card-body");
+            foreach (var propertyInfo in group.Properties)
+            {
+                i = this.RenderProperty(builder, propertyInfo, i);
+            }
+
+            builder.CloseElement();
+            builder.CloseElement();
+        }
+#pragma warning restore ASP0006
+    }
+
+    private int RenderProperty(RenderTreeBuilder builder, PropertyInfo propertyInfo, int currentIndex)
+    {
+        IComponentBuilder? componentBuilder = null;
+        try
+        {
+            componentBuilder = Builders.FirstOrDefault(b => b.CanBuildComponent(propertyInfo));
+            if (componentBuilder != null)
+            {
+                return componentBuilder.BuildComponent(this.Context.Model, propertyInfo, builder, currentIndex, this.NotificationService);
             }
         }
+        catch (Exception ex)
+        {
+            this.Logger.LogError(ex, $"Error building component for property {this.Context.Model.GetType().Name}.{propertyInfo.Name} with component builder {componentBuilder}: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+        }
+
+        return currentIndex;
     }
 
     private static IReadOnlyList<PropertyMetadata> CreatePropertyMetadata(Type type)

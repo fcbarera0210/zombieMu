@@ -1145,5 +1145,47 @@ namespace MUnique.OpenMU.Web.Shared.Properties {
         /// <summary>Gets the localized ZoomOut text.</summary>
         public static string ZoomOut => ResourceManager.GetString("ZoomOut", resourceCulture)!;
 
+        /// <summary>Gets the localized ItemEditorPreviewLevel text.</summary>
+        public static string ItemEditorPreviewLevel => ResourceManager.GetString("ItemEditorPreviewLevel", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorExcellent text.</summary>
+        public static string ItemEditorExcellent => ResourceManager.GetString("ItemEditorExcellent", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorAncient text.</summary>
+        public static string ItemEditorAncient => ResourceManager.GetString("ItemEditorAncient", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorReloadHint text.</summary>
+        public static string ItemEditorReloadHint => ResourceManager.GetString("ItemEditorReloadHint", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorClientHint text.</summary>
+        public static string ItemEditorClientHint => ResourceManager.GetString("ItemEditorClientHint", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabGeneral text.</summary>
+        public static string ItemEditorTabGeneral => ResourceManager.GetString("ItemEditorTabGeneral", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabUsage text.</summary>
+        public static string ItemEditorTabUsage => ResourceManager.GetString("ItemEditorTabUsage", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabDrop text.</summary>
+        public static string ItemEditorTabDrop => ResourceManager.GetString("ItemEditorTabDrop", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabRequirements text.</summary>
+        public static string ItemEditorTabRequirements => ResourceManager.GetString("ItemEditorTabRequirements", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabPower text.</summary>
+        public static string ItemEditorTabPower => ResourceManager.GetString("ItemEditorTabPower", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabRelations text.</summary>
+        public static string ItemEditorTabRelations => ResourceManager.GetString("ItemEditorTabRelations", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorTabBoxes text.</summary>
+        public static string ItemEditorTabBoxes => ResourceManager.GetString("ItemEditorTabBoxes", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorBasePower text.</summary>
+        public static string ItemEditorBasePower => ResourceManager.GetString("ItemEditorBasePower", resourceCulture)!;
+
+        /// <summary>Gets the localized ItemEditorOptionLevels text.</summary>
+        public static string ItemEditorOptionLevels => ResourceManager.GetString("ItemEditorOptionLevels", resourceCulture)!;
+
     }
 }

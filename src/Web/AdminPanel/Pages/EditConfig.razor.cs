@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Pages;
 using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using MUnique.OpenMU.DataModel.Configuration;
+using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Web.AdminPanel.Properties;
 using MUnique.OpenMU.Web.Shared.Components.Form;
 
@@ -34,6 +35,12 @@ public sealed partial class EditConfig : EditBase
     /// Gets a value indicating whether collection properties should be hidden.
     /// </summary>
     private bool HideCollections => this.NavigationManager.Uri.EndsWith("hide-collections");
+
+    private bool IsItemDefinition => this.Type is not null && typeof(ItemDefinition).IsAssignableFrom(this.Type);
+
+    private bool IsItemOptionDefinition => this.Type is not null && typeof(ItemOptionDefinition).IsAssignableFrom(this.Type) && !this.IsIncreasableItemOption;
+
+    private bool IsIncreasableItemOption => this.Type is not null && typeof(IncreasableItemOption).IsAssignableFrom(this.Type);
 
     /// <summary>
     /// Gets the closed <see cref="AutoForm{T}"/> type for the current <see cref="EditBase.Type"/>.

@@ -1,0 +1,28 @@
+.item-sprite-frame {
+    position: relative;
+    overflow: hidden;
+    background-color: #111;
+    border: 1px solid var(--omu-border, #6c757d);
+}
+
+.item-sprite-frame img {
+    position: absolute;
+    left: -38px;
+    top: -42px;
+    max-width: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.item-sprite-missing {
+    min-width: 4rem;
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background-color: #111;
+    color: var(--omu-text-muted, #adb5bd);
+    border: 1px dashed var(--omu-border, #6c757d);
+    font-size: 0.85rem;
+}

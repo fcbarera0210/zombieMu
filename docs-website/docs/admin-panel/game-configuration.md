@@ -114,6 +114,23 @@ another. Only one tab at a time may hold pending shared-configuration edits;
 destructive reloads from the other tab are blocked until those changes are saved
 or discarded.
 
+The item editor shows the same inventory sprite used when editing a character
+inventory. The preview level, excellent and ancient choices only change the
+picture; they are not saved. Fields are split into General, Usage, Drop and
+price, Requirements, Power, Relations and Boxes. Requirements and base power
+are edited in the table on that page. Classes, sets, options and box drops stay
+as lists and open their own page when the related object is larger than a few
+fields. Each field can show a short impact label (for example drop or trade)
+and a description of what the value changes. The same descriptions appear on
+the generic configuration form.
+
+Item options are edited one option at a time. The power of a single level opens
+beside the level table, instead of a nested form for every level.
+
+The general, monster and skill forms group their fields into sections. A
+section stays closed until you open it. Inline rows of a collection stay
+collapsed until that row is opened.
+
 ### Item prices
 
 The price of an item is used by the NPC merchants (buying, selling, repairing)

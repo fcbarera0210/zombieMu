@@ -1,6 +1,7 @@
 ﻿@using MUnique.OpenMU.DataModel
 @using MUnique.OpenMU.DataModel.Configuration.Items
 @using MUnique.OpenMU.GameLogic
+@using MUnique.OpenMU.Web.ItemEditor
 @using MUnique.OpenMU.Web.Shared.Services
 
 @if (this._viewModel is null)
@@ -9,6 +10,18 @@
 }
 
 <PageTitle>@this._viewModel.Definition?.Name.ToString()</PageTitle>
+@if (this._viewModel.Definition is { } definition)
+{
+    <ItemSprite Group="definition.Group"
+                Number="definition.Number"
+                Width="definition.Width"
+                Height="definition.Height"
+                Level="this._viewModel.Level"
+                IsExcellent="@this.Item.ItemOptions.Any(option => option.ItemOption?.OptionType == ItemOptionTypes.Excellent)"
+                IsAncient="@this.Item.ItemSetGroups.Any(set => set.AncientSetDiscriminator != 0)"
+                IsWearable="this.Item.IsWearable()"
+                IsWingOrTrainablePet="@(definition.IsWing() || definition.IsTrainablePet())" />
+}
 <EditForm Model="_viewModel" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
     <ByteField @bind-Value="@_viewModel.ItemSlot" />

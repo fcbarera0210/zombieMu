@@ -1,0 +1,51 @@
+@using MUnique.OpenMU.DataModel
+@using MUnique.OpenMU.DataModel.Configuration.Items
+@using MUnique.OpenMU.DataModel.Attributes
+@using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.Web.Shared.Components.Form
+@using MUnique.OpenMU.Web.Shared.Properties
+
+@if (this.Definition is not null)
+{
+    <EditForm Model="@this.Definition" OnValidSubmit="this.OnValidSubmit">
+        <DataAnnotationsValidator />
+        <LocalizedStringField @bind-Value="this.Definition.Name" />
+        <BooleanField @bind-Value="this.Definition.AddsRandomly" />
+        <NumberField TNumber="float" @bind-Value="this.Definition.AddChance" />
+        <NumberField TNumber="int" @bind-Value="this.Definition.MaximumOptionsPerItem" />
+        <ValidationSummary />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" disabled="@this.IsProcessing">@Resources.Save</button>
+            @if (this.OnRefresh.HasDelegate)
+            {
+                <button type="button" class="btn btn-secondary" @onclick="this.OnRefresh">@Resources.Refresh</button>
+            }
+        </div>
+    </EditForm>
+
+    <div class="card mb-3">
+        <h5 class="card-header">@typeof(ItemOptionDefinition).GetPropertyCaption(nameof(ItemOptionDefinition.PossibleOptions))</h5>
+        <div class="card-body">
+            <div class="item-editor-tabs mb-3">
+                @foreach (var option in this.Definition.PossibleOptions)
+                {
+                    <button type="button"
+                            class="btn @(option == this._selectedOption ? "btn-primary" : "btn-outline-secondary")"
+                            @onclick="@(() => this._selectedOption = option)">
+                        @option.ToString()
+                    </button>
+                }
+                <button type="button" class="btn btn-primary" @onclick="this.AddOptionAsync">@Resources.Create</button>
+            </div>
+            @if (this._selectedOption is { } selected)
+            {
+                <button type="button" class="btn btn-danger btn-sm mb-3" @onclick="@(() => this.RemoveOptionAsync(selected))">@Resources.Remove</button>
+                <IncreasableItemOptionPanel Option="selected" OnValidSubmit="this.OnValidSubmit" IsProcessing="this.IsProcessing" />
+            }
+        </div>
+    </div>
+}
+else if (this.Option is not null)
+{
+    <IncreasableItemOptionPanel Option="this.Option" OnValidSubmit="this.OnValidSubmit" OnRefresh="this.OnRefresh" IsProcessing="this.IsProcessing" ShowSave="true" />
+}

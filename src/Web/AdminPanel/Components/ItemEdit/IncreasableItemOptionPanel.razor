@@ -1,0 +1,72 @@
+@using MUnique.OpenMU.DataModel
+@using MUnique.OpenMU.DataModel.Attributes
+@using MUnique.OpenMU.DataModel.Configuration.Items
+@using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.Web.Shared.Components.Form
+@using MUnique.OpenMU.Web.Shared.Properties
+
+<EditForm Model="@this.Option" OnValidSubmit="this.OnValidSubmit">
+    <DataAnnotationsValidator />
+    <NumberField TNumber="int" @bind-Value="this.Option.Number" />
+    <NumberField TNumber="int" @bind-Value="this.Option.SubOptionType" />
+    <LookupField TObject="ItemOptionType" @bind-Value="this.Option.OptionType" />
+    <EnumField TValue="LevelType" @bind-Value="this.Option.LevelType" />
+    <ByteField @bind-Value="this.Option.Weight" />
+
+    <div class="card mb-3">
+        <h5 class="card-header">@Resources.ItemEditorOptionLevels</h5>
+        <div class="card-body">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>@typeof(ItemOptionOfLevel).GetPropertyCaption(nameof(ItemOptionOfLevel.Level))</th>
+                        <th>@typeof(ItemOptionOfLevel).GetPropertyCaption(nameof(ItemOptionOfLevel.RequiredItemLevel))</th>
+                        <th>@typeof(ItemOptionOfLevel).GetPropertyCaption(nameof(ItemOptionOfLevel.PowerUpDefinition))</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var levelOption in this.Option.LevelDependentOptions.OrderBy(option => option.Level))
+                    {
+                        <tr @key="levelOption" class="@(levelOption == this._selectedLevel ? "table-active" : null)">
+                            <td><NumberField TNumber="int" HideLabel="true" @bind-Value="levelOption.Level" /></td>
+                            <td><NumberField TNumber="int" HideLabel="true" @bind-Value="levelOption.RequiredItemLevel" /></td>
+                            <td>@levelOption.PowerUpDefinition</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-secondary btn-sm me-1" @onclick="@(() => this._selectedLevel = levelOption)">@Resources.Edit</button>
+                                <button type="button" class="btn btn-danger btn-sm" @onclick="@(() => this.RemoveLevelAsync(levelOption))">@Resources.Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-primary" @onclick="this.AddLevelAsync">@Resources.Create</button>
+        </div>
+    </div>
+
+    @if (this.ShowSave)
+    {
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" disabled="@this.IsProcessing">@Resources.Save</button>
+            @if (this.OnRefresh.HasDelegate)
+            {
+                <button type="button" class="btn btn-secondary" @onclick="this.OnRefresh">@Resources.Refresh</button>
+            }
+        </div>
+    }
+</EditForm>
+
+@if (this.Option.PowerUpDefinition is { } basePower)
+{
+    <details class="auto-form-group card mb-3">
+        <summary class="card-header">@Resources.ItemEditorBasePower</summary>
+        <div class="card-body">
+            <AutoForm T="PowerUpDefinition" Model="basePower" OnValidSubmit="this.OnValidSubmit" IsProcessing="this.IsProcessing" />
+        </div>
+    </details>
+}
+
+@if (this._selectedLevel?.PowerUpDefinition is { } selectedPower)
+{
+    <AutoForm T="PowerUpDefinition" Model="selectedPower" OnValidSubmit="this.OnValidSubmit" IsProcessing="this.IsProcessing" />
+}

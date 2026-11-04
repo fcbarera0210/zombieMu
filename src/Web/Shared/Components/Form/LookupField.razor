@@ -7,7 +7,7 @@
 @inherits NotifyableInputBase<TObject>
 
 <div class="mb-3">
-    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" />
+    <FieldLabel Text="@Label" ValueExpression="@this.ValueExpression" HideLabel="@this.HideLabel" />
     <Typeahead TItem="TObject" TValue="TObject"
                @bind-Value="@this.CurrentValue"
                SearchMethod="@((text, _) => this.EffectiveLookupController.GetSuggestionsAsync<TObject>(text, this.PersistenceContext))"

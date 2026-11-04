@@ -1,0 +1,158 @@
+@using MUnique.OpenMU.AttributeSystem
+@using MUnique.OpenMU.DataModel
+@using MUnique.OpenMU.DataModel.Configuration
+@using MUnique.OpenMU.DataModel.Configuration.Items
+@using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.Web.ItemEditor
+@using MUnique.OpenMU.Web.Shared.Properties
+
+<div class="item-definition-editor">
+    <aside class="item-definition-preview">
+        <ItemSprite Group="@this.Item.Group"
+                    Number="@this.Item.Number"
+                    Width="@this.Item.Width"
+                    Height="@this.Item.Height"
+                    Level="@this._previewLevel"
+                    IsExcellent="@this._previewExcellent"
+                    IsAncient="@this._previewAncient"
+                    IsWearable="@(this.Item.ItemSlot is not null)"
+                    IsWingOrTrainablePet="@(this.Item.IsWing() || this.Item.IsTrainablePet())" />
+        <label class="form-label mt-3" for="item-preview-level">@Resources.ItemEditorPreviewLevel</label>
+        <input id="item-preview-level" class="form-control" type="number" min="0" max="15" @bind="this._previewLevel" @bind:event="oninput" />
+        <div class="form-check mt-2">
+            <input id="item-preview-excellent" class="form-check-input" type="checkbox" @bind="this._previewExcellent" />
+            <label class="form-check-label" for="item-preview-excellent">@Resources.ItemEditorExcellent</label>
+        </div>
+        <div class="form-check">
+            <input id="item-preview-ancient" class="form-check-input" type="checkbox" @bind="this._previewAncient" />
+            <label class="form-check-label" for="item-preview-ancient">@Resources.ItemEditorAncient</label>
+        </div>
+        <div class="alert alert-secondary mt-3">@Resources.ItemEditorReloadHint</div>
+    </aside>
+    <div class="item-definition-main">
+        <div class="item-editor-tabs" role="tablist">
+            @foreach (var tab in Enum.GetValues<ItemEditorTab>())
+            {
+                <button type="button"
+                        class="btn @(tab == this._tab ? "btn-primary" : "btn-outline-secondary")"
+                        @onclick="@(() => this._tab = tab)">
+                    @this.TabCaption(tab)
+                </button>
+            }
+        </div>
+
+        <EditForm Model="@this.Item" OnValidSubmit="this.OnValidSubmit">
+            <DataAnnotationsValidator />
+            @switch (this._tab)
+            {
+                case ItemEditorTab.General:
+                    <LocalizedStringField @bind-Value="this.Item.Name" />
+                    <ByteField @bind-Value="this.Item.Group" />
+                    <ShortField @bind-Value="this.Item.Number" />
+                    <LookupField TObject="ItemSlotType" @bind-Value="this.Item.ItemSlot" />
+                    <ByteField @bind-Value="this.Item.Width" />
+                    <ByteField @bind-Value="this.Item.Height" />
+                    <ByteField @bind-Value="this.Item.Durability" />
+                    <ByteField @bind-Value="this.Item.MaximumItemLevel" />
+                    <NumberField TNumber="int" @bind-Value="this.Item.MaximumSockets" />
+                    <BooleanField @bind-Value="this.Item.IsActive" />
+                    <EnumField TValue="GameVersion" @bind-Value="this.Item.IntroducedIn" />
+                    break;
+                case ItemEditorTab.Usage:
+                    <BooleanField @bind-Value="this.Item.IsTradable" />
+                    <BooleanField @bind-Value="this.Item.IsDroppable" />
+                    <BooleanField @bind-Value="this.Item.IsStorable" />
+                    <BooleanField @bind-Value="this.Item.IsSellableToNpc" />
+                    <BooleanField @bind-Value="this.Item.IsPersonalStoreSellable" />
+                    <BooleanField @bind-Value="this.Item.IsRepairable" />
+                    <BooleanField @bind-Value="this.Item.IsBoundToCharacter" />
+                    <BooleanField @bind-Value="this.Item.IsQuestItem" />
+                    <BooleanField @bind-Value="this.Item.IsAmmunition" />
+                    <NumberField TNumber="int" @bind-Value="this.Item.StorageLimitPerCharacter" />
+                    <TextField @bind-Value="this.Item.PetExperienceFormula" />
+                    <LookupField TObject="MagicEffectDefinition" @bind-Value="this.Item.ConsumeEffect" />
+                    <LookupField TObject="Skill" @bind-Value="this.Item.Skill" />
+                    break;
+                case ItemEditorTab.Drop:
+                    <div class="alert alert-secondary">@Resources.ItemEditorClientHint</div>
+                    <ByteField @bind-Value="this.Item.DropLevel" />
+                    <NullableByteField @bind-Value="this.Item.MaximumDropLevel" />
+                    <BooleanField @bind-Value="this.Item.DropsFromMonsters" />
+                    <NumberField TNumber="int" @bind-Value="this.Item.Value" />
+                    <LookupField TObject="ItemPriceDefinition" @bind-Value="this.Item.PriceDefinition" />
+                    <LookupField TObject="ItemStatProfile" @bind-Value="this.Item.StatProfile" />
+                    <ByteField @bind-Value="this.Item.ExcellentBonus" />
+                    <BooleanField @bind-Value="this.Item.ExcellentRaisesLevel" />
+                    break;
+                case ItemEditorTab.Requirements:
+                    <div class="alert alert-secondary">@Resources.ItemEditorClientHint</div>
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>@typeof(AttributeRequirement).GetPropertyCaption(nameof(AttributeRequirement.Attribute))</th>
+                                <th>@typeof(AttributeRequirement).GetPropertyCaption(nameof(AttributeRequirement.MinimumValue))</th>
+                                <th>@typeof(AttributeRequirement).GetPropertyCaption(nameof(AttributeRequirement.MinimumItemLevel))</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var requirement in this.Item.Requirements)
+                            {
+                                <tr @key="requirement">
+                                    <td><LookupField TObject="AttributeDefinition" HideLabel="true" @bind-Value="requirement.Attribute" /></td>
+                                    <td><NumberField TNumber="int" HideLabel="true" @bind-Value="requirement.MinimumValue" /></td>
+                                    <td><NullableByteField HideLabel="true" @bind-Value="requirement.MinimumItemLevel" /></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm" @onclick="@(() => this.RemoveRequirementAsync(requirement))">@Resources.Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" @onclick="this.AddRequirementAsync">@Resources.Create</button>
+                    break;
+                case ItemEditorTab.Power:
+                    <div class="alert alert-secondary">@Resources.ItemEditorClientHint</div>
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>@typeof(ItemBasePowerUpDefinition).GetPropertyCaption(nameof(ItemBasePowerUpDefinition.TargetAttribute))</th>
+                                <th>@typeof(ItemBasePowerUpDefinition).GetPropertyCaption(nameof(ItemBasePowerUpDefinition.BaseValue))</th>
+                                <th>@typeof(ItemBasePowerUpDefinition).GetPropertyCaption(nameof(ItemBasePowerUpDefinition.AggregateType))</th>
+                                <th>@typeof(ItemBasePowerUpDefinition).GetPropertyCaption(nameof(ItemBasePowerUpDefinition.BonusPerLevelTable))</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var powerUp in this.Item.BasePowerUpAttributes)
+                            {
+                                <tr @key="powerUp">
+                                    <td><LookupField TObject="AttributeDefinition" HideLabel="true" @bind-Value="powerUp.TargetAttribute" /></td>
+                                    <td><NumberField TNumber="float" HideLabel="true" @bind-Value="powerUp.BaseValue" /></td>
+                                    <td><EnumField TValue="AggregateType" HideLabel="true" @bind-Value="powerUp.AggregateType" /></td>
+                                    <td><LookupField TObject="ItemLevelBonusTable" HideLabel="true" @bind-Value="powerUp.BonusPerLevelTable" /></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm" @onclick="@(() => this.RemovePowerUpAsync(powerUp))">@Resources.Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" @onclick="this.AddPowerUpAsync">@Resources.Create</button>
+                    break;
+                case ItemEditorTab.Relations:
+                    <ItemTable TItem="CharacterClass" @bind-Value="this.QualifiedCharacters" />
+                    <ItemTable TItem="ItemSetGroup" @bind-Value="this.PossibleItemSetGroups" />
+                    <ItemTable TItem="ItemOptionDefinition" @bind-Value="this.PossibleItemOptions" />
+                    break;
+                case ItemEditorTab.Boxes:
+                    <ItemTable TItem="ItemDropItemGroup" @bind-Value="this.DropItems" />
+                    break;
+            }
+            <ValidationSummary />
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" disabled="@this.IsProcessing">@Resources.Save</button>
+                @if (this.OnRefresh.HasDelegate)
+                {
+                    <button type="button" class="btn btn-secondary" @onclick="this.OnRefresh">@Resources.Refresh</button>
+                }
+            </div>
+        </EditForm>
+    </div>
+</div>

@@ -662,4 +662,46 @@ Level: {2} - {3}</value>
   <data name="ZoomOut" xml:space="preserve">
     <value>Zoom out</value>
   </data>
+  <data name="ItemEditorPreviewLevel" xml:space="preserve">
+    <value>Preview level</value>
+  </data>
+  <data name="ItemEditorExcellent" xml:space="preserve">
+    <value>Excellent picture</value>
+  </data>
+  <data name="ItemEditorAncient" xml:space="preserve">
+    <value>Ancient picture</value>
+  </data>
+  <data name="ItemEditorReloadHint" xml:space="preserve">
+    <value>These changes apply in the game after reloading the configuration and restarting the game servers.</value>
+  </data>
+  <data name="ItemEditorClientHint" xml:space="preserve">
+    <value>The game client calculates the numbers it shows. If the client does not use the same formulas, the value on screen will not match.</value>
+  </data>
+  <data name="ItemEditorTabGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="ItemEditorTabUsage" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="ItemEditorTabDrop" xml:space="preserve">
+    <value>Drop and price</value>
+  </data>
+  <data name="ItemEditorTabRequirements" xml:space="preserve">
+    <value>Requirements</value>
+  </data>
+  <data name="ItemEditorTabPower" xml:space="preserve">
+    <value>Power</value>
+  </data>
+  <data name="ItemEditorTabRelations" xml:space="preserve">
+    <value>Relations</value>
+  </data>
+  <data name="ItemEditorTabBoxes" xml:space="preserve">
+    <value>Boxes</value>
+  </data>
+  <data name="ItemEditorBasePower" xml:space="preserve">
+    <value>Base power</value>
+  </data>
+  <data name="ItemEditorOptionLevels" xml:space="preserve">
+    <value>Levels</value>
+  </data>
 </root>
