@@ -47,6 +47,11 @@ public class MiniGameExitDelayTest
         EnsureSpawnGate(player.GameContext.Configuration.Maps.First());
         var game = this.CreateGame(player.GameContext);
         Assert.That(await game.TryEnterAsync(player).ConfigureAwait(false), Is.EqualTo(EnterResult.Success));
+
+        // GameMap.AddAsync does not assign Player.CurrentMap (that happens on client-ready
+        // after a warp). The exit-delay guarantee is that the player stays registered and
+        // present on the mini game map instance for the loot window.
+        player.IsAlive = true;
         await game.Map.AddAsync(player).ConfigureAwait(false);
 
         await WaitUntilAsync(() => game.State == MiniGameState.Playing).ConfigureAwait(false);
@@ -60,8 +65,8 @@ public class MiniGameExitDelayTest
             Assert.That(game.State, Is.EqualTo(MiniGameState.Ended));
             Assert.That(game.IsDisposed, Is.False);
             Assert.That(player.CurrentMiniGame, Is.SameAs(game));
-            Assert.That(player.CurrentMap, Is.SameAs(game.Map));
             Assert.That(game.RegisteredPlayerCount, Is.EqualTo(1));
+            Assert.That(game.Map.GetPlayers(), Does.Contain(player));
         });
 
         await WaitUntilAsync(() => game.IsDisposed || player.CurrentMiniGame is null).ConfigureAwait(false);
