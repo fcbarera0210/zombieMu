@@ -132,9 +132,15 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
     public bool IsEventRunning => this.State == MiniGameState.Playing;
 
     /// <summary>
-    /// Gets the player count.
+    /// Gets the number of alive players currently in the game.
     /// </summary>
     public int PlayerCount => this._players.CountAlive();
+
+    /// <summary>
+    /// Gets the number of registered players, including dead ones still on the map
+    /// during the post-clear exit window.
+    /// </summary>
+    public int RegisteredPlayerCount => this._players.Count();
 
     /// <summary>
     /// Gets a value indicating whether it's allowed to kill other players without consequences.
@@ -167,6 +173,14 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
     /// Gets the duration of the countdown after the entrance closed and before the game starts.
     /// </summary>
     protected virtual TimeSpan CountdownDuration => CountdownMessageDuration;
+
+    /// <summary>
+    /// Gets the duration of the client "event shuts down" countdown after the game ends,
+    /// which is also the minimum post-clear exit/loot window before players are warped out.
+    /// The Season 6 client shows that countdown for a fixed period when it receives the
+    /// Finished state, so the server waits at least as long.
+    /// </summary>
+    protected virtual TimeSpan ExitCountdownDuration => CountdownMessageDuration;
 
     /// <summary>
     /// Gets the minimum duration of the entrance phase. Games which don't need a lobby
@@ -364,7 +378,11 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
     {
         if (Interlocked.CompareExchange(ref this._gameLoopStarted, 1, 0) == 0)
         {
-            _ = Task.Run(() => this.RunGameAsync(this.GameEndedToken), this.GameEndedToken);
+            // Await the ValueTask inside the delegate so Task.Run uses Func<Task> and
+            // keeps the game loop alive through the post-clear exit window. Do not pass
+            // GameEndedToken to Task.Run: FinishEvent cancels that token, and we still
+            // need the exit delay (loot / countdown) to run afterwards.
+            _ = Task.Run(async () => await this.RunGameAsync(this.GameEndedToken).ConfigureAwait(false));
         }
     }
 
@@ -696,7 +714,11 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
 
             var enterDuration = this.Definition.EnterDuration.AtLeast(this.MinimumEnterDuration);
             var gameDuration = this.Definition.GameDuration.AtLeast(CountdownMessageDuration);
-            var exitDuration = this.Definition.ExitDuration.Subtract(CountdownMessageDuration).AtLeast(CountdownMessageDuration);
+
+            // Clients show a fixed ~30s "event shuts down" countdown for the Finished
+            // state packet, so the exit wait is at least that long. The configured
+            // ExitDuration can be longer (loot window).
+            var exitDuration = this.Definition.ExitDuration.AtLeast(this.ExitCountdownDuration);
 
             this.Logger.LogDebug("{context}: Waiting for entering players for {enterDuration}", this, enterDuration);
 
@@ -750,15 +772,30 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
                 this.Logger.LogDebug("{context}: Finished event earlier", this);
             }
 
-            this.Logger.LogDebug("{context}: Stopping the game...", this);
-            await this.StopAsync().ConfigureAwait(false);
+            // Stop (rewards / score) and the exit window must not share the outer try:
+            // an error while ending the game used to skip the loot delay and dispose
+            // immediately, which warps everyone to the safezone on the same tick as clear.
+            try
+            {
+                this.Logger.LogDebug("{context}: Stopping the game...", this);
+                await this.StopAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                this.Logger.LogError(ex, "{context}: Unexpected error while stopping the mini game: {ex}", this, ex);
+            }
 
-            this.Logger.LogDebug("{context}: Waiting for the exit duration of {exitDuration}", this, exitDuration);
-            await Task.Delay(exitDuration, default(CancellationToken)).ConfigureAwait(false);
+            if (this.IsDisposed || this.IsDisposing)
+            {
+                return;
+            }
+
+            // Show the Finished countdown as soon as the game has stopped, so players
+            // see the loot window immediately instead of after a silent pre-wait.
             await this.ShowCountdownMessageAsync().ConfigureAwait(false);
 
-            this.Logger.LogDebug("{context}: Waiting for the exit countdown duration of {countdownDuration}", this, CountdownMessageDuration);
-            await Task.Delay(CountdownMessageDuration, default(CancellationToken)).ConfigureAwait(false);
+            this.Logger.LogDebug("{context}: Waiting for the exit duration of {exitDuration}", this, exitDuration);
+            await Task.Delay(exitDuration, CancellationToken.None).ConfigureAwait(false);
 
             this.Logger.LogDebug("{context}: Shutting down event", this);
             await this.ShutdownGameAsync().ConfigureAwait(false);

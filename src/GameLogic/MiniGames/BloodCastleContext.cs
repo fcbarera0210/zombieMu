@@ -253,12 +253,22 @@ public sealed class BloodCastleContext : MiniGameContext
     /// <inheritdoc />
     protected override async ValueTask ShowScoreAsync(Player player)
     {
-        if (this._highScoreTable is { } table)
+        if (this._highScoreTable is not { } table)
         {
-            var isSuccessful = this._winner is not null;
-            var (name, score, bonusExp, bonusMoney) = table.First(t => t.Name == player.Name);
-            await player.InvokeViewPlugInAsync<IBloodCastleScoreTableViewPlugin>(p => p.ShowScoreTableAsync(isSuccessful, name, score, bonusExp, bonusMoney)).ConfigureAwait(false);
+            return;
         }
+
+        var entry = table.FirstOrDefault(t => t.Name == player.Name);
+        if (entry.Name is null)
+        {
+            // A finisher without a score row must not throw: that used to abort StopAsync
+            // and skip the post-clear exit delay, warping everyone out immediately.
+            this.Logger.LogWarning("{context}: No blood castle score entry for player {player}.", this, player);
+            return;
+        }
+
+        var isSuccessful = this._winner is not null;
+        await player.InvokeViewPlugInAsync<IBloodCastleScoreTableViewPlugin>(p => p.ShowScoreTableAsync(isSuccessful, entry.Name, entry.Score, entry.BonusExp, entry.BonusMoney)).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

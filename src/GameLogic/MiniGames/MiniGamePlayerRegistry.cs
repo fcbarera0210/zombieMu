@@ -150,6 +150,18 @@ internal sealed class MiniGamePlayerRegistry
     }
 
     /// <summary>
+    /// Counts the registered players.
+    /// </summary>
+    /// <returns>The number of registered players.</returns>
+    public int Count()
+    {
+        using (this._lock.ReaderLock())
+        {
+            return this._players.Count;
+        }
+    }
+
+    /// <summary>
     /// Counts the registered players which are alive.
     /// </summary>
     /// <returns>The number of alive players.</returns>

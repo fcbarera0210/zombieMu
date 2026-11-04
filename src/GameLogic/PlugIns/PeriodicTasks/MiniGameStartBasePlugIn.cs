@@ -225,20 +225,26 @@ public abstract class MiniGameStartBasePlugIn<TConfiguration, TGameState> : Peri
 
     private static bool IsActive(MiniGameContext game)
     {
+        // Ended still counts as active: players stay on the map during the post-clear
+        // exit/loot window. Treating Ended as inactive would let a new start dispose
+        // those games and warp everyone to the safezone before the exit delay finishes.
         return !game.IsDisposed && !game.IsDisposing
-            && game.State is MiniGameState.Open or MiniGameState.Closed or MiniGameState.Playing;
+            && game.State is MiniGameState.Open or MiniGameState.Closed or MiniGameState.Playing or MiniGameState.Ended;
     }
 
     /// <summary>
-    /// Disposes previously started games which already ended, so that starting a new event
-    /// always creates fresh game instances instead of reusing a stale one.
+    /// Disposes previously started games which already ended and finished their exit
+    /// window (no players left), so that starting a new event always creates fresh
+    /// game instances instead of reusing a stale one. Games that still have players
+    /// are left alone — their own game loop warps them when the exit duration elapses.
     /// </summary>
     /// <param name="gameContext">The game context.</param>
     private async ValueTask DisposeStaleGamesAsync(IGameContext gameContext)
     {
         foreach (var game in gameContext.MiniGames.GetRunningMiniGames(this.Key))
         {
-            if (game.State is MiniGameState.Ended or MiniGameState.Disposed)
+            if (game.State is MiniGameState.Disposed
+                || (game.State is MiniGameState.Ended && game.RegisteredPlayerCount == 0))
             {
                 await game.DisposeAsync().ConfigureAwait(false);
             }

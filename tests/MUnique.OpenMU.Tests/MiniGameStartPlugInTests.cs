@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.Tests;
 
 using System.Globalization;
+using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
@@ -197,7 +198,9 @@ public class MiniGameStartPlugInTests
     }
 
     /// <summary>
-    /// Tests the event-active check: no games, an open game, and a disposed game.
+    /// Tests the event-active check: no games, an open game, an ended (post-clear) game,
+    /// and a disposed game. Ended must stay active so a new start cannot dispose the
+    /// loot window and warp players out early.
     /// </summary>
     [Test]
     public async Task IsEventActiveReflectsLiveGamesAsync()
@@ -208,6 +211,9 @@ public class MiniGameStartPlugInTests
 
         var game = this.CreateGame(fakeContext, manager, this.CreateDefinition(TimeSpan.FromMinutes(2)));
         manager.Games.Add(game);
+        Assert.That(this._plugIn.IsEventActive(fakeContext.Object), Is.True);
+
+        await SetGameStateAsync(game, MiniGameState.Ended).ConfigureAwait(false);
         Assert.That(this._plugIn.IsEventActive(fakeContext.Object), Is.True);
 
         await game.DisposeAsync().ConfigureAwait(false);
@@ -387,6 +393,17 @@ public class MiniGameStartPlugInTests
         this._configuration.EntranceOpenedMessage = "Open {0}";
         this._configuration.EntranceClosedMessage = "Closed";
         return (contextMock, manager, notifications);
+    }
+
+    private static async ValueTask SetGameStateAsync(MiniGameContext game, MiniGameState state)
+    {
+        var playersField = typeof(MiniGameContext).GetField("_players", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException("MiniGameContext._players was not found.");
+        var registry = playersField.GetValue(game)
+            ?? throw new InvalidOperationException("MiniGameContext._players was null.");
+        var setState = registry.GetType().GetMethod("SetStateAsync")
+            ?? throw new InvalidOperationException("SetStateAsync was not found.");
+        await ((ValueTask)setState.Invoke(registry, [state])!).ConfigureAwait(false);
     }
 
     private MiniGameDefinition CreateDefinition(TimeSpan enterDuration)
