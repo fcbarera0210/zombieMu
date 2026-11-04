@@ -5497,6 +5497,24 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Operations.
+        /// </summary>
+        public static string NavOperations {
+            get {
+                return ResourceManager.GetString("NavOperations", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration.
+        /// </summary>
+        public static string NavConfiguration {
+            get {
+                return ResourceManager.GetString("NavConfiguration", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to How many game servers do you want?.
         /// </summary>
         public static string HowManyGameServersQuestion {

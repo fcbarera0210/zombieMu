@@ -393,6 +393,18 @@
   <data name="CreateType" xml:space="preserve">
     <value>创建{0}</value>
   </data>
+  <data name="EditType" xml:space="preserve">
+    <value>编辑{0}</value>
+  </data>
+  <data name="SharedObject" xml:space="preserve">
+    <value>共享</value>
+  </data>
+  <data name="SharedObjectHint" xml:space="preserve">
+    <value>共享。此处的修改会影响所有使用该对象的地方。</value>
+  </data>
+  <data name="ModalDeferredSaveHint" xml:space="preserve">
+    <value>提交会保留本页上的值。请使用页面上的保存来写入它们。</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>没有更多可选项</value>
   </data>

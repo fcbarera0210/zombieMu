@@ -159,38 +159,60 @@ public class AutoFields : ComponentBase
         }
 
         int i = 0;
-        foreach (var propertyInfo in ungrouped)
-        {
-            i = this.RenderProperty(builder, propertyInfo, i);
-        }
+        i = this.RenderFieldGrid(builder, ungrouped, i);
 
         var openGroups = !string.IsNullOrWhiteSpace(this.SearchTerm);
 #pragma warning disable ASP0006 // Sequence numbers are allocated from one increasing counter for this render pass.
         foreach (var group in groups)
         {
             builder.OpenElement(i++, "details");
-            builder.AddAttribute(i++, "class", "auto-form-group card mb-3");
+            builder.AddAttribute(i++, "class", "auto-form-group");
             if (openGroups)
             {
                 builder.AddAttribute(i++, "open", true);
             }
 
             builder.OpenElement(i++, "summary");
-            builder.AddAttribute(i++, "class", "card-header");
             builder.AddContent(i++, FormGroupCatalog.GetCaption(this.Context.Model.GetType(), group.Name));
             builder.CloseElement();
 
-            builder.OpenElement(i++, "div");
-            builder.AddAttribute(i++, "class", "card-body");
-            foreach (var propertyInfo in group.Properties)
-            {
-                i = this.RenderProperty(builder, propertyInfo, i);
-            }
-
-            builder.CloseElement();
+            i = this.RenderFieldGrid(builder, group.Properties, i);
             builder.CloseElement();
         }
 #pragma warning restore ASP0006
+    }
+
+    private int RenderFieldGrid(RenderTreeBuilder builder, IEnumerable<PropertyInfo> properties, int currentIndex)
+    {
+        builder.OpenElement(currentIndex++, "div");
+        builder.AddAttribute(currentIndex++, "class", "field-grid");
+        foreach (var propertyInfo in properties)
+        {
+            var slotClass = IsWideField(propertyInfo) ? "field-slot field-slot-wide" : "field-slot";
+            builder.OpenElement(currentIndex++, "div");
+            builder.AddAttribute(currentIndex++, "class", slotClass);
+            currentIndex = this.RenderProperty(builder, propertyInfo, currentIndex);
+            builder.CloseElement();
+        }
+
+        builder.CloseElement();
+        return currentIndex;
+
+        static bool IsWideField(PropertyInfo property)
+        {
+            var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+            if (type == typeof(string) || type == typeof(byte[]))
+            {
+                return true;
+            }
+
+            if (typeof(System.Collections.IEnumerable).IsAssignableFrom(type))
+            {
+                return true;
+            }
+
+            return type.Name is "ItemStorage" or "LocalizedString";
+        }
     }
 
     private int RenderProperty(RenderTreeBuilder builder, PropertyInfo propertyInfo, int currentIndex)

@@ -1,6 +1,5 @@
 @using MUnique.OpenMU.DataModel
 @using MUnique.OpenMU.Persistence
-@using MUnique.OpenMU.Web.AdminPanel.Properties
 
 @if (this.Model is null || this.ModelType is null)
 {
@@ -8,7 +7,10 @@
 }
 
 <Breadcrumb Caption="@this.Model.GetName()" />
-<h1>@Resources.Edit @this.ModelType.GetTypeCaption()</h1>
+<header class="page-heading">
+    <p class="page-kicker">@this.ModelType.GetTypeCaption()</p>
+    <h1>@this.Model.GetName()</h1>
+</header>
 @((MarkupString)(this.DownloadMarkup ?? string.Empty))
 @((MarkupString)(this.EditorsMarkup ?? string.Empty))
 

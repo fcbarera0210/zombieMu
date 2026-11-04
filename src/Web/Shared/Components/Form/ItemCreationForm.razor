@@ -27,7 +27,7 @@ else if (this.Item is SkillEntry skillEntry && this.Owner is Character character
                             OnSubmit="@this.OnValidSubmit"
                             OnCancel="@this.OnCancel" />
 }
-else if (this.Item is Character newCharacter && this.Owner is Account account)
+else if (this.IsNew && this.Item is Character newCharacter && this.Owner is Account account)
 {
     <CharacterCreationForm Character="@newCharacter"
                            Account="@account"
@@ -40,7 +40,7 @@ else
     <EditForm Model="@this.Item" OnValidSubmit="@this.OnValidSubmit">
         <CascadingValue Value="@this.PersistenceContext">
             <DataAnnotationsValidator/>
-            <CreationAutoFields/>
+            <AutoFields/>
             <ValidationSummary/>
         </CascadingValue>
         <div class="form-actions">
@@ -70,6 +70,13 @@ else
     /// </summary>
     [Parameter]
     public object? Owner { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item was just created.
+    /// An existing character keeps the full form; the short creation form would initialize it again.
+    /// </summary>
+    [Parameter]
+    public bool IsNew { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the callback invoked when the form is submitted.

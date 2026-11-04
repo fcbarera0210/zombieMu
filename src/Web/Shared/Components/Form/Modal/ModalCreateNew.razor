@@ -8,9 +8,15 @@
 
 @typeparam TItem
 
+@if (this.ShowDeferredSaveHint)
+{
+    <p class="text-muted">@Resources.ModalDeferredSaveHint</p>
+}
+
 <ItemCreationForm Item="@(this.Item!)"
                   PersistenceContext="@this.PersistenceContext"
                   Owner="@this.Owner"
+                  IsNew="@this.IsNew"
                   OnValidSubmit="@this.SubmitAsync"
                   OnCancel="@this.CancelAsync" />
 
@@ -37,6 +43,18 @@
     /// </summary>
     [Parameter]
     public object? Owner { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item was just created.
+    /// </summary>
+    [Parameter]
+    public bool IsNew { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to explain that the page save stores the dialog.
+    /// </summary>
+    [Parameter]
+    public bool ShowDeferredSaveHint { get; set; }
 
     private Task SubmitAsync()
     {

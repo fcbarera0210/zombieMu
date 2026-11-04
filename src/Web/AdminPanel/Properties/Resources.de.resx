@@ -369,6 +369,12 @@
   <data name="Home" xml:space="preserve">
     <value>Startseite</value>
   </data>
+  <data name="NavOperations" xml:space="preserve">
+    <value>Betrieb</value>
+  </data>
+  <data name="NavConfiguration" xml:space="preserve">
+    <value>Konfiguration</value>
+  </data>
   <data name="Accounts" xml:space="preserve">
     <value>Konten</value>
   </data>

@@ -424,6 +424,18 @@ Level: {2} - {3}</value>
   <data name="CreateType" xml:space="preserve">
     <value>Create {0}</value>
   </data>
+  <data name="EditType" xml:space="preserve">
+    <value>Edit {0}</value>
+  </data>
+  <data name="SharedObject" xml:space="preserve">
+    <value>Shared</value>
+  </data>
+  <data name="SharedObjectHint" xml:space="preserve">
+    <value>Shared. A change here affects every place that uses this object.</value>
+  </data>
+  <data name="ModalDeferredSaveHint" xml:space="preserve">
+    <value>Submit keeps these values on this page. Save the page to store them.</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>No more available</value>
   </data>

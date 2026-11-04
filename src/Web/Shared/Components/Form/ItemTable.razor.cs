@@ -45,6 +45,10 @@ public partial class ItemTable<TItem>
 
     private bool _isInlineEditable;
 
+    private bool _editInModal;
+
+    private bool _isSharedReference;
+
     private bool _isAddingSupported;
 
     private bool _isCreatingSupported;
@@ -95,6 +99,8 @@ public partial class ItemTable<TItem>
                           ?? false;
         var isMemberOfAggregate = this.ValueExpression!.IsAccessToMemberOfAggregate();
         this._isInlineEditable = this._isEditable && isMemberOfAggregate && this.ValueExpression!.ScaffoldColumn();
+        this._editInModal = this._isEditable && isMemberOfAggregate && !this._isInlineEditable;
+        this._isSharedReference = this._isEditable && !isMemberOfAggregate;
         this._isAddingSupported = !isMemberOfAggregate;
         this._isCreatingSupported = isMemberOfAggregate;
         this._isStartingCollapsed = this.Value is not null && this.Value.Count > this._searchThreshold;
@@ -166,20 +172,51 @@ public partial class ItemTable<TItem>
 
     private async Task OnCreateClickAsync()
     {
-        TItem? item = null;
         if (this._isInlineEditable)
         {
-            item = this.PersistenceContext.IsSupporting(typeof(TItem)) ? this.PersistenceContext.CreateNew<TItem>() : Activator.CreateInstance<TItem>();
+            var created = this.PersistenceContext.IsSupporting(typeof(TItem)) ? this.PersistenceContext.CreateNew<TItem>() : Activator.CreateInstance<TItem>();
             this.Value ??= new List<TItem>();
-            this.Value.Add(item);
+            this.Value.Add(created);
+            this.EditContext.NotifyFieldChanged(this.FieldIdentifier);
             return;
         }
 
-        item ??= this.PersistenceContext.CreateNew<TItem>();
+        var item = this.PersistenceContext.CreateNew<TItem>();
+        var owner = this.GetOwnerFromValueExpression();
+        var result = await this.ShowEditorModalAsync(item, isNew: true).ConfigureAwait(false);
+        if (result.Cancelled)
+        {
+            await this.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+            return;
+        }
 
+        this.EnsureQuestLinkedToOwnerNpc(item, owner);
+        await this.InvokeAsync(() =>
+        {
+            this.Value ??= new List<TItem>();
+            this.Value.Add(item);
+            this.EditContext.NotifyFieldChanged(this.FieldIdentifier);
+            this.StateHasChanged();
+        }).ConfigureAwait(false);
+    }
+
+    private async Task OnEditClickAsync(TItem item)
+    {
+        await this.ShowEditorModalAsync(item, isNew: false).ConfigureAwait(false);
+        await this.InvokeAsync(() =>
+        {
+            this.EditContext.NotifyFieldChanged(this.FieldIdentifier);
+            this.StateHasChanged();
+        }).ConfigureAwait(false);
+    }
+
+    private Task<ModalResult> ShowEditorModalAsync(TItem item, bool isNew)
+    {
         var parameters = new ModalParameters();
         parameters.Add(nameof(ModalCreateNew<TItem>.Item), item);
         parameters.Add(nameof(ModalCreateNew<TItem>.PersistenceContext), this.PersistenceContext);
+        parameters.Add(nameof(ModalCreateNew<TItem>.IsNew), isNew);
+        parameters.Add(nameof(ModalCreateNew<TItem>.ShowDeferredSaveHint), true);
         var owner = this.GetOwnerFromValueExpression();
         if (owner is not null)
         {
@@ -189,22 +226,15 @@ public partial class ItemTable<TItem>
         var options = new ModalOptions
         {
             DisableBackgroundCancel = true,
+            Size = ModalSize.ExtraLarge,
         };
 
-        var modal = this._modal.Show<ModalCreateNew<TItem>>(string.Format(MUnique.OpenMU.Web.Shared.Properties.Resources.CreateType, typeof(TItem).GetTypeCaption()), parameters, options);
-        var result = await modal.Result.ConfigureAwait(false);
-        if (result.Cancelled)
-        {
-            await this.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
-        }
-        else
-        {
-            this.EnsureQuestLinkedToOwnerNpc(item, owner);
-            this.Value ??= new List<TItem>();
-            this.Value.Add(item);
-            await this.PersistenceContext.SaveChangesAsync().ConfigureAwait(false);
-            await this.InvokeAsync(this.StateHasChanged).ConfigureAwait(false);
-        }
+        var caption = typeof(TItem).GetTypeCaption();
+        var title = isNew
+            ? string.Format(MUnique.OpenMU.Web.Shared.Properties.Resources.CreateType, caption)
+            : string.Format(MUnique.OpenMU.Web.Shared.Properties.Resources.EditType, caption);
+        var modal = this._modal.Show<ModalCreateNew<TItem>>(title, parameters, options);
+        return modal.Result;
     }
 
     private void EnsureQuestLinkedToOwnerNpc(TItem item, object? owner)
@@ -220,13 +250,14 @@ public partial class ItemTable<TItem>
     private async Task OnRemoveClickAsync(TItem item)
     {
         this.Value?.Remove(item);
+        this._expandedRows.Remove(item);
+        this.EditContext.NotifyFieldChanged(this.FieldIdentifier);
 
         if (this.ValueExpression?.Body is MemberExpression { Member: PropertyInfo propertyInfo }
             && propertyInfo.GetCustomAttribute<MemberOfAggregateAttribute>() is not null
             && this.PersistenceContext.IsSupporting(typeof(TItem)))
         {
             await this.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
-            await this.PersistenceContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 

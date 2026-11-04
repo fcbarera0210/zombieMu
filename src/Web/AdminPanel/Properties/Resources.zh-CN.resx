@@ -378,6 +378,12 @@
   <data name="Home" xml:space="preserve">
     <value>首页</value>
   </data>
+  <data name="NavOperations" xml:space="preserve">
+    <value>运营</value>
+  </data>
+  <data name="NavConfiguration" xml:space="preserve">
+    <value>配置</value>
+  </data>
   <data name="Accounts" xml:space="preserve">
     <value>游戏账号</value>
   </data>

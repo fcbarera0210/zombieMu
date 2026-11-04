@@ -28,11 +28,11 @@
             </button>
             @if (this.OnRefresh != null)
             {
-                <button type="button" class="btn btn-secondary" @onclick="this.OnRefresh.Value" >@Resources.Refresh</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="this.OnRefresh.Value" >@Resources.Refresh</button>
             }
             @if (this.OnCancel != null)
             {
-                <button type="button" class="btn btn-secondary" @onclick="this.OnCancel.Value">@Resources.Cancel</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="this.OnCancel.Value">@Resources.Cancel</button>
             }
         </div>
     </EditForm>

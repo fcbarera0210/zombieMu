@@ -709,6 +709,42 @@ namespace MUnique.OpenMU.Web.Shared.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Edit {0}.
+        /// </summary>
+        public static string EditType {
+            get {
+                return ResourceManager.GetString("EditType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Shared.
+        /// </summary>
+        public static string SharedObject {
+            get {
+                return ResourceManager.GetString("SharedObject", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Shared. A change here affects every place that uses this object.
+        /// </summary>
+        public static string SharedObjectHint {
+            get {
+                return ResourceManager.GetString("SharedObjectHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Submit keeps these values on this page. Save the page to store them.
+        /// </summary>
+        public static string ModalDeferredSaveHint {
+            get {
+                return ResourceManager.GetString("ModalDeferredSaveHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No more available.
         /// </summary>
         public static string NoMoreAvailable {

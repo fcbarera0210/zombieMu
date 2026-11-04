@@ -1,3 +1,25 @@
 .modal-stack-entry {
     display: contents;
 }
+
+.modal-content {
+    border: 1px solid var(--omu-border);
+    border-radius: 14px;
+    background: var(--omu-surface-2);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.modal-header {
+    border-bottom-color: var(--omu-border);
+}
+
+.modal-title {
+    font-family: Oxanium, "Segoe UI", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.modal-body {
+    max-height: calc(100vh - 9rem);
+    overflow-y: auto;
+}

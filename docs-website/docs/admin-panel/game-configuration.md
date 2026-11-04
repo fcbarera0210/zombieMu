@@ -118,9 +118,9 @@ The item editor shows the same inventory sprite used when editing a character
 inventory. The preview level, excellent and ancient choices only change the
 picture; they are not saved. Fields are split into General, Usage, Drop and
 price, Requirements, Power, Relations and Boxes. Requirements and base power
-are edited in the table on that page. Classes, sets, options and box drops stay
-as lists and open their own page when the related object is larger than a few
-fields. Each field can show a short impact label (for example drop or trade)
+are edited in the table on that page. Classes, sets and options stay as lists.
+They are shared, so editing one opens its own page. Box drops belong to the
+item and open in a dialog on this page. Each field can show a short impact label (for example drop or trade)
 and a description of what the value changes. The same descriptions appear on
 the generic configuration form.
 
@@ -367,8 +367,15 @@ actions per row:
 ### The form (`edit-config/{type}/{id}`)
 
 A form with one input per property of the object, grouped by category. Referenced
-objects are shown as drop-downs, collections as editable sub-lists which lead
-deeper into the tree. The breadcrumb at the top is how you find your way back.
+objects are shown as drop-downs, collections as editable sub-lists. An entry that
+belongs to the object you are editing, such as a mini-game reward, a quest step
+or a map spawn, is created and edited in a dialog on the same page. The dialog
+shows the same fields as the edit page, and a nested owned entry opens another
+dialog. Submit keeps the values; Save on the page stores them. An object that
+other configuration also uses, such as an item definition or a drop group, stays
+as a link and is marked shared, because changing it changes every place that
+uses it. The direct `edit-config` address of an owned entry still opens the full
+page. The breadcrumb at the top is how you find your way back.
 The sub-lists of items, monsters, skills and maps additionally show their number
 (and the group of an item) next to the name, so that entries with similar
 names are easy to tell apart.

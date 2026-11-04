@@ -381,6 +381,12 @@
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="NavOperations" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="NavConfiguration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
   <data name="Accounts" xml:space="preserve">
     <value>Accounts</value>
   </data>

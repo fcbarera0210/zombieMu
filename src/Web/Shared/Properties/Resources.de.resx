@@ -369,6 +369,18 @@
   <data name="CreateType" xml:space="preserve">
     <value>{0} erstellen</value>
   </data>
+  <data name="EditType" xml:space="preserve">
+    <value>{0} bearbeiten</value>
+  </data>
+  <data name="SharedObject" xml:space="preserve">
+    <value>Geteilt</value>
+  </data>
+  <data name="SharedObjectHint" xml:space="preserve">
+    <value>Geteilt. Eine Änderung gilt an jeder Stelle, die dieses Objekt verwendet.</value>
+  </data>
+  <data name="ModalDeferredSaveHint" xml:space="preserve">
+    <value>Absenden behält die Werte auf dieser Seite. Speichern auf der Seite schreibt sie.</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>Keine weiteren verfügbar</value>
   </data>

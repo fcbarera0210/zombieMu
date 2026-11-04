@@ -48,11 +48,11 @@
 
 .nav-item {
     font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.1rem;
 }
 
     .nav-item:first-of-type {
-        padding-top: 1rem;
+        padding-top: 0.35rem;
     }
 
     .nav-item:last-of-type {
@@ -63,17 +63,28 @@
         color: #d7d7d7;
         background: none;
         border: none;
-        border-radius: 4px;
-        height: 3rem;
+        border-radius: 8px;
+        height: 2.25rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
+        line-height: 2.25rem;
         width: 100%;
     }
 
+.nav-section {
+    margin: 0.85rem 0 0.2rem;
+    padding: 0 1.15rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(201, 214, 200, 0.62);
+}
+
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
+    background-color: transparent;
     color: white;
+    box-shadow: inset 3px 0 0 #7dff6b;
 }
 
 .nav-item ::deep .nav-link:hover {

@@ -1,4 +1,4 @@
-/* Zombie Mu admin branding — toxic green on charcoal, keeps Bootstrap structure. */
+/* Zombie Mu admin branding — toxic green on charcoal. */
 @import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap");
 
 :root,
@@ -106,7 +106,7 @@ body {
 }
 
 .sidebar .nav-link.active {
-  background: linear-gradient(90deg, rgba(125, 255, 107, 0.28), rgba(125, 255, 107, 0.08)) !important;
+  background: rgba(125, 255, 107, 0.08) !important;
   color: #fff !important;
   box-shadow: inset 3px 0 0 var(--zm-acid);
 }
@@ -133,22 +133,49 @@ body {
   font-weight: 600;
 }
 
-.dashboard .card,
-.content > .card,
-.login-layout .card {
+.card {
   border-color: var(--omu-border);
-  box-shadow: 0 8px 24px rgba(7, 17, 12, 0.08);
+  border-radius: 12px;
+  box-shadow: none;
+  background-color: var(--omu-surface-2);
 }
 
-.dashboard .card {
-  border-top: 3px solid var(--zm-acid-dim);
+.card-header {
+  background: transparent;
+  border-bottom-color: var(--omu-border);
+  font-weight: 600;
 }
 
+.page-heading {
+  margin-bottom: 1rem;
+}
+
+.page-kicker {
+  margin: 0 0 0.15rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--omu-text-muted);
+}
+
+.page-heading h1,
 .dashboard h1,
 .content > h1 {
   font-family: Oxanium, "Segoe UI", sans-serif;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 1.55rem;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.25rem;
+}
+
+main {
+  background: var(--omu-bg);
+}
+
+.main-header {
+  min-height: 3.25rem;
+  background: color-mix(in srgb, var(--omu-surface-2) 88%, transparent) !important;
 }
 
 .login-layout {
