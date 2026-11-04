@@ -1,53 +1,53 @@
-/* Zombie Mu admin branding — toxic green on charcoal. */
+/* Zombie Mu admin branding — antique gold on warm charcoal. */
 @import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap");
 
 :root,
 [data-bs-theme="light"],
 [data-bs-theme="dark"] {
-  --zm-acid: #7dff6b;
-  --zm-acid-dim: #4fcf5a;
-  --zm-acid-glow: rgba(125, 255, 107, 0.28);
-  --zm-bone: #e8eedf;
-  --bs-primary: #3f9e48;
-  --bs-primary-rgb: 63, 158, 72;
-  --bs-link-color: #3f9e48;
-  --bs-link-hover-color: #2f7a37;
-  --omu-link: #3f9e48;
-  --omu-link-primary: #3f9e48;
-  --omu-link-primary-border: #2f7a37;
-  --omu-spinner-dot: #3f9e48;
-  --omu-sidebar-gradient: linear-gradient(185deg, #07140f 0%, #0f1f16 42%, #152a1c 100%);
+  --zm-acid: #e4c36a;
+  --zm-acid-dim: #c9a24a;
+  --zm-acid-glow: rgba(228, 195, 106, 0.32);
+  --zm-bone: #f3ead8;
+  --bs-primary: #b08a32;
+  --bs-primary-rgb: 176, 138, 50;
+  --bs-link-color: #8a6420;
+  --bs-link-hover-color: #6d4e14;
+  --omu-link: #8a6420;
+  --omu-link-primary: #b08a32;
+  --omu-link-primary-border: #8a6420;
+  --omu-spinner-dot: #b08a32;
+  --omu-sidebar-gradient: linear-gradient(185deg, #14110c 0%, #221c14 42%, #2c2418 100%);
 }
 
 [data-bs-theme="light"] {
-  --omu-bg: #f3f6f2;
-  --omu-surface: #eef3eb;
-  --omu-surface-2: #ffffff;
-  --omu-surface-muted: #e6ede3;
-  --omu-surface-hover: #d9e5d4;
-  --omu-border: #c5d4c2;
-  --omu-text: #1a261c;
-  --omu-text-muted: #4d5c50;
+  --omu-bg: #f7f4ee;
+  --omu-surface: #f3efe6;
+  --omu-surface-2: #fffdf8;
+  --omu-surface-muted: #ebe4d6;
+  --omu-surface-hover: #e3d9c4;
+  --omu-border: #d9cdb8;
+  --omu-text: #241c12;
+  --omu-text-muted: #6b5e4c;
 }
 
 [data-bs-theme="dark"] {
-  --omu-bg: #0a100d;
-  --omu-surface: #121a15;
-  --omu-surface-2: #162019;
-  --omu-surface-muted: #1b2720;
-  --omu-surface-hover: #24352a;
-  --omu-border: #2a3b31;
+  --omu-bg: #100e0b;
+  --omu-surface: #18140f;
+  --omu-surface-2: #1e1913;
+  --omu-surface-muted: #262017;
+  --omu-surface-hover: #332b1e;
+  --omu-border: #3d3426;
   --omu-text: var(--zm-bone);
-  --omu-text-muted: #9aaf9e;
-  --omu-text-secondary: #a9bbaa;
+  --omu-text-muted: #b7aa96;
+  --omu-text-secondary: #c8bba6;
   --omu-link: var(--zm-acid);
   --omu-link-primary: var(--zm-acid-dim);
-  --omu-link-primary-border: #3f9e48;
-  --bs-primary: #4fcf5a;
-  --bs-primary-rgb: 79, 207, 90;
+  --omu-link-primary-border: #a48434;
+  --bs-primary: #d4b15a;
+  --bs-primary-rgb: 212, 177, 90;
   --bs-link-color: var(--zm-acid);
-  --bs-link-hover-color: #b6ffaa;
-  --omu-sidebar-gradient: linear-gradient(185deg, #050b08 0%, #0c1811 45%, #132419 100%);
+  --bs-link-hover-color: #f3e2b0;
+  --omu-sidebar-gradient: linear-gradient(185deg, #0c0a08 0%, #16120c 45%, #221c14 100%);
 }
 
 html,
@@ -57,7 +57,7 @@ body {
 
 .sidebar {
   background-image: var(--omu-sidebar-gradient);
-  box-shadow: inset -1px 0 0 rgba(125, 255, 107, 0.12);
+  box-shadow: inset -1px 0 0 rgba(228, 195, 106, 0.16);
 }
 
 .sidebar > nav {
@@ -68,8 +68,8 @@ body {
 }
 
 .sidebar .top-row {
-  background: linear-gradient(90deg, rgba(7, 17, 12, 0.92), rgba(20, 40, 28, 0.75));
-  border-bottom: 1px solid rgba(125, 255, 107, 0.18);
+  background: linear-gradient(90deg, rgba(18, 14, 10, 0.92), rgba(48, 36, 18, 0.75));
+  border-bottom: 1px solid rgba(228, 195, 106, 0.22);
   min-height: 4rem;
 }
 
@@ -97,16 +97,16 @@ body {
 
 .sidebar .nav-link {
   border-radius: 0.5rem !important;
-  color: #c9d6c8 !important;
+  color: #ddd2c0 !important;
 }
 
 .sidebar .nav-link:hover {
-  background: rgba(125, 255, 107, 0.1) !important;
+  background: rgba(228, 195, 106, 0.12) !important;
   color: var(--zm-bone) !important;
 }
 
 .sidebar .nav-link.active {
-  background: rgba(125, 255, 107, 0.08) !important;
+  background: rgba(228, 195, 106, 0.1) !important;
   color: #fff !important;
   box-shadow: inset 3px 0 0 var(--zm-acid);
 }
@@ -118,18 +118,21 @@ body {
 
 .breadcrumb-bar {
   background:
-    linear-gradient(90deg, rgba(125, 255, 107, 0.06), transparent 40%),
+    linear-gradient(90deg, rgba(228, 195, 106, 0.08), transparent 40%),
     var(--omu-surface-2);
 }
 
 .content .btn-primary,
 .login-layout .btn-primary {
+  --bs-btn-color: #1c1408;
   --bs-btn-bg: var(--bs-primary);
-  --bs-btn-border-color: var(--bs-primary);
-  --bs-btn-hover-bg: #348a3d;
-  --bs-btn-hover-border-color: #2f7a37;
-  --bs-btn-active-bg: #2f7a37;
-  --bs-btn-active-border-color: #286830;
+  --bs-btn-border-color: #8a6420;
+  --bs-btn-hover-color: #1c1408;
+  --bs-btn-hover-bg: #e4c36a;
+  --bs-btn-hover-border-color: #8a6420;
+  --bs-btn-active-color: #1c1408;
+  --bs-btn-active-bg: #c9a24a;
+  --bs-btn-active-border-color: #6d4e14;
   font-weight: 600;
 }
 
@@ -180,9 +183,9 @@ main {
 
 .login-layout {
   background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(125, 255, 107, 0.16), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(63, 158, 72, 0.12), transparent 50%),
-    linear-gradient(160deg, #070e0a 0%, #101a14 45%, #0a1410 100%);
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(228, 195, 106, 0.18), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(176, 138, 50, 0.14), transparent 50%),
+    linear-gradient(160deg, #100e0a 0%, #1a150f 45%, #120f0b 100%);
   color: var(--zm-bone);
 }
 
@@ -209,7 +212,7 @@ main {
 }
 
 .login-layout .login-subtitle {
-  color: #9fbaa2;
+  color: #c8b89a;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-size: 0.75rem;
@@ -218,8 +221,8 @@ main {
 }
 
 .login-layout .card {
-  background: rgba(16, 26, 20, 0.92);
-  border: 1px solid rgba(125, 255, 107, 0.22);
+  background: rgba(24, 20, 14, 0.92);
+  border: 1px solid rgba(228, 195, 106, 0.28);
   color: var(--zm-bone);
   backdrop-filter: blur(10px);
 }
@@ -232,17 +235,17 @@ main {
 
 .login-layout .card .text-secondary,
 .login-layout .card .form-text {
-  color: #9fbaa2 !important;
+  color: #c8b89a !important;
 }
 
 .login-layout .form-control {
-  background-color: #0c1510;
-  border-color: #2a3b31;
+  background-color: #14110c;
+  border-color: #3d3426;
   color: var(--zm-bone);
 }
 
 .login-layout .form-control:focus {
-  background-color: #0c1510;
+  background-color: #14110c;
   border-color: var(--zm-acid-dim);
   color: var(--zm-bone);
   box-shadow: 0 0 0 0.2rem var(--zm-acid-glow);

@@ -78,13 +78,13 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(201, 214, 200, 0.62);
+    color: rgba(221, 210, 192, 0.62);
 }
 
 .nav-item ::deep a.active {
     background-color: transparent;
     color: white;
-    box-shadow: inset 3px 0 0 #7dff6b;
+    box-shadow: inset 3px 0 0 #e4c36a;
 }
 
 .nav-item ::deep .nav-link:hover {
