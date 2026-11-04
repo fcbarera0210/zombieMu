@@ -44,6 +44,7 @@ public class MiniGameExitDelayTest
     public async Task EarlyFinishKeepsPlayersUntilExitDurationElapsesAsync()
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        EnsureSpawnGate(player.GameContext.Configuration.Maps.First());
         var game = this.CreateGame(player.GameContext);
         Assert.That(await game.TryEnterAsync(player).ConfigureAwait(false), Is.EqualTo(EnterResult.Success));
         await game.Map.AddAsync(player).ConfigureAwait(false);
@@ -68,6 +69,24 @@ public class MiniGameExitDelayTest
         Assert.That(player.CurrentMiniGame, Is.Null);
     }
 
+    private static void EnsureSpawnGate(GameMapDefinition mapDefinition)
+    {
+        if (mapDefinition.ExitGates.Any(gate => gate.IsSpawnGate))
+        {
+            return;
+        }
+
+        mapDefinition.ExitGates.Add(new ExitGate
+        {
+            Map = mapDefinition,
+            IsSpawnGate = true,
+            X1 = 10,
+            X2 = 10,
+            Y1 = 10,
+            Y2 = 10,
+        });
+    }
+
     private static async Task WaitUntilAsync(Func<bool> condition)
     {
         var deadline = DateTime.UtcNow.Add(Timeout);
@@ -81,30 +100,9 @@ public class MiniGameExitDelayTest
 
     private TestGame CreateGame(IGameContext gameContext)
     {
-        var safezoneMap = new GameMapDefinition { Number = 2 };
-        safezoneMap.ExitGates.Add(new ExitGate
-        {
-            Map = safezoneMap,
-            IsSpawnGate = true,
-            X1 = 10,
-            X2 = 10,
-            Y1 = 10,
-            Y2 = 10,
-        });
-        var mapDefinition = new GameMapDefinition
-        {
-            Number = 11,
-            SafezoneMap = safezoneMap,
-        };
-        mapDefinition.ExitGates.Add(new ExitGate
-        {
-            Map = safezoneMap,
-            IsSpawnGate = true,
-            X1 = 10,
-            X2 = 10,
-            Y1 = 10,
-            Y2 = 10,
-        });
+        // Reuse the map from PlayerTestHelper: its ExitGates collection is already
+        // initialized (plain GameMapDefinition leaves ExitGates null).
+        var mapDefinition = gameContext.Configuration.Maps.First();
 
         var definitionMock = new Mock<MiniGameDefinition>();
         definitionMock.SetupGet(d => d.Rewards).Returns(new List<MiniGameReward>());
