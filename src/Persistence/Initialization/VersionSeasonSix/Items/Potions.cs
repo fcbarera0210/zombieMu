@@ -110,6 +110,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.SmallHealingPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.SmallHealingPotion);
         potion.Number = 1;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -131,6 +132,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.MediumHealingPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.MediumHealingPotion);
         potion.Number = 2;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -152,6 +154,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.LargeHealingPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.LargeHealingPotion);
         potion.Number = 3;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -173,6 +176,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.SmallManaPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.SmallManaPotion);
         potion.Number = 4;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -194,6 +198,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.MediumManaPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.MediumManaPotion);
         potion.Number = 5;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -215,6 +220,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.LargeManaPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.LargeManaPotion);
         potion.Number = 6;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -236,6 +242,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.SmallShieldPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.SmallShieldPotion);
         potion.Number = 35;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -255,6 +262,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.MediumShieldPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.MediumShieldPotion);
         potion.Number = 36;
         potion.Group = 14;
         potion.DropsFromMonsters = false;
@@ -274,6 +282,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.LargeShieldPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.LargeShieldPotion);
         potion.Number = 37;
         potion.Group = 14;
         potion.DropsFromMonsters = false;
@@ -293,6 +302,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.SmallComplexPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.SmallComplexPotion);
         potion.Number = 38;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -313,6 +323,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.MediumComplexPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.MediumComplexPotion);
         potion.Number = 39;
         potion.Group = 14;
         potion.DropsFromMonsters = true;
@@ -333,6 +344,7 @@ public class Potions : InitializerBase
     {
         var potion = this.Context.CreateNew<ItemDefinition>();
         potion.Name = LocalizedString.FromResource(() => ItemNames.LargeComplexPotion);
+        potion.Description = LocalizedString.FromResource(() => ItemDescriptions.LargeComplexPotion);
         potion.Number = 40;
         potion.Group = 14;
         potion.DropsFromMonsters = true;

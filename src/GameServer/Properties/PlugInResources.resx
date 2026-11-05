@@ -2403,6 +2403,18 @@
   <data name="ChatCommandListRequestHandlerPlugIn_Description" xml:space="preserve">
     <value>Handles the request for the list of chat commands which are available to the player.</value>
   </data>
+  <data name="TooltipDescriptionsRequestHandlerPlugIn_Name" xml:space="preserve">
+    <value>Tooltip descriptions request handler</value>
+  </data>
+  <data name="TooltipDescriptionsRequestHandlerPlugIn_Description" xml:space="preserve">
+    <value>Handles the request for item and skill tooltip descriptions for extended clients.</value>
+  </data>
+  <data name="TooltipDescriptionsViewPlugIn_Name" xml:space="preserve">
+    <value>Tooltip descriptions view</value>
+  </data>
+  <data name="TooltipDescriptionsViewPlugIn_Description" xml:space="preserve">
+    <value>Sends item and skill tooltip descriptions to extended clients.</value>
+  </data>
   <data name="CastleSiegeCrownStatePlugIn_Name" xml:space="preserve">
     <value>Castle Siege Crown State View</value>
   </data>

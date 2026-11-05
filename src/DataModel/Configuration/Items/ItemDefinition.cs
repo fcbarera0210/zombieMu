@@ -125,6 +125,15 @@ public partial class ItemDefinition
     public LocalizedString Name { get; set; }
 
     /// <summary>
+    /// Gets or sets the description of the item.
+    /// </summary>
+    /// <remarks>
+    /// Used by extended clients for tooltips. The Season 6 stock client does not receive this field;
+    /// it builds tooltips from its local data files.
+    /// </remarks>
+    public LocalizedString Description { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether this item is active in the game.
     /// </summary>
     /// <remarks>

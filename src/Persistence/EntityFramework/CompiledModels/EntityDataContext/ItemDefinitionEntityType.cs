@@ -26,7 +26,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.ItemDefinition",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.ItemDefinition),
                 baseEntityType,
-                propertyCount: 34,
+                propertyCount: 35,
                 navigationCount: 11,
                 foreignKeyCount: 6,
                 unnamedIndexCount: 6,
@@ -50,6 +50,17 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.ItemDefinition).GetField("<ConsumeEffectId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             consumeEffectId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var description = runtimeEntityType.AddProperty(
+                "Description",
+                typeof(MUnique.OpenMU.Interfaces.LocalizedString),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Items.ItemDefinition).GetProperty("Description", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Items.ItemDefinition).GetField("<Description>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            description.SetValueConverter(new ValueConverter<MUnique.OpenMU.Interfaces.LocalizedString, string>(
+                string (LocalizedString value) => value.Value ?? string.Empty,
+                LocalizedString (string value) => new LocalizedString(value)));
+            description.SetSentinelFromProviderValue("");
+            description.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var dropLevel = runtimeEntityType.AddProperty(
                 "DropLevel",

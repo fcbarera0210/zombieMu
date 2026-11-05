@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="SmallHealingPotion" xml:space="preserve">
+    <value>Restaura alrededor del 10% de HP</value>
+  </data>
+  <data name="MediumHealingPotion" xml:space="preserve">
+    <value>Restaura alrededor del 20% de HP</value>
+  </data>
+  <data name="LargeHealingPotion" xml:space="preserve">
+    <value>Restaura alrededor del 30% de HP</value>
+  </data>
+  <data name="SmallManaPotion" xml:space="preserve">
+    <value>Restaura alrededor del 10% de Mana</value>
+  </data>
+  <data name="MediumManaPotion" xml:space="preserve">
+    <value>Restaura alrededor del 20% de Mana</value>
+  </data>
+  <data name="LargeManaPotion" xml:space="preserve">
+    <value>Restaura alrededor del 30% de Mana</value>
+  </data>
+  <data name="SmallShieldPotion" xml:space="preserve">
+    <value>Restaura 20% de SD</value>
+  </data>
+  <data name="MediumShieldPotion" xml:space="preserve">
+    <value>Restaura 40% de SD</value>
+  </data>
+  <data name="LargeShieldPotion" xml:space="preserve">
+    <value>Restaura 100% de SD</value>
+  </data>
+  <data name="SmallComplexPotion" xml:space="preserve">
+    <value>Restaura 20% de AG</value>
+  </data>
+  <data name="MediumComplexPotion" xml:space="preserve">
+    <value>Restaura 40% de AG</value>
+  </data>
+  <data name="LargeComplexPotion" xml:space="preserve">
+    <value>Restaura 60% de AG</value>
+  </data>
+</root>

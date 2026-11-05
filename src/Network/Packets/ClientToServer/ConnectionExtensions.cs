@@ -5681,4 +5681,29 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="TooltipDescriptionsRequest" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <remarks>
+    /// Is sent by the client when: A client which supports server-driven tooltip descriptions requests them. It's usually sent after the character entered the game world.
+    /// Causes reaction on server side: The server sends an ItemTooltipDescriptionExtended message for each item which has a description, and a SkillTooltipDescriptionExtended message for each skill which has a description.
+    /// </remarks>
+    public static async ValueTask SendTooltipDescriptionsRequestAsync(this IConnection? connection)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = TooltipDescriptionsRequestRef.Length;
+            var packet = new TooltipDescriptionsRequestRef(connection.Output.GetSpan(length)[..length]);
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

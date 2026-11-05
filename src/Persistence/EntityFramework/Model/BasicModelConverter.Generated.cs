@@ -1938,6 +1938,7 @@ internal sealed class BasicModelConverter
         target.IsPersonalStoreSellable = source.IsPersonalStoreSellable;
         target.IsRepairable = source.IsRepairable;
         target.Name = source.Name;
+        target.Description = source.Description;
         target.IsActive = source.IsActive;
         target.IntroducedIn = source.IntroducedIn;
         target.DropLevel = source.DropLevel;
@@ -3079,6 +3080,7 @@ internal sealed class BasicModelConverter
         target.Id = source.Id;
         target.Number = source.Number;
         target.Name = source.Name;
+        target.Description = source.Description;
         target.AttackDamage = source.AttackDamage;
         if (source.Requirements is { } requirementsItems)
         {

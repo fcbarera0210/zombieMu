@@ -2111,7 +2111,7 @@ namespace MUnique.OpenMU.GameServer.Properties {
                 return ResourceManager.GetString("ChatCommandListRequestHandlerPlugIn_Name", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sends the chat commands which are available to the player, so that the client can offer them in a user interface..
         /// </summary>
@@ -2120,13 +2120,49 @@ namespace MUnique.OpenMU.GameServer.Properties {
                 return ResourceManager.GetString("ChatCommandListViewPlugIn_Description", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Chat command list view.
         /// </summary>
         public static string ChatCommandListViewPlugIn_Name {
             get {
                 return ResourceManager.GetString("ChatCommandListViewPlugIn_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tooltip descriptions request handler.
+        /// </summary>
+        public static string TooltipDescriptionsRequestHandlerPlugIn_Name {
+            get {
+                return ResourceManager.GetString("TooltipDescriptionsRequestHandlerPlugIn_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Handles the request for item and skill tooltip descriptions for extended clients.
+        /// </summary>
+        public static string TooltipDescriptionsRequestHandlerPlugIn_Description {
+            get {
+                return ResourceManager.GetString("TooltipDescriptionsRequestHandlerPlugIn_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tooltip descriptions view.
+        /// </summary>
+        public static string TooltipDescriptionsViewPlugIn_Name {
+            get {
+                return ResourceManager.GetString("TooltipDescriptionsViewPlugIn_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sends item and skill tooltip descriptions to extended clients.
+        /// </summary>
+        public static string TooltipDescriptionsViewPlugIn_Description {
+            get {
+                return ResourceManager.GetString("TooltipDescriptionsViewPlugIn_Description", resourceCulture);
             }
         }
         

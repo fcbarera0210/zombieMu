@@ -193,6 +193,15 @@ public partial class Skill
     public LocalizedString Name { get; set; }
 
     /// <summary>
+    /// Gets or sets the description of the skill.
+    /// </summary>
+    /// <remarks>
+    /// Used by extended clients for tooltips. The Season 6 stock client does not receive this field;
+    /// it builds tooltips from its local data files.
+    /// </remarks>
+    public LocalizedString Description { get; set; }
+
+    /// <summary>
     /// Gets or sets the attack damage. Only relevant for attack skills.
     /// </summary>
     public int AttackDamage { get; set; }

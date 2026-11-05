@@ -193,6 +193,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ItemNames.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\ItemDescriptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ItemDescriptions.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\MiniGameNames.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -239,6 +244,10 @@
     <EmbeddedResource Update="Properties\ItemNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ItemNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\ItemDescriptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ItemDescriptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\MiniGameNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

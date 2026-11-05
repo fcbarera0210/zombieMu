@@ -527,6 +527,12 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
         /// <summary>Gets the localized AddRenaItemUpdatePlugIn_Description text.</summary>
         public static string AddRenaItemUpdatePlugIn_Description => ResourceManager.GetString("AddRenaItemUpdatePlugIn_Description", resourceCulture)!;
 
+        /// <summary>Gets the localized AddPotionTooltipDescriptionsUpdatePlugIn_Name text.</summary>
+        public static string AddPotionTooltipDescriptionsUpdatePlugIn_Name => ResourceManager.GetString("AddPotionTooltipDescriptionsUpdatePlugIn_Name", resourceCulture)!;
+
+        /// <summary>Gets the localized AddPotionTooltipDescriptionsUpdatePlugIn_Description text.</summary>
+        public static string AddPotionTooltipDescriptionsUpdatePlugIn_Description => ResourceManager.GetString("AddPotionTooltipDescriptionsUpdatePlugIn_Description", resourceCulture)!;
+
         /// <summary>Gets the localized AddCrestOfMonarchDropGroupUpdateSeason6_Name text.</summary>
         public static string AddCrestOfMonarchDropGroupUpdateSeason6_Name => ResourceManager.GetString("AddCrestOfMonarchDropGroupUpdateSeason6_Name", resourceCulture)!;
 

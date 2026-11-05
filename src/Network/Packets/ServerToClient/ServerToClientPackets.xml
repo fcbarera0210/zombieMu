@@ -12692,6 +12692,86 @@
       </Enums>
     </Packet>
     <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>F5</Code>
+      <SubCode>09</SubCode>
+      <Name>ItemTooltipDescriptionExtended</Name>
+      <Length>266</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>After the client requested tooltip descriptions. One message is sent for each item definition which has a non-empty description.</SentWhen>
+      <CausedReaction>The client stores the description and shows it in the item tooltip when the player hovers that item.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>5</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Index</Name>
+          <Description>The index of this item within the list, starting at 0.</Description>
+        </Field>
+        <Field>
+          <Index>7</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Count</Name>
+          <Description>The total number of item descriptions which will be sent, so that the client knows when it received all of them.</Description>
+        </Field>
+        <Field>
+          <Index>9</Index>
+          <Type>Byte</Type>
+          <Name>Group</Name>
+          <Description>The item group (0-15).</Description>
+        </Field>
+        <Field>
+          <Index>10</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Number</Name>
+          <Description>The item number within the group.</Description>
+        </Field>
+        <Field>
+          <Index>12</Index>
+          <Type>String</Type>
+          <Name>Description</Name>
+          <Length>254</Length>
+          <Description>The description of the item, in the language of the player.</Description>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>F5</Code>
+      <SubCode>0A</SubCode>
+      <Name>SkillTooltipDescriptionExtended</Name>
+      <Length>263</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>After the client requested tooltip descriptions. One message is sent for each skill which has a non-empty description.</SentWhen>
+      <CausedReaction>The client stores the description and shows it in the skill tooltip when the player hovers that skill.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>5</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Index</Name>
+          <Description>The index of this skill within the list, starting at 0.</Description>
+        </Field>
+        <Field>
+          <Index>7</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Count</Name>
+          <Description>The total number of skill descriptions which will be sent, so that the client knows when it received all of them.</Description>
+        </Field>
+        <Field>
+          <Index>9</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>SkillNumber</Name>
+          <Description>The skill number which the client uses to identify the skill.</Description>
+        </Field>
+        <Field>
+          <Index>11</Index>
+          <Type>String</Type>
+          <Name>Description</Name>
+          <Length>252</Length>
+          <Description>The description of the skill, in the language of the player.</Description>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
       <HeaderType>C1Header</HeaderType>
       <Code>94</Code>
       <Name>EventChipRegistrationResult</Name>

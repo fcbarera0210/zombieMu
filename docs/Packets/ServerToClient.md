@@ -317,6 +317,8 @@
   * [C1 F5 03 - DiscordIntegrationInfo (by server)](C1-F5-03-DiscordIntegrationInfo_by-server.md)
   * [C1 F5 05 - DiscordLinkCode (by server)](C1-F5-05-DiscordLinkCode_by-server.md)
   * [C2 F5 07 - ExternalChatMessage (by server)](C2-F5-07-ExternalChatMessage_by-server.md)
+  * [C2 F5 09 - ItemTooltipDescriptionExtended (by server)](C2-F5-09-ItemTooltipDescriptionExtended_by-server.md)
+  * [C2 F5 0A - SkillTooltipDescriptionExtended (by server)](C2-F5-0A-SkillTooltipDescriptionExtended_by-server.md)
   * [C1 F6 03 - QuestEventResponse (by server)](C1-F6-03-QuestEventResponse_by-server.md)
   * [C1 F6 0A - AvailableQuests (by server)](C1-F6-0A-AvailableQuests_by-server.md)
   * [C1 F6 0B - QuestStepInfo (by server)](C1-F6-0B-QuestStepInfo_by-server.md)

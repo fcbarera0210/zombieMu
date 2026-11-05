@@ -20,6 +20,7 @@ internal static class ItemExtensions
     public static void Apply(this EntityTypeBuilder<ItemDefinition> builder)
     {
         builder.Property(p => p.Name).HasConversion(LocalizedStringConverter.Instance);
+        builder.Property(p => p.Description).HasConversion(LocalizedStringConverter.Instance);
 
         // A stat profile which items still use can't be deleted.
         builder.HasOne(definition => definition.RawStatProfile)

@@ -25,7 +25,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Skill",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Skill),
                 baseEntityType,
-                propertyCount: 19,
+                propertyCount: 20,
                 navigationCount: 8,
                 foreignKeyCount: 5,
                 unnamedIndexCount: 5,
@@ -65,6 +65,17 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Skill).GetField("<DamageType>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
             damageType.SetSentinelFromProviderValue(0);
             damageType.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var description = runtimeEntityType.AddProperty(
+                "Description",
+                typeof(MUnique.OpenMU.Interfaces.LocalizedString),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Skill).GetProperty("Description", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Skill).GetField("<Description>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            description.SetValueConverter(new ValueConverter<MUnique.OpenMU.Interfaces.LocalizedString, string>(
+                string (LocalizedString value) => value.Value ?? string.Empty,
+                LocalizedString (string value) => new LocalizedString(value)));
+            description.SetSentinelFromProviderValue("");
+            description.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var elementalModifierTargetId = runtimeEntityType.AddProperty(
                 "ElementalModifierTargetId",

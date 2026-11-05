@@ -4337,6 +4337,18 @@
       <CausedReaction>The server removes the link and sends an updated DiscordIntegrationInfo message.</CausedReaction>
       <Fields />
     </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>F5</Code>
+      <SubCode>08</SubCode>
+      <Name>TooltipDescriptionsRequest</Name>
+      <Caption>Request item and skill tooltip descriptions</Caption>
+      <Length>4</Length>
+      <Direction>ClientToServer</Direction>
+      <SentWhen>A client which supports server-driven tooltip descriptions requests them. It's usually sent after the character entered the game world.</SentWhen>
+      <CausedReaction>The server sends an ItemTooltipDescriptionExtended message for each item which has a description, and a SkillTooltipDescriptionExtended message for each skill which has a description.</CausedReaction>
+      <Fields />
+    </Packet>
   </Packets>
   <Enums>
     <Enum>

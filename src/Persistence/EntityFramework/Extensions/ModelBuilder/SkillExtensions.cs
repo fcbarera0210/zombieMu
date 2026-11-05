@@ -19,6 +19,7 @@ internal static class SkillExtensions
     public static void Apply(this EntityTypeBuilder<Skill> builder)
     {
         builder.Property(p => p.Name).HasConversion(LocalizedStringConverter.Instance);
+        builder.Property(p => p.Description).HasConversion(LocalizedStringConverter.Instance);
     }
 
     /// <summary>

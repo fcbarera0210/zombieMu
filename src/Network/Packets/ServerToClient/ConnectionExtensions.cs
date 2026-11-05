@@ -7107,6 +7107,76 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="ItemTooltipDescriptionExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="index">The index of this item within the list, starting at 0.</param>
+    /// <param name="count">The total number of item descriptions which will be sent, so that the client knows when it received all of them.</param>
+    /// <param name="group">The item group (0-15).</param>
+    /// <param name="number">The item number within the group.</param>
+    /// <param name="description">The description of the item, in the language of the player.</param>
+    /// <remarks>
+    /// Is sent by the server when: After the client requested tooltip descriptions. One message is sent for each item definition which has a non-empty description.
+    /// Causes reaction on client side: The client stores the description and shows it in the item tooltip when the player hovers that item.
+    /// </remarks>
+    public static async ValueTask SendItemTooltipDescriptionExtendedAsync(this IConnection? connection, ushort @index, ushort @count, byte @group, ushort @number, string @description)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = ItemTooltipDescriptionExtendedRef.Length;
+            var packet = new ItemTooltipDescriptionExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Index = @index;
+            packet.Count = @count;
+            packet.Group = @group;
+            packet.Number = @number;
+            packet.Description = @description;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="SkillTooltipDescriptionExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="index">The index of this skill within the list, starting at 0.</param>
+    /// <param name="count">The total number of skill descriptions which will be sent, so that the client knows when it received all of them.</param>
+    /// <param name="skillNumber">The skill number which the client uses to identify the skill.</param>
+    /// <param name="description">The description of the skill, in the language of the player.</param>
+    /// <remarks>
+    /// Is sent by the server when: After the client requested tooltip descriptions. One message is sent for each skill which has a non-empty description.
+    /// Causes reaction on client side: The client stores the description and shows it in the skill tooltip when the player hovers that skill.
+    /// </remarks>
+    public static async ValueTask SendSkillTooltipDescriptionExtendedAsync(this IConnection? connection, ushort @index, ushort @count, ushort @skillNumber, string @description)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = SkillTooltipDescriptionExtendedRef.Length;
+            var packet = new SkillTooltipDescriptionExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Index = @index;
+            packet.Count = @count;
+            packet.SkillNumber = @skillNumber;
+            packet.Description = @description;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="EventChipRegistrationResult" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>
