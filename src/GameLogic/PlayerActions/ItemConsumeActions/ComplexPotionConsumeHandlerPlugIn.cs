@@ -4,42 +4,52 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.ItemConsumeActions;
 
+using MUnique.OpenMU.AttributeSystem;
+using MUnique.OpenMU.GameLogic.Attributes;
+
 /// <summary>
-/// Abstract consume handler for complex potions which combines a <see cref="HealthPotionConsumeHandlerPlugIn"/> and a <see cref="ShieldPotionConsumeHandlerPlugIn"/>.
+/// Abstract consume handler for complex potions which recover the <see cref="Stats.CurrentAbility"/>.
 /// </summary>
-public abstract class ComplexPotionConsumeHandlerPlugIn : BaseConsumeHandlerPlugIn
+public abstract class ComplexPotionConsumeHandlerPlugIn : RecoverConsumeHandlerPlugIn, IItemConsumeHandlerPlugIn
 {
-    private readonly HealthPotionConsumeHandlerPlugIn _healthPotionConsumeHandlerPlugIn;
-    private readonly ShieldPotionConsumeHandlerPlugIn _shieldPotionConsumeHandlerPlugIn;
+    /// <inheritdoc/>
+    protected override AttributeDefinition MaximumAttribute => Stats.MaximumAbility;
+
+    /// <inheritdoc/>
+    protected override AttributeDefinition CurrentAttribute => Stats.CurrentAbility;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPotionConsumeHandlerPlugIn"/> class.
+    /// Gets the recover percentage.
     /// </summary>
-    /// <param name="healthPotionConsumeHandlerPlugIn">The health potion consume handler.</param>
-    /// <param name="shieldPotionConsumeHandlerPlugIn">The shield potion consume handler.</param>
-    protected ComplexPotionConsumeHandlerPlugIn(HealthPotionConsumeHandlerPlugIn healthPotionConsumeHandlerPlugIn, ShieldPotionConsumeHandlerPlugIn shieldPotionConsumeHandlerPlugIn)
-    {
-        this._healthPotionConsumeHandlerPlugIn = healthPotionConsumeHandlerPlugIn ?? throw new ArgumentNullException(nameof(healthPotionConsumeHandlerPlugIn));
-        this._shieldPotionConsumeHandlerPlugIn = shieldPotionConsumeHandlerPlugIn ?? throw new ArgumentNullException(nameof(shieldPotionConsumeHandlerPlugIn));
-    }
+    protected abstract double RecoverPercentage { get; }
 
     /// <inheritdoc />
-    public override async ValueTask<bool> ConsumeItemAsync(Player player, Item item, Item? targetItem, FruitUsage fruitUsage)
+    public sealed override object CreateDefaultConfig()
     {
-        if (await base.ConsumeItemAsync(player, item, targetItem, fruitUsage).ConfigureAwait(false))
+        return new RecoverConsumeHandlerConfiguration
         {
-            await this._healthPotionConsumeHandlerPlugIn.RecoverAsync(player, item).ConfigureAwait(false);
-            await this._shieldPotionConsumeHandlerPlugIn.RecoverAsync(player, item).ConfigureAwait(false);
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <inheritdoc />
-    protected override bool CheckPreconditions(Player player, Item item)
-    {
-        return base.CheckPreconditions(player, item)
-               && player.PotionCooldownUntil <= DateTime.UtcNow;
+            TotalRecoverPercentage = this.RecoverPercentage,
+            RecoverDelayReductionByPotionLevel = 1.0 / 16.0,
+            RecoverPercentageIncreaseByPotionLevel = 1,
+            CooldownTime = TimeSpan.FromSeconds(0.5),
+            RecoverSteps =
+            {
+                new RecoverStep
+                {
+                    Delay = TimeSpan.FromMilliseconds(200),
+                    RecoverPercentage = 20,
+                },
+                new RecoverStep
+                {
+                    Delay = TimeSpan.FromMilliseconds(600),
+                    RecoverPercentage = 60,
+                },
+                new RecoverStep
+                {
+                    Delay = TimeSpan.FromMilliseconds(200),
+                    RecoverPercentage = 20,
+                },
+            },
+        };
     }
 }

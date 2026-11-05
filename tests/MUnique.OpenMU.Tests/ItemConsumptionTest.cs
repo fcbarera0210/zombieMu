@@ -286,12 +286,22 @@ public class ItemConsumptionTest
     }
 
     /// <summary>
-    /// Tests the complex potion consume.
+    /// Tests the ability recover by drinking a complex potion.
     /// </summary>
-    public void ComplexPotion()
+    [Test]
+    public async ValueTask ComplexPotionAbilityRecoverAsync()
     {
-        // complex potion consume handler is not implemented yet
-        Assert.That(true, Is.False);
+        var player = await this.GetPlayerAsync().ConfigureAwait(false);
+        var item = this.GetItem();
+        await player.Inventory!.AddItemAsync(ItemSlot, item).ConfigureAwait(false);
+        var consumeHandler = new LargeComplexPotionConsumeHandlerPlugIn();
+        consumeHandler.Configuration = consumeHandler.CreateDefaultConfig() as RecoverConsumeHandlerConfiguration;
+        consumeHandler.Configuration!.RecoverSteps.Clear(); // When there are no steps, we recover all immediately.
+        var success = await consumeHandler.ConsumeItemAsync(player, item, null, FruitUsage.Undefined).ConfigureAwait(false);
+        Assert.That(success, Is.True);
+        Assert.That(player.Attributes!.GetValueOfAttribute(Stats.CurrentAbility), Is.GreaterThan(0.0f));
+        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentHealth), Is.EqualTo(0.0f));
+        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentShield), Is.EqualTo(0.0f));
     }
 
     /// <summary>
@@ -526,6 +536,7 @@ public class ItemConsumptionTest
         player.SelectedCharacter.Attributes.Add(new StatAttribute(Stats.CurrentHealth, 0));
         player.SelectedCharacter.Attributes.Add(new StatAttribute(Stats.CurrentMana, 0));
         player.SelectedCharacter.Attributes.Add(new StatAttribute(Stats.CurrentShield, 0));
+        player.SelectedCharacter.Attributes.Add(new StatAttribute(Stats.CurrentAbility, 0));
 
         return player;
     }

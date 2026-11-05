@@ -15,14 +15,9 @@ using MUnique.OpenMU.PlugIns;
 [Display(Name = nameof(PlugInResources.MediumComplexPotionConsumeHandlerPlugIn_Name), Description = nameof(PlugInResources.MediumComplexPotionConsumeHandlerPlugIn_Description), ResourceType = typeof(PlugInResources))]
 public class MediumComplexPotionConsumeHandlerPlugIn : ComplexPotionConsumeHandlerPlugIn
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MediumComplexPotionConsumeHandlerPlugIn"/> class.
-    /// </summary>
-    public MediumComplexPotionConsumeHandlerPlugIn()
-        : base(new MediumHealthPotionConsumeHandlerPlugIn(), new MediumShieldPotionConsumeHandlerPlugIn())
-    {
-    }
-
     /// <inheritdoc />
     public override ItemIdentifier Key => ItemConstants.MediumComplexPotion;
+
+    /// <inheritdoc />
+    protected override double RecoverPercentage => 40;
 }
