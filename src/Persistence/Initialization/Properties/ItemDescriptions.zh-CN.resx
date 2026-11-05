@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="SmallHealingPotion" xml:space="preserve">
+    <value>恢复约10%生命值</value>
+  </data>
+  <data name="MediumHealingPotion" xml:space="preserve">
+    <value>恢复约20%生命值</value>
+  </data>
+  <data name="LargeHealingPotion" xml:space="preserve">
+    <value>恢复约30%生命值</value>
+  </data>
+  <data name="SmallManaPotion" xml:space="preserve">
+    <value>恢复约10%魔力值</value>
+  </data>
+  <data name="MediumManaPotion" xml:space="preserve">
+    <value>恢复约20%魔力值</value>
+  </data>
+  <data name="LargeManaPotion" xml:space="preserve">
+    <value>恢复约30%魔力值</value>
+  </data>
+  <data name="SmallShieldPotion" xml:space="preserve">
+    <value>恢复20%护盾值</value>
+  </data>
+  <data name="MediumShieldPotion" xml:space="preserve">
+    <value>恢复40%护盾值</value>
+  </data>
+  <data name="LargeShieldPotion" xml:space="preserve">
+    <value>恢复100%护盾值</value>
+  </data>
+  <data name="SmallComplexPotion" xml:space="preserve">
+    <value>恢复20%AG</value>
+  </data>
+  <data name="MediumComplexPotion" xml:space="preserve">
+    <value>恢复40%AG</value>
+  </data>
+  <data name="LargeComplexPotion" xml:space="preserve">
+    <value>恢复60%AG</value>
+  </data>
+</root>

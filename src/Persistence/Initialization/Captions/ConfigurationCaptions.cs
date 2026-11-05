@@ -235,6 +235,14 @@ public static class ConfigurationCaptions
                 continue;
             }
 
+            // Empty captions are not linkable; most ItemDefinition/Skill.Description values stay unset
+            // until a specific resource is assigned. Matching them by Id to filled references would
+            // count them as customized and break LinkSourceKeys for otherwise unchanged installs.
+            if (string.IsNullOrWhiteSpace(caption.Value.ValueInNeutralLanguage))
+            {
+                continue;
+            }
+
             if (!referencesById.TryGetValue(caption.Key, out var referenceValue)
                 && (GetNumberKey(caption) is not { } numberKey
                     || ambiguousTargetNumbers.Contains(numberKey)

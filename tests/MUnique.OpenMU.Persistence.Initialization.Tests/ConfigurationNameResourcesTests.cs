@@ -32,6 +32,7 @@ internal class ConfigurationNameResourcesTests
         (nameof(ItemOptionNames), ItemOptionNames.ResourceManager),
         (nameof(ItemOptionTypeNames), ItemOptionTypeNames.ResourceManager),
         (nameof(ItemOptionDescriptions), ItemOptionDescriptions.ResourceManager),
+        (nameof(ItemDescriptions), ItemDescriptions.ResourceManager),
         (nameof(ItemSetNames), ItemSetNames.ResourceManager),
         (nameof(ArmorSetNames), ArmorSetNames.ResourceManager),
         (nameof(CraftingNames), CraftingNames.ResourceManager),
