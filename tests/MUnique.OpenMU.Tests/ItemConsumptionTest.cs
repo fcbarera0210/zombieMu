@@ -292,6 +292,9 @@ public class ItemConsumptionTest
     public async ValueTask ComplexPotionAbilityRecoverAsync()
     {
         var player = await this.GetPlayerAsync().ConfigureAwait(false);
+        player.Attributes![Stats.CurrentAbility] = 0;
+        var healthBefore = player.Attributes.GetValueOfAttribute(Stats.CurrentHealth);
+        var shieldBefore = player.Attributes.GetValueOfAttribute(Stats.CurrentShield);
         var item = this.GetItem();
         await player.Inventory!.AddItemAsync(ItemSlot, item).ConfigureAwait(false);
         var consumeHandler = new LargeComplexPotionConsumeHandlerPlugIn();
@@ -299,9 +302,9 @@ public class ItemConsumptionTest
         consumeHandler.Configuration!.RecoverSteps.Clear(); // When there are no steps, we recover all immediately.
         var success = await consumeHandler.ConsumeItemAsync(player, item, null, FruitUsage.Undefined).ConfigureAwait(false);
         Assert.That(success, Is.True);
-        Assert.That(player.Attributes!.GetValueOfAttribute(Stats.CurrentAbility), Is.GreaterThan(0.0f));
-        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentHealth), Is.EqualTo(0.0f));
-        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentShield), Is.EqualTo(0.0f));
+        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentAbility), Is.GreaterThan(0.0f));
+        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentHealth), Is.EqualTo(healthBefore));
+        Assert.That(player.Attributes.GetValueOfAttribute(Stats.CurrentShield), Is.EqualTo(shieldBefore));
     }
 
     /// <summary>
