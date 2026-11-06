@@ -222,7 +222,7 @@ internal partial class NpcInitialization : Version095d.NpcInitialization
             var def = this.Context.CreateNew<MonsterDefinition>();
             def.Number = 379;
             def.Designation = LocalizedString.FromResource(() => MonsterNames.FireworksGirl);
-            def.NpcWindow = NpcWindow.Undefined;
+            def.NpcWindow = NpcWindow.NpcDialog;
             def.ObjectKind = NpcObjectKind.PassiveNpc;
             this.GameConfiguration.Monsters.Add(def);
             def.SetGuid(def.Number);

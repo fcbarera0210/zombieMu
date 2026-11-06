@@ -14,26 +14,43 @@ using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.GameLogic.Views.NPC;
 
 /// <summary>
-/// Starts, completes and abandons Mission Broker quests without opening the stock F6 quest UI.
-/// Progress still uses <see cref="CharacterQuestState"/> so kill tracking and persistence work as usual.
-/// Multiple active missions in group <see cref="MissionBrokerConstants.QuestGroup"/> are supported
-/// (one state row per active mission).
+/// Starts, completes and abandons Mission Broker quests.
+/// Progress uses <see cref="CharacterQuestState"/> so kill tracking and persistence work as usual.
+/// Parallel missions use unique groups in <see cref="MissionBrokerConstants.QuestGroupMin"/>–
+/// <see cref="MissionBrokerConstants.QuestGroupMax"/> (up to <see cref="MissionBrokerConstants.MaxActiveMissions"/>).
 /// </summary>
 internal static class MissionBrokerQuestService
 {
     /// <summary>
-    /// Gets all active Mission Broker quest states for the player (any map; by quest group).
+    /// Gets all active Mission Broker quest states for the player (any map; by quest group range).
     /// </summary>
     /// <param name="player">The player.</param>
     /// <returns>Active mission states.</returns>
     public static IList<CharacterQuestState> GetActiveMissionStates(Player player)
     {
         return player.SelectedCharacter?.QuestStates
-                   .Where(state => state.ActiveQuest is { Group: MissionBrokerConstants.QuestGroup })
-                   .OrderBy(state => state.ActiveQuest!.Number)
+                   .Where(state => state.ActiveQuest is { } quest
+                                   && MissionBrokerConstants.IsMissionBrokerGroup(quest.Group))
+                   .OrderBy(state => state.ActiveQuest!.Group)
+                   .ThenBy(state => state.ActiveQuest!.Number)
                    .ToList()
                ?? (IList<CharacterQuestState>)Array.Empty<CharacterQuestState>();
     }
+
+    /// <summary>
+    /// Counts active Mission Broker missions for the player.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <returns>The number of active missions in the Mission Broker group range.</returns>
+    public static int CountActiveMissions(Player player) => GetActiveMissionStates(player).Count;
+
+    /// <summary>
+    /// Determines whether the player can accept another Mission Broker mission.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <returns><c>true</c> when under the active mission limit.</returns>
+    public static bool CanAcceptAnother(Player player)
+        => CountActiveMissions(player) < MissionBrokerConstants.MaxActiveMissions;
 
     /// <summary>
     /// Gets all active Mission Broker quest states linked to the given NPC.
@@ -275,8 +292,7 @@ internal static class MissionBrokerQuestService
             return false;
         }
 
-        var actives = GetActiveMissionStates(player, npc);
-        if (actives.Count >= MissionBrokerConstants.MaxActiveMissions)
+        if (!CanAcceptAnother(player))
         {
             return false;
         }

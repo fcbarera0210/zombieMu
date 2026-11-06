@@ -48,7 +48,9 @@ public class QuestSelectAction
             return;
         }
 
-        if (quest.StartingNumber == number && quest.Number != number)
+        // Always send starting-step info for selectable quests, including simple missions
+        // where StartingNumber == Number (Mission Broker and similar).
+        if (quest.StartingNumber == number || quest.Number == number)
         {
             await player.InvokeViewPlugInAsync<IQuestStepInfoPlugIn>(p => p.ShowQuestStepInfoAsync(quest.Group, quest.StartingNumber)).ConfigureAwait(false);
         }

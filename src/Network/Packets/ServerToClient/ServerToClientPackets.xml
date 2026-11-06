@@ -94,6 +94,29 @@
       </Fields>
     </Structure>
     <Structure>
+      <Name>QuestIdentificationExtended</Name>
+      <Description>Defines the information which identifies a quest, including a display name for open-source clients without BMD quest texts.</Description>
+      <Length>68</Length>
+      <Fields>
+        <Field>
+          <Index>0</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Number</Name>
+        </Field>
+        <Field>
+          <Index>2</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>Group</Name>
+        </Field>
+        <Field>
+          <Index>4</Index>
+          <Type>String</Type>
+          <Name>Name</Name>
+          <Length>64</Length>
+        </Field>
+      </Fields>
+    </Structure>
+    <Structure>
       <Name>QuestCondition</Name>
       <Description>Defines a condition which must be fulfilled to complete the quest.</Description>
       <Length>26</Length>
@@ -11500,6 +11523,91 @@
           <TypeName>QuestRewardExtended</TypeName>
           <Name>Rewards</Name>
           <ItemCountField>RewardCount</ItemCountField>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>F6</Code>
+      <SubCode>1C</SubCode>
+      <Name>AvailableQuestsExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>After the game client requested the list of available quests through an NPC dialog. Extended variant includes display names for open-source clients without BMD quest texts.</SentWhen>
+      <CausedReaction>The client shows the available quests for the currently interacting NPC, using the provided names.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>5</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>QuestNpcNumber</Name>
+        </Field>
+        <Field>
+          <Index>7</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>QuestCount</Name>
+        </Field>
+        <Field>
+          <Index>9</Index>
+          <Type>Structure[]</Type>
+          <TypeName>QuestIdentificationExtended</TypeName>
+          <Name>Quests</Name>
+          <ItemCountField>QuestCount</ItemCountField>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>F6</Code>
+      <SubCode>1D</SubCode>
+      <Name>QuestStateListExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>After the game client requested the list of all quests which are currently in progress or accepted. Extended variant includes display names for open-source clients without BMD quest texts.</SentWhen>
+      <CausedReaction>The client shows the active quest list using the provided names.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>5</Index>
+          <Type>Byte</Type>
+          <Name>QuestCount</Name>
+        </Field>
+        <Field>
+          <Index>6</Index>
+          <Type>Structure[]</Type>
+          <TypeName>QuestIdentificationExtended</TypeName>
+          <Name>Quests</Name>
+          <ItemCountField>QuestCount</ItemCountField>
+        </Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>F6</Code>
+      <SubCode>1E</SubCode>
+      <Name>QuestTextExtended</Name>
+      <Length>201</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>After the game client selected or started a quest step, so the open-source client can show title and summary without BMD texts.</SentWhen>
+      <CausedReaction>The client shows the quest title and summary for the selected step.</CausedReaction>
+      <Fields>
+        <Field>
+          <Index>5</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>QuestNumber</Name>
+        </Field>
+        <Field>
+          <Index>7</Index>
+          <Type>ShortLittleEndian</Type>
+          <Name>QuestGroup</Name>
+        </Field>
+        <Field>
+          <Index>9</Index>
+          <Type>String</Type>
+          <Name>Name</Name>
+          <Length>64</Length>
+        </Field>
+        <Field>
+          <Index>73</Index>
+          <Type>String</Type>
+          <Name>Summary</Name>
+          <Length>128</Length>
         </Field>
       </Fields>
     </Packet>

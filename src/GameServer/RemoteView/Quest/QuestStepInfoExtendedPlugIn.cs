@@ -1,0 +1,51 @@
+// <copyright file="QuestStepInfoExtendedPlugIn.cs" company="MUnique">
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace MUnique.OpenMU.GameServer.RemoteView.Quest;
+
+using System.Runtime.InteropServices;
+using MUnique.OpenMU.GameLogic.PlayerActions.Quests;
+using MUnique.OpenMU.GameLogic.Views.Quest;
+using MUnique.OpenMU.Network.Packets.ServerToClient;
+using MUnique.OpenMU.Network.PlugIns;
+using MUnique.OpenMU.PlugIns;
+
+/// <summary>
+/// The extended implementation of the <see cref="IQuestStepInfoPlugIn"/> which sends quest title/summary
+/// before the stock step-info packet so open-source clients can render text without BMD files.
+/// </summary>
+[PlugIn]
+[Display(Name = nameof(PlugInResources.QuestStepInfoExtendedPlugIn_Name), Description = nameof(PlugInResources.QuestStepInfoExtendedPlugIn_Description), ResourceType = typeof(PlugInResources))]
+[Guid("C4E7F0A2-5B19-4D8C-9E31-8F6A2B7C0D45")]
+[MinimumClient(106, 3, ClientLanguage.Invariant)]
+public class QuestStepInfoExtendedPlugIn : IQuestStepInfoPlugIn
+{
+    private readonly RemotePlayer _player;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestStepInfoExtendedPlugIn"/> class.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    public QuestStepInfoExtendedPlugIn(RemotePlayer player)
+    {
+        this._player = player;
+    }
+
+    /// <inheritdoc/>
+    public async ValueTask ShowQuestStepInfoAsync(short questGroup, short stepNumber)
+    {
+        var quest = this._player.GetQuest(questGroup, stepNumber);
+        var name = quest?.Name.GetTranslation(this._player.Culture)
+                   ?? quest?.Name.ToString()
+                   ?? string.Empty;
+
+        await this._player.Connection.SendQuestTextExtendedAsync(
+            (ushort)stepNumber,
+            (ushort)questGroup,
+            name,
+            name).ConfigureAwait(false);
+
+        await this._player.Connection.SendQuestStepInfoAsync((ushort)stepNumber, (ushort)questGroup).ConfigureAwait(false);
+    }
+}

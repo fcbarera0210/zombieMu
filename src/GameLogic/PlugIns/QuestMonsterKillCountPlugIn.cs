@@ -68,8 +68,8 @@ public class QuestMonsterKillCountPlugIn : IAttackableGotKilledPlugIn, ISupportC
                     await player.ShowBlueMessageAsync(message).ConfigureAwait(false);
                 }
 
-                // Golden notice once objectives are met (Mission Broker has no F6 UI).
-                if (questState.ActiveQuest.Group == MissionBrokerConstants.QuestGroup
+                // Golden notice once Mission Broker objectives are met.
+                if (MissionBrokerConstants.IsMissionBrokerGroup(questState.ActiveQuest.Group)
                     && requirementState.KillCount == killRequirement.MinimumNumber
                     && MissionBrokerQuestService.IsReadyToComplete(questState))
                 {
@@ -77,7 +77,7 @@ public class QuestMonsterKillCountPlugIn : IAttackableGotKilledPlugIn, ISupportC
                                     ?? questState.ActiveQuest.Name.ToString()
                                     ?? "Mission";
                     await player.ShowGoldenMessageAsync(
-                        $"[Mission Broker] '{questName}' ready — talk to the Mission Broker for your reward.")
+                        $"[Mission Broker] '{questName}' ready — talk to the Mission Broker or use the quest window (F).")
                         .ConfigureAwait(false);
                 }
             }

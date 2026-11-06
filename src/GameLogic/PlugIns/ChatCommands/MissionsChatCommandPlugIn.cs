@@ -69,7 +69,7 @@ public class MissionsChatCommandPlugIn : ChatCommandPlugInBase<EmptyChatCommandA
 
         await MissionBrokerQuestService.ShowChatAsync(
             player,
-            "[Mission Broker] Talk to the Mission Broker to turn in or abandon (ABANDON [N]).")
+            "[Mission Broker] Use the quest window (F) to track progress or give up a mission.")
             .ConfigureAwait(false);
     }
 }

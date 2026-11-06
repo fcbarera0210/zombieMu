@@ -217,6 +217,56 @@ public readonly ref struct QuestIdentificationRef
 
 
 /// <summary>
+/// Defines the information which identifies a quest, including a display name for open-source clients without BMD quest texts..
+/// </summary>
+public readonly ref struct QuestIdentificationExtendedRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestIdentificationExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public QuestIdentificationExtendedRef(Span<byte> data)
+    {
+        this._data = data;
+    }
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 68;
+
+    /// <summary>
+    /// Gets or sets the number.
+    /// </summary>
+    public ushort Number
+    {
+        get => ReadUInt16LittleEndian(this._data);
+        set => WriteUInt16LittleEndian(this._data, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the group.
+    /// </summary>
+    public ushort Group
+    {
+        get => ReadUInt16LittleEndian(this._data[2..]);
+        set => WriteUInt16LittleEndian(this._data[2..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
+    public string Name
+    {
+        get => this._data.ExtractString(4, 64, System.Text.Encoding.UTF8);
+        set => this._data.Slice(4, 64).WriteString(value, System.Text.Encoding.UTF8);
+    }
+}
+
+
+/// <summary>
 /// Defines a condition which must be fulfilled to complete the quest..
 /// </summary>
 public readonly ref struct QuestConditionRef
@@ -30422,6 +30472,314 @@ public readonly ref struct QuestStateExtendedRef
     /// <param name="conditionsCount">The count of <see cref="QuestConditionExtendedRef"/> from which the size will be calculated.</param>
         
     public static int GetRequiredSize(int conditionsCount) => conditionsCount * QuestConditionExtendedRef.Length + 12;
+}
+
+
+/// <summary>
+/// Is sent by the server when: After the game client requested the list of available quests through an NPC dialog. Extended variant includes display names for open-source clients without BMD quest texts.
+/// Causes reaction on client side: The client shows the available quests for the currently interacting NPC, using the provided names.
+/// </summary>
+public readonly ref struct AvailableQuestsExtendedRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AvailableQuestsExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public AvailableQuestsExtendedRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AvailableQuestsExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private AvailableQuestsExtendedRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xF6;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x1C;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCodeRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the quest npc number.
+    /// </summary>
+    public ushort QuestNpcNumber
+    {
+        get => ReadUInt16LittleEndian(this._data[5..]);
+        set => WriteUInt16LittleEndian(this._data[5..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the quest count.
+    /// </summary>
+    public ushort QuestCount
+    {
+        get => ReadUInt16LittleEndian(this._data[7..]);
+        set => WriteUInt16LittleEndian(this._data[7..], value);
+    }
+
+    /// <summary>
+    /// Gets the <see cref="QuestIdentificationExtendedRef"/> of the specified index.
+    /// </summary>
+        public QuestIdentificationExtendedRef this[int index] => new (this._data[(9 + index * QuestIdentificationExtendedRef.Length)..]);
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="AvailableQuestsExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator AvailableQuestsExtendedRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="AvailableQuestsExtended"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(AvailableQuestsExtendedRef packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified count of <see cref="QuestIdentificationExtendedRef"/>.
+    /// </summary>
+    /// <param name="questsCount">The count of <see cref="QuestIdentificationExtendedRef"/> from which the size will be calculated.</param>
+        
+    public static int GetRequiredSize(int questsCount) => questsCount * QuestIdentificationExtendedRef.Length + 9;
+}
+
+
+/// <summary>
+/// Is sent by the server when: After the game client requested the list of all quests which are currently in progress or accepted. Extended variant includes display names for open-source clients without BMD quest texts.
+/// Causes reaction on client side: The client shows the active quest list using the provided names.
+/// </summary>
+public readonly ref struct QuestStateListExtendedRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestStateListExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public QuestStateListExtendedRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestStateListExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private QuestStateListExtendedRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xF6;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x1D;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCodeRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the quest count.
+    /// </summary>
+    public byte QuestCount
+    {
+        get => this._data[5];
+        set => this._data[5] = value;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="QuestIdentificationExtendedRef"/> of the specified index.
+    /// </summary>
+        public QuestIdentificationExtendedRef this[int index] => new (this._data[(6 + index * QuestIdentificationExtendedRef.Length)..]);
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="QuestStateListExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator QuestStateListExtendedRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="QuestStateListExtended"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(QuestStateListExtendedRef packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified count of <see cref="QuestIdentificationExtendedRef"/>.
+    /// </summary>
+    /// <param name="questsCount">The count of <see cref="QuestIdentificationExtendedRef"/> from which the size will be calculated.</param>
+        
+    public static int GetRequiredSize(int questsCount) => questsCount * QuestIdentificationExtendedRef.Length + 6;
+}
+
+
+/// <summary>
+/// Is sent by the server when: After the game client selected or started a quest step, so the open-source client can show title and summary without BMD texts.
+/// Causes reaction on client side: The client shows the quest title and summary for the selected step.
+/// </summary>
+public readonly ref struct QuestTextExtendedRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestTextExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public QuestTextExtendedRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestTextExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private QuestTextExtendedRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)Math.Min(data.Length, Length);
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xF6;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x1E;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 201;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCodeRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the quest number.
+    /// </summary>
+    public ushort QuestNumber
+    {
+        get => ReadUInt16LittleEndian(this._data[5..]);
+        set => WriteUInt16LittleEndian(this._data[5..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the quest group.
+    /// </summary>
+    public ushort QuestGroup
+    {
+        get => ReadUInt16LittleEndian(this._data[7..]);
+        set => WriteUInt16LittleEndian(this._data[7..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
+    public string Name
+    {
+        get => this._data.ExtractString(9, 64, System.Text.Encoding.UTF8);
+        set => this._data.Slice(9, 64).WriteString(value, System.Text.Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Gets or sets the summary.
+    /// </summary>
+    public string Summary
+    {
+        get => this._data.ExtractString(73, 128, System.Text.Encoding.UTF8);
+        set => this._data.Slice(73, 128).WriteString(value, System.Text.Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="QuestTextExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator QuestTextExtendedRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="QuestTextExtended"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(QuestTextExtendedRef packet) => packet._data; 
 }
 
 

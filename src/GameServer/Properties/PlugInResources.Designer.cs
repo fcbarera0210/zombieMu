@@ -2455,6 +2455,24 @@ namespace MUnique.OpenMU.GameServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The extended implementation of the ICurrentlyActiveQuestsPlugIn which includes quest display names for open-source clients..
+        /// </summary>
+        public static string CurrentlyActiveQuestsExtendedPlugIn_Description {
+            get {
+                return ResourceManager.GetString("CurrentlyActiveQuestsExtendedPlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quest - Currently Active Quests Extended.
+        /// </summary>
+        public static string CurrentlyActiveQuestsExtendedPlugIn_Name {
+            get {
+                return ResourceManager.GetString("CurrentlyActiveQuestsExtendedPlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The default implementation of the ICurrentlyActiveQuestsPlugIn which is forwarding everything to the game client with specific data packets..
         /// </summary>
         public static string CurrentlyActiveQuestsPlugIn_Description {
@@ -5479,6 +5497,24 @@ namespace MUnique.OpenMU.GameServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The extended implementation of the IQuestStepInfoPlugIn which sends quest title and summary before the stock step-info packet..
+        /// </summary>
+        public static string QuestStepInfoExtendedPlugIn_Description {
+            get {
+                return ResourceManager.GetString("QuestStepInfoExtendedPlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quest - Step Info Extended.
+        /// </summary>
+        public static string QuestStepInfoExtendedPlugIn_Name {
+            get {
+                return ResourceManager.GetString("QuestStepInfoExtendedPlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The default implementation of the IQuestStepInfoPlugIn which is forwarding everything to the game client with specific data packets..
         /// </summary>
         public static string QuestStepInfoPlugIn_Description {
@@ -5889,6 +5925,24 @@ namespace MUnique.OpenMU.GameServer.Properties {
         public static string ShowAreaSkillAnimationPlugIn095_Name {
             get {
                 return ResourceManager.GetString("ShowAreaSkillAnimationPlugIn095_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extended implementation of the IShowAvailableQuestsPlugIn which includes quest display names for open-source clients..
+        /// </summary>
+        public static string ShowAvailableQuestsExtendedPlugIn_Description {
+            get {
+                return ResourceManager.GetString("ShowAvailableQuestsExtendedPlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quest - Show available quests Extended.
+        /// </summary>
+        public static string ShowAvailableQuestsExtendedPlugIn_Name {
+            get {
+                return ResourceManager.GetString("ShowAvailableQuestsExtendedPlugIn_Name", resourceCulture);
             }
         }
         

@@ -62,12 +62,14 @@ internal class Quests : InitializerBase
 
     private void CreateMissionBrokerQuests()
     {
-        // Group 200 is reserved for Mission Broker custom missions (no stock F6 UI).
+        // Groups 200-299 are reserved for Mission Broker missions (unique group per mission).
+        // StartingNumber must differ from Number so the client can show an accept dialog (StartingNumber)
+        // and then track progress under Number without BMD scripts.
         this.CreateQuest(
                 LocalizedString.FromResource(() => QuestNames.PestControl),
-                MissionBrokerConstants.QuestGroup,
+                MissionBrokerConstants.QuestGroupMin,
                 1,
-                1,
+                2,
                 0,
                 1,
                 50,

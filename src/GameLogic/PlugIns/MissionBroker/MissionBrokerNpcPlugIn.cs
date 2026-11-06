@@ -16,9 +16,9 @@ using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>
-/// Dedicated NPC talk handler for custom Mission Broker quests.
-/// Talk shows actives + numbered offers; the player types a number / ABANDON [N] in normal chat.
-/// Multiple missions may be active at once in group <see cref="MissionBrokerConstants.QuestGroup"/>.
+/// Legacy NPC talk handler for custom Mission Broker quests (chat-based accept/abandon).
+/// Prefer the native NpcDialog + F6 quest UI. This plugin is deactivated by configuration update;
+/// if somehow still active, it does not intercept talk so the NpcDialog path can run.
 /// </summary>
 [Guid("B7E4C2A1-9F35-4D6E-8B10-2A5C7D9E4F61")]
 [PlugIn]
@@ -79,29 +79,10 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
     }
 
     /// <inheritdoc />
-    protected override async ValueTask PlayerTalksToConfiguredNpcAsync(Player player, NonPlayerCharacter npc, NpcTalkEventArgs eventArgs)
+    protected override ValueTask PlayerTalksToConfiguredNpcAsync(Player player, NonPlayerCharacter npc, NpcTalkEventArgs eventArgs)
     {
-        eventArgs.HasBeenHandled = true;
-
-        if (player.SelectedCharacter is null)
-        {
-            return;
-        }
-
-        var state = States.GetOrAdd(player.SelectedCharacter.Id, _ => new MissionBrokerInteractionState());
-        var actives = MissionBrokerQuestService.GetActiveMissionStates(player, npc.Definition);
-        var ready = actives.Where(MissionBrokerQuestService.IsReadyToComplete).ToList();
-
-        if (ready.Count > 0)
-        {
-            state.ClearMenu();
-            await this.CompleteReadyMissionsAsync(player, npc, ready).ConfigureAwait(false);
-
-            // Refresh list after turn-ins so the player can keep accepting / abandoning.
-            actives = MissionBrokerQuestService.GetActiveMissionStates(player, npc.Definition);
-        }
-
-        await this.OpenSelectionAsync(player, npc, state, actives).ConfigureAwait(false);
+        // Do not set HasBeenHandled — leave NpcDialog / F6 quest UI as the primary path.
+        return ValueTask.CompletedTask;
     }
 
     private static NonPlayerCharacter? FindNearbyMissionBroker(Player player)

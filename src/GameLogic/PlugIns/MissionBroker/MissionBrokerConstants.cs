@@ -17,11 +17,21 @@ public static class MissionBrokerConstants
     public const short NpcNumber = 379;
 
     /// <summary>
-    /// Quest group reserved for Mission Broker missions.
-    /// Keeps them out of the stock F6 quest UI. Multiple active missions in this group are allowed
-    /// (one <see cref="DataModel.Entities.CharacterQuestState"/> per active mission).
+    /// Inclusive lower bound of quest groups reserved for Mission Broker missions.
+    /// Each mission should use a unique group in this range so up to
+    /// <see cref="MaxActiveMissions"/> can run in parallel with the native F6 quest UI.
     /// </summary>
-    public const short QuestGroup = 200;
+    public const short QuestGroupMin = 200;
+
+    /// <summary>
+    /// Inclusive upper bound of quest groups reserved for Mission Broker missions.
+    /// </summary>
+    public const short QuestGroupMax = 299;
+
+    /// <summary>
+    /// Alias of <see cref="QuestGroupMin"/> for the sample Pest Control mission.
+    /// </summary>
+    public const short QuestGroup = QuestGroupMin;
 
     /// <summary>
     /// Maximum number of Mission Broker missions a character may have active at once.
@@ -30,13 +40,20 @@ public static class MissionBrokerConstants
 
     /// <summary>
     /// Chat keyword to abandon an active mission while the menu is open.
-    /// Use "abandon" for a single active mission, or "abandon N" to pick one by list index.
+    /// Kept for backwards compatibility; the F6 quest window is the preferred abandon path.
     /// </summary>
     public const string AbandonKeyword = "abandon";
 
     /// <summary>
     /// How long the numbered mission menu stays valid after talking to the NPC.
-    /// During this window the player can type a mission number or ABANDON in normal chat.
+    /// Kept for the legacy chat plugin; unused when that plugin is inactive.
     /// </summary>
     public static readonly TimeSpan MenuTimeout = TimeSpan.FromSeconds(60);
+
+    /// <summary>
+    /// Determines whether the given quest group belongs to the Mission Broker range.
+    /// </summary>
+    /// <param name="group">The quest group.</param>
+    /// <returns><c>true</c> when the group is reserved for Mission Broker missions.</returns>
+    public static bool IsMissionBrokerGroup(short group) => group >= QuestGroupMin && group <= QuestGroupMax;
 }

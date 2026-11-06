@@ -1509,6 +1509,12 @@
   <data name="CurrentlyActiveQuestsPlugIn_Description" xml:space="preserve">
     <value>The default implementation of the ICurrentlyActiveQuestsPlugIn which is forwarding everything to the game client with specific data packets.</value>
   </data>
+  <data name="CurrentlyActiveQuestsExtendedPlugIn_Name" xml:space="preserve">
+    <value>Quest - Currently Active Quests Extended</value>
+  </data>
+  <data name="CurrentlyActiveQuestsExtendedPlugIn_Description" xml:space="preserve">
+    <value>The extended implementation of the ICurrentlyActiveQuestsPlugIn which includes quest display names for open-source clients.</value>
+  </data>
   <data name="LegacyQuestRewardPlugIn_Name" xml:space="preserve">
     <value>Quest - Reward</value>
   </data>
@@ -1575,11 +1581,23 @@
   <data name="QuestStepInfoPlugIn_Description" xml:space="preserve">
     <value>The default implementation of the IQuestStepInfoPlugIn which is forwarding everything to the game client with specific data packets.</value>
   </data>
+  <data name="QuestStepInfoExtendedPlugIn_Name" xml:space="preserve">
+    <value>Quest - Step Info Extended</value>
+  </data>
+  <data name="QuestStepInfoExtendedPlugIn_Description" xml:space="preserve">
+    <value>The extended implementation of the IQuestStepInfoPlugIn which sends quest title and summary before the stock step-info packet.</value>
+  </data>
   <data name="ShowAvailableQuestsPlugIn_Name" xml:space="preserve">
     <value>Quest - Show available quests</value>
   </data>
   <data name="ShowAvailableQuestsPlugIn_Description" xml:space="preserve">
     <value>The default implementation of the IShowAvailableQuestsPlugIn which is forwarding everything to the game client with specific data packets.</value>
+  </data>
+  <data name="ShowAvailableQuestsExtendedPlugIn_Name" xml:space="preserve">
+    <value>Quest - Show available quests Extended</value>
+  </data>
+  <data name="ShowAvailableQuestsExtendedPlugIn_Description" xml:space="preserve">
+    <value>The extended implementation of the IShowAvailableQuestsPlugIn which includes quest display names for open-source clients.</value>
   </data>
   <data name="ChangeTradeButtonStatePlugIn_Name" xml:space="preserve">
     <value>Change Trade Button State</value>

@@ -105,6 +105,32 @@ public class PacketStructureTests
     }
 
     /// <summary>
+    /// Tests the structure size calculation for QuestIdentificationExtended.
+    /// </summary>
+    [Test]
+    public void QuestIdentificationExtended_SizeValidation()
+    {
+        // Fixed-length structure validation
+        const int expectedLength = 68;
+        var actualLength = QuestIdentificationExtended.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Structure length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Number' boundary
+        Assert.That(0 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Number' exceeds structure boundary");
+        
+        // Validate field 'Group' boundary
+        Assert.That(2 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Group' exceeds structure boundary");
+        
+        // Validate field 'Name' boundary
+        Assert.That(4 + 64, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Name' exceeds structure boundary");
+    }
+
+    /// <summary>
     /// Tests the structure size calculation for QuestCondition.
     /// </summary>
     [Test]
@@ -6617,6 +6643,68 @@ public class PacketStructureTests
     }
 
     /// <summary>
+    /// Tests the packet size calculation for AvailableQuestsExtended.
+    /// </summary>
+    [Test]
+    public void AvailableQuestsExtended_PacketSizeValidation()
+    {
+        // Basic packet validation
+        // Validate header type and field boundaries
+        
+        // Field 'QuestNpcNumber' starts at index 5 with size 2
+        Assert.That(5, Is.GreaterThanOrEqualTo(0), 
+            "Field 'QuestNpcNumber' has invalid negative index");
+        
+        // Field 'QuestCount' starts at index 7 with size 2
+        Assert.That(7, Is.GreaterThanOrEqualTo(0), 
+            "Field 'QuestCount' has invalid negative index");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for QuestStateListExtended.
+    /// </summary>
+    [Test]
+    public void QuestStateListExtended_PacketSizeValidation()
+    {
+        // Basic packet validation
+        // Validate header type and field boundaries
+        
+        // Field 'QuestCount' starts at index 5 with size 1
+        Assert.That(5, Is.GreaterThanOrEqualTo(0), 
+            "Field 'QuestCount' has invalid negative index");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for QuestTextExtended.
+    /// </summary>
+    [Test]
+    public void QuestTextExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 201;
+        var actualLength = QuestTextExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'QuestNumber' boundary
+        Assert.That(5 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'QuestNumber' exceeds packet boundary");
+        
+        // Validate field 'QuestGroup' boundary
+        Assert.That(7 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'QuestGroup' exceeds packet boundary");
+        
+        // Validate field 'Name' boundary
+        Assert.That(9 + 64, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Name' exceeds packet boundary");
+        
+        // Validate field 'Summary' boundary
+        Assert.That(73 + 128, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Summary' exceeds packet boundary");
+    }
+
+    /// <summary>
     /// Tests the packet size calculation for OpenNpcDialog.
     /// </summary>
     [Test]
@@ -7128,6 +7216,70 @@ public class PacketStructureTests
         
         Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
             "GetRequiredSize calculation incorrect for string field");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for ItemTooltipDescriptionExtended.
+    /// </summary>
+    [Test]
+    public void ItemTooltipDescriptionExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 266;
+        var actualLength = ItemTooltipDescriptionExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Index' boundary
+        Assert.That(5 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Index' exceeds packet boundary");
+        
+        // Validate field 'Count' boundary
+        Assert.That(7 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Count' exceeds packet boundary");
+        
+        // Validate field 'Group' boundary
+        Assert.That(9 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Group' exceeds packet boundary");
+        
+        // Validate field 'Number' boundary
+        Assert.That(10 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Number' exceeds packet boundary");
+        
+        // Validate field 'Description' boundary
+        Assert.That(12 + 254, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Description' exceeds packet boundary");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for SkillTooltipDescriptionExtended.
+    /// </summary>
+    [Test]
+    public void SkillTooltipDescriptionExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 263;
+        var actualLength = SkillTooltipDescriptionExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Index' boundary
+        Assert.That(5 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Index' exceeds packet boundary");
+        
+        // Validate field 'Count' boundary
+        Assert.That(7 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Count' exceeds packet boundary");
+        
+        // Validate field 'SkillNumber' boundary
+        Assert.That(9 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'SkillNumber' exceeds packet boundary");
+        
+        // Validate field 'Description' boundary
+        Assert.That(11 + 252, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Description' exceeds packet boundary");
     }
 
     /// <summary>

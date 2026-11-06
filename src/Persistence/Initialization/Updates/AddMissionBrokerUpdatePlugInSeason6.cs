@@ -15,11 +15,13 @@ using MUnique.OpenMU.PlugIns;
 
 /// <summary>
 /// Sets up the Mission Broker NPC (Fireworks Girl model 379), spawns it in Lorencia,
-/// configures the talk plugin, and adds a sample kill mission.
+/// configures native NpcDialog + F6 quest UI, and adds a sample kill mission.
 /// </summary>
 /// <remarks>
 /// Version 1 used monster id 372, which is the Elite Skeleton transformation skin and does not
-/// render as a clickable NPC. Version 2 switches to 379.
+/// render as a clickable NPC. Version 2 switches to 379. Version 3 kept the chat talk plugin.
+/// Version 4 switches to NpcDialog and deactivates the legacy chat talk plugin.
+/// Version 5 sets StartingNumber != Number on the sample quest for F6 accept/progress UI.
 /// </remarks>
 [PlugIn]
 [Display(
@@ -37,11 +39,12 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
     /// <summary>
     /// The plug in description.
     /// </summary>
-    internal const string PlugInDescription = "Sets up Fireworks Girl (379) as the Mission Broker for custom quests, spawns her in Lorencia, configures the talk plugin, and adds a sample kill mission. Replaces the unusable Elite Skeleton model (372).";
+    internal const string PlugInDescription = "Sets up Fireworks Girl (379) as the Mission Broker for custom quests with native NpcDialog + F6 UI, spawns her in Lorencia, deactivates the legacy chat talk plugin, and adds a sample kill mission (group 200). Replaces the unusable Elite Skeleton model (372).";
 
     private const short LegacyInvisibleNpcNumber = 372;
     private const short LorenciaSpawnNumber = 28;
-    private const short SampleQuestNumber = 1;
+    private const short SampleQuestNumber = 2;
+    private const short SampleQuestStartingNumber = 1;
     private const short SpiderMonsterNumber = 3;
 
     /// <inheritdoc />
@@ -57,13 +60,13 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
     public override bool IsMandatory => false;
 
     /// <inheritdoc />
-    public override int Version => 3;
+    public override int Version => 5;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 10, 30, 12, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 11, 6, 12, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
@@ -75,7 +78,7 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
         }
 
         npc.Designation = LocalizedString.FromResource(() => MonsterNames.FireworksGirl);
-        npc.NpcWindow = NpcWindow.Undefined;
+        npc.NpcWindow = NpcWindow.NpcDialog;
         npc.ObjectKind = NpcObjectKind.PassiveNpc;
         npc.MerchantStore = null;
 
@@ -145,27 +148,30 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
 
     private static void EnsureSampleQuest(IContext context, GameConfiguration gameConfiguration, MonsterDefinition npc)
     {
-        if (npc.Quests.Any(q => q.Group == MissionBrokerConstants.QuestGroup && q.Number == SampleQuestNumber))
+        // Prefer the F6-compatible Number=2 quest; migrate the old Number=1 sample if present.
+        var quest = npc.Quests.FirstOrDefault(q => q.Group == MissionBrokerConstants.QuestGroupMin && q.Number == SampleQuestNumber)
+                    ?? npc.Quests.FirstOrDefault(q => q.Group == MissionBrokerConstants.QuestGroupMin && q.Number == SampleQuestStartingNumber);
+
+        if (quest is null)
         {
-            return;
+            quest = context.CreateNew<QuestDefinition>();
+            quest.SetGuid(MissionBrokerConstants.QuestGroupMin, SampleQuestNumber);
+            quest.QuestGiver = npc;
+            quest.Name = LocalizedString.FromResource(() => QuestNames.PestControl);
+            quest.MinimumCharacterLevel = 1;
+            quest.MaximumCharacterLevel = 50;
+            quest.Repeatable = true;
+            npc.Quests.Add(quest);
+            quest.WithMonsterKillRequirement(10, SpiderMonsterNumber, context, gameConfiguration);
+            quest.WithMoneyReward(10000, context);
+            quest.WithExperienceReward(5000, context);
         }
 
-        var quest = context.CreateNew<QuestDefinition>();
-        quest.SetGuid(MissionBrokerConstants.QuestGroup, SampleQuestNumber);
-        quest.QuestGiver = npc;
-        quest.Name = LocalizedString.FromResource(() => QuestNames.PestControl);
-        quest.Group = MissionBrokerConstants.QuestGroup;
+        quest.Group = MissionBrokerConstants.QuestGroupMin;
         quest.Number = SampleQuestNumber;
-        quest.StartingNumber = SampleQuestNumber;
+        quest.StartingNumber = SampleQuestStartingNumber;
         quest.RefuseNumber = 0;
-        quest.MinimumCharacterLevel = 1;
-        quest.MaximumCharacterLevel = 50;
-        quest.Repeatable = true;
-        npc.Quests.Add(quest);
-
-        quest.WithMonsterKillRequirement(10, SpiderMonsterNumber, context, gameConfiguration);
-        quest.WithMoneyReward(10000, context);
-        quest.WithExperienceReward(5000, context);
+        quest.QuestGiver = npc;
     }
 
     private static void EnsurePlugInConfiguration(IContext context, GameConfiguration gameConfiguration, MonsterDefinition npc)
@@ -179,7 +185,8 @@ public class AddMissionBrokerUpdatePlugInSeason6 : UpdatePlugInBase
             gameConfiguration.PlugInConfigurations.Add(plugInConfiguration);
         }
 
-        plugInConfiguration.IsActive = true;
+        // Native NpcDialog + F6 quest UI replaces the chat-based talk flow.
+        plugInConfiguration.IsActive = false;
         plugInConfiguration.SetConfiguration(
             new NpcTalkPlugInConfiguration { Npc = npc },
             new ConfigureNpcTalkPlugInsPlugInBase.IdReferenceHandler());

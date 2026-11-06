@@ -6555,6 +6555,40 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="QuestTextExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="questNumber">The quest number.</param>
+    /// <param name="questGroup">The quest group.</param>
+    /// <param name="name">The name.</param>
+    /// <param name="summary">The summary.</param>
+    /// <remarks>
+    /// Is sent by the server when: After the game client selected or started a quest step, so the open-source client can show title and summary without BMD texts.
+    /// Causes reaction on client side: The client shows the quest title and summary for the selected step.
+    /// </remarks>
+    public static async ValueTask SendQuestTextExtendedAsync(this IConnection? connection, ushort @questNumber, ushort @questGroup, string @name, string @summary)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = QuestTextExtendedRef.Length;
+            var packet = new QuestTextExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.QuestNumber = @questNumber;
+            packet.QuestGroup = @questGroup;
+            packet.Name = @name;
+            packet.Summary = @summary;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="OpenNpcDialog" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

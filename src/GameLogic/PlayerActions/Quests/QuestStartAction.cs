@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 
+using MUnique.OpenMU.GameLogic.PlugIns.MissionBroker;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.GameLogic.Views.Quest;
 
@@ -31,6 +32,21 @@ public class QuestStartAction
         if (quest.MinimumCharacterLevel > player.Level || (quest.MaximumCharacterLevel > 0 && quest.MaximumCharacterLevel < player.Level))
         {
             player.Logger.LogDebug("Failed, character level {0} not in allowed range {1} to {2}.", player.Level, quest.MinimumCharacterLevel, quest.MaximumCharacterLevel);
+            return;
+        }
+
+        if (MissionBrokerConstants.IsMissionBrokerGroup(quest.Group)
+            && !MissionBrokerQuestService.CanAcceptAnother(player))
+        {
+            player.Logger.LogDebug(
+                "Failed, Mission Broker active limit reached ({0}).",
+                MissionBrokerConstants.MaxActiveMissions);
+            await player.ShowGoldenMessageAsync(
+                    $"[Mission Broker] Active limit reached ({MissionBrokerConstants.MaxActiveMissions}). Finish or give up one first.")
+                .ConfigureAwait(false);
+            await player.ShowBlueMessageAsync(
+                    $"[Mission Broker] You can have at most {MissionBrokerConstants.MaxActiveMissions} missions at once.")
+                .ConfigureAwait(false);
             return;
         }
 

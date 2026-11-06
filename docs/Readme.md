@@ -30,6 +30,9 @@ can be searched and navigated.
   exchanged between client and server, generated from the XML sources at
   [src/Network/Packets](../src/Network/Packets)
 
+* [Mission Broker](mission-broker.md): custom admin-created quests on NPC 379,
+  F6 UI conventions (groups 200–299) for the open-source client
+
 * [Master Skill System](MasterSystem.md): the master skill tree, its rules and
   how it is implemented on client and server side
 

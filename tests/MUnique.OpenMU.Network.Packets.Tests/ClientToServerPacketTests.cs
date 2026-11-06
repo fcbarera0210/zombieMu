@@ -3991,4 +3991,18 @@ public class PacketStructureTests
         Assert.That(actualLength, Is.EqualTo(expectedLength), 
             "Packet length mismatch: declared length does not match calculated size");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for TooltipDescriptionsRequest.
+    /// </summary>
+    [Test]
+    public void TooltipDescriptionsRequest_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 4;
+        var actualLength = TooltipDescriptionsRequestRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+    }
 }
