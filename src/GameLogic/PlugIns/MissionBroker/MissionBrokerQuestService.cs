@@ -175,8 +175,7 @@ internal static class MissionBrokerQuestService
             return false;
         }
 
-        if (quest.MinimumCharacterLevel > player.Level
-            || (quest.MaximumCharacterLevel > 0 && quest.MaximumCharacterLevel < player.Level))
+        if (!player.IsWithinQuestLevelRange(quest))
         {
             return false;
         }

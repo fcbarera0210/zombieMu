@@ -42,7 +42,8 @@ public class QuestSelectAction
             return;
         }
 
-        if (quest.MinimumCharacterLevel > player.Level || (quest.MaximumCharacterLevel > 0 && quest.MaximumCharacterLevel < player.Level))
+        // Level range only gates starting a new quest; active missions are handled above.
+        if (!player.IsWithinQuestLevelRange(quest))
         {
             player.Logger.LogDebug("Failed, character level {0} not in allowed range {1} to {2}.", player.Level, quest.MinimumCharacterLevel, quest.MaximumCharacterLevel);
             return;

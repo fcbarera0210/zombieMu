@@ -12,6 +12,9 @@ windows as other Season 6 quests.
 4. Active missions appear in the player quest window (F) for tracking and give-up.
 5. When requirements are met, open the quest (or talk to the NPC again) and complete it for rewards.
 
+Level min/max only applies when **accepting** a mission. Once taken, it stays selectable at the
+NPC and can be completed regardless of current level, as long as kill/item requirements are met.
+
 `/missions` still lists active Mission Broker progress in chat as a convenience.
 
 ## Admin: creating missions

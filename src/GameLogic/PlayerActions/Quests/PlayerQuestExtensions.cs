@@ -57,6 +57,10 @@ public static class PlayerQuestExtensions
     /// </summary>
     /// <param name="player">The player.</param>
     /// <returns>The available quests of the currently opened NPC depending on the players character class.</returns>
+    /// <remarks>
+    /// Level limits apply only to starting a quest. Quests the player already has active stay listed
+    /// so they can be selected again to turn in rewards after outgrowing the level range.
+    /// </remarks>
     public static IEnumerable<QuestDefinition> GetAvailableQuestsOfOpenedNpc(this Player player)
     {
         if (player.OpenedNpc?.Definition is not { } npc)
@@ -67,9 +71,32 @@ public static class PlayerQuestExtensions
         return GetQuestsLinkedToNpc(player, npc)
             .Where(q => q.QualifiedCharacter is null
                         || Equals(q.QualifiedCharacter, player.SelectedCharacter?.CharacterClass))
-            .Where(q => q.MinimumCharacterLevel <= player.Level
-                        && (q.MaximumCharacterLevel == default || q.MaximumCharacterLevel >= player.Level))
-            .Where(q => !q.EvolvesIntoInactiveClass(player));
+            .Where(q => !q.EvolvesIntoInactiveClass(player))
+            .Where(q => player.HasActiveQuest(q) || IsWithinQuestLevelRange(player, q));
+    }
+
+    /// <summary>
+    /// Determines whether the player currently has the specified quest as an active mission.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="quest">The quest definition.</param>
+    /// <returns><c>true</c> if the quest is the player's active quest for its group; otherwise, <c>false</c>.</returns>
+    public static bool HasActiveQuest(this Player player, QuestDefinition quest)
+    {
+        return player.SelectedCharacter?.QuestStates
+            .Any(state => object.Equals(state.ActiveQuest, quest)) == true;
+    }
+
+    /// <summary>
+    /// Determines whether the player's level is within the quest's start range.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="quest">The quest definition.</param>
+    /// <returns><c>true</c> if the level is within min/max for starting the quest; otherwise, <c>false</c>.</returns>
+    public static bool IsWithinQuestLevelRange(this Player player, QuestDefinition quest)
+    {
+        return quest.MinimumCharacterLevel <= player.Level
+               && (quest.MaximumCharacterLevel == default || quest.MaximumCharacterLevel >= player.Level);
     }
 
     /// <summary>

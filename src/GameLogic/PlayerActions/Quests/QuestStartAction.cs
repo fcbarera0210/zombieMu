@@ -29,7 +29,23 @@ public class QuestStartAction
             return;
         }
 
-        if (quest.MinimumCharacterLevel > player.Level || (quest.MaximumCharacterLevel > 0 && quest.MaximumCharacterLevel < player.Level))
+        var questState = player.SelectedCharacter!.QuestStates.FirstOrDefault(q => q.Group == group);
+        if (questState is null)
+        {
+            questState = player.PersistenceContext.CreateNew<CharacterQuestState>();
+            questState.Group = group;
+            player.SelectedCharacter.QuestStates.Add(questState);
+        }
+
+        // Already active: always show progress (turn-in), even if the player outleveled the start range.
+        if (questState.ActiveQuest != null)
+        {
+            player.Logger.LogDebug("There is already an active quest of this group.");
+            await player.InvokeViewPlugInAsync<IQuestProgressPlugIn>(p => p.ShowQuestProgressAsync(questState.ActiveQuest, false)).ConfigureAwait(false);
+            return;
+        }
+
+        if (!player.IsWithinQuestLevelRange(quest))
         {
             player.Logger.LogDebug("Failed, character level {0} not in allowed range {1} to {2}.", player.Level, quest.MinimumCharacterLevel, quest.MaximumCharacterLevel);
             return;
@@ -47,21 +63,6 @@ public class QuestStartAction
             await player.ShowBlueMessageAsync(
                     $"[Mission Broker] You can have at most {MissionBrokerConstants.MaxActiveMissions} missions at once.")
                 .ConfigureAwait(false);
-            return;
-        }
-
-        var questState = player.SelectedCharacter!.QuestStates.FirstOrDefault(q => q.Group == group);
-        if (questState is null)
-        {
-            questState = player.PersistenceContext.CreateNew<CharacterQuestState>();
-            questState.Group = group;
-            player.SelectedCharacter.QuestStates.Add(questState);
-        }
-
-        if (questState.ActiveQuest != null)
-        {
-            player.Logger.LogDebug("There is already an active quest of this group.");
-            await player.InvokeViewPlugInAsync<IQuestProgressPlugIn>(p => p.ShowQuestProgressAsync(questState.ActiveQuest, false)).ConfigureAwait(false);
             return;
         }
 
