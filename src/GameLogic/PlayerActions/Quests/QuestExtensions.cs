@@ -55,7 +55,12 @@ public static class QuestExtensions
     /// <param name="character">The character that just reset.</param>
     public static void ClearOncePerResetQuestHistory(this Character character)
     {
-        foreach (var questState in character.QuestStates)
+        if (character.QuestStates is not { Count: > 0 } questStates)
+        {
+            return;
+        }
+
+        foreach (var questState in questStates)
         {
             if (questState.LastFinishedQuest?.OncePerReset == true)
             {

@@ -72,4 +72,15 @@ public class QuestOncePerResetTests
         Assert.That(permanentState.LastFinishedQuest, Is.SameAs(oncePerCharacter));
         Assert.That(resetState.LastFinishedQuest, Is.Null);
     }
+
+    /// <summary>
+    /// Characters without quest state collections (e.g. reset unit tests) must not throw.
+    /// </summary>
+    [Test]
+    public void ClearOncePerReset_WithNullQuestStates_DoesNotThrow()
+    {
+        var character = new DataModel.Entities.Character();
+        Assert.That(character.QuestStates, Is.Null);
+        Assert.DoesNotThrow(() => character.ClearOncePerResetQuestHistory());
+    }
 }
