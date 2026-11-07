@@ -1,0 +1,19 @@
+@using MUnique.OpenMU.DataModel.Configuration.Quests
+@using MUnique.OpenMU.DataModel.Entities
+@using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.Web.Shared.Components.ItemEdit
+
+<div class="card mb-3">
+    <h5 class="card-header">@Resources.QuestRewardItem</h5>
+    <div class="card-body card-text">
+        @if (this.Reward.ItemReward is null)
+        {
+            <button type="button" class="btn btn-primary" @onclick="this.CreateItemAsync">@Resources.Create</button>
+        }
+        else
+        {
+            <ItemEdit Item="@this.Reward.ItemReward" ItemChanged="this.StateHasChanged" />
+            <button type="button" class="btn btn-outline-warning mt-2" @onclick="this.RemoveItemAsync">@Resources.Delete</button>
+        }
+    </div>
+</div>

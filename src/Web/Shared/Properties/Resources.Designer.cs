@@ -781,6 +781,78 @@ namespace MUnique.OpenMU.Web.Shared.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Item reward.
+        /// </summary>
+        public static string QuestRewardItem {
+            get {
+                return ResourceManager.GetString("QuestRewardItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choice items (player picks one).
+        /// </summary>
+        public static string QuestRewardsChoiceItems {
+            get {
+                return ResourceManager.GetString("QuestRewardsChoiceItems", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add several separate items here. On completion the player chooses exactly one of them. Other rewards below are always granted.
+        /// </summary>
+        public static string QuestRewardsChoiceItemsHint {
+            get {
+                return ResourceManager.GetString("QuestRewardsChoiceItemsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add choice items....
+        /// </summary>
+        public static string QuestRewardsAddChoiceItems {
+            get {
+                return ResourceManager.GetString("QuestRewardsAddChoiceItems", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No choice items yet.
+        /// </summary>
+        public static string QuestRewardsNoChoiceItems {
+            get {
+                return ResourceManager.GetString("QuestRewardsNoChoiceItems", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Always granted.
+        /// </summary>
+        public static string QuestRewardsAlwaysGranted {
+            get {
+                return ResourceManager.GetString("QuestRewardsAlwaysGranted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Create reward.
+        /// </summary>
+        public static string QuestRewardsCreateOther {
+            get {
+                return ResourceManager.GetString("QuestRewardsCreateOther", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No always-granted rewards yet.
+        /// </summary>
+        public static string QuestRewardsNoFixedRewards {
+            get {
+                return ResourceManager.GetString("QuestRewardsNoFixedRewards", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No more available.
         /// </summary>
         public static string NoMoreAvailable {

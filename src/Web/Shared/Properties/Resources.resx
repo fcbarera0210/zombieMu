@@ -448,6 +448,30 @@ Level: {2} - {3}</value>
   <data name="MiniGameRewardCopyGroup" xml:space="preserve">
     <value>Copy for this event</value>
   </data>
+  <data name="QuestRewardItem" xml:space="preserve">
+    <value>Item reward</value>
+  </data>
+  <data name="QuestRewardsChoiceItems" xml:space="preserve">
+    <value>Choice items (player picks one)</value>
+  </data>
+  <data name="QuestRewardsChoiceItemsHint" xml:space="preserve">
+    <value>Add several separate items here. On completion the player chooses exactly one of them. Other rewards below are always granted.</value>
+  </data>
+  <data name="QuestRewardsAddChoiceItems" xml:space="preserve">
+    <value>Add choice items...</value>
+  </data>
+  <data name="QuestRewardsNoChoiceItems" xml:space="preserve">
+    <value>No choice items yet.</value>
+  </data>
+  <data name="QuestRewardsAlwaysGranted" xml:space="preserve">
+    <value>Always granted</value>
+  </data>
+  <data name="QuestRewardsCreateOther" xml:space="preserve">
+    <value>Create reward</value>
+  </data>
+  <data name="QuestRewardsNoFixedRewards" xml:space="preserve">
+    <value>No always-granted rewards yet.</value>
+  </data>
   <data name="NoMoreAvailable" xml:space="preserve">
     <value>No more available</value>
   </data>

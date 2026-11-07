@@ -1,0 +1,87 @@
+@using MUnique.OpenMU.DataModel
+@using MUnique.OpenMU.DataModel.Configuration.Items
+@using MUnique.OpenMU.DataModel.Configuration.Quests
+@using MUnique.OpenMU.DataModel.Entities
+@using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.Web.Shared.Components.Form.Modal
+@using MUnique.OpenMU.Web.Shared.Components.ItemEdit
+@using MUnique.OpenMU.Web.Shared.Components.Modal
+
+@inherits NotifyableInputBase<ICollection<QuestReward>>
+@inject IModalService ModalService
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <FieldLabel Text="@this.Label" ValueExpression="@this.ValueExpression" />
+    </h5>
+    <div class="card-body card-text">
+        <h6>@Resources.QuestRewardsChoiceItems</h6>
+        <p class="field-hint">@Resources.QuestRewardsChoiceItemsHint</p>
+        <button type="button" class="btn btn-outline-secondary mb-2" @onclick="this.AddChoiceItemsAsync">@Resources.QuestRewardsAddChoiceItems</button>
+
+        @if (this.ChoiceRewards.Count == 0)
+        {
+            <p class="text-muted">@Resources.QuestRewardsNoChoiceItems</p>
+        }
+        else
+        {
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>@Resources.ItemEdit_Definition</th>
+                        <th>@Resources.ItemEdit_Level</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reward in this.ChoiceRewards)
+                    {
+                        <tr @key="reward">
+                            <td>@(reward.ItemReward?.Definition?.Name.ToString() ?? reward.ToString())</td>
+                            <td>@(reward.ItemReward?.Level.ToString() ?? "-")</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-outline-secondary btn-sm me-1" @onclick="() => this.EditRewardAsync(reward)">@Resources.Edit</button>
+                                <button type="button" class="btn btn-outline-warning btn-sm" @onclick="() => this.RemoveRewardAsync(reward)">@Resources.Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <hr />
+
+        <h6>@Resources.QuestRewardsAlwaysGranted</h6>
+        <button type="button" class="btn btn-outline-secondary mb-2" @onclick="this.CreateOtherRewardAsync">@Resources.QuestRewardsCreateOther</button>
+
+        @if (this.FixedRewards.Count == 0)
+        {
+            <p class="text-muted">@Resources.QuestRewardsNoFixedRewards</p>
+        }
+        else
+        {
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>@typeof(QuestReward).GetPropertyCaption(nameof(QuestReward.RewardType))</th>
+                        <th>@Resources.Object</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reward in this.FixedRewards)
+                    {
+                        <tr @key="reward">
+                            <td>@reward.RewardType</td>
+                            <td>@reward.ToString()</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-outline-secondary btn-sm me-1" @onclick="() => this.EditRewardAsync(reward)">@Resources.Edit</button>
+                                <button type="button" class="btn btn-outline-warning btn-sm" @onclick="() => this.RemoveRewardAsync(reward)">@Resources.Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
