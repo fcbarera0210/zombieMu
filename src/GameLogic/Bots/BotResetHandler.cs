@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.Bots;
 
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Offline;
+using MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Resets;
 
@@ -116,6 +117,7 @@ internal static class BotResetHandler
         attributes[Stats.Resets] = resetProgression.NextResetCount;
         attributes[Stats.Level] = configuration.LevelAfterReset;
         character.Experience = 0;
+        character.ClearOncePerResetQuestHistory();
 
         if (configuration.ResetStats)
         {

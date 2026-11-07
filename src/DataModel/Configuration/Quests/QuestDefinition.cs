@@ -55,6 +55,16 @@ public partial class QuestDefinition
     public bool Repeatable { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether this quest can be completed only once per character reset.
+    /// When set, finishing the quest blocks accepting it again until the character resets;
+    /// the finish history is then cleared so it becomes available again.
+    /// Independent of <see cref="Repeatable"/>: use with <see cref="Repeatable"/> = <c>false</c>
+    /// for "once per reset", or leave <see cref="Repeatable"/> = <c>false</c> and this = <c>false</c>
+    /// for "once per character".
+    /// </summary>
+    public bool OncePerReset { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether this quest requires a client action.
     /// </summary>
     public bool RequiresClientAction { get; set; }

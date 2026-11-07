@@ -4,6 +4,8 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 
+using MUnique.OpenMU.DataModel.Configuration.Quests;
+using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.Persistence;
 
 /// <summary>
@@ -26,5 +28,39 @@ public static class QuestExtensions
         }
 
         questState.RequirementStates.Clear();
+    }
+
+    /// <summary>
+    /// Determines whether the quest cannot be accepted again because of its completion history.
+    /// </summary>
+    /// <param name="quest">The quest.</param>
+    /// <param name="lastFinishedQuest">The last finished quest of the matching group, if any.</param>
+    /// <returns>
+    /// <c>true</c> when the character already finished this quest and it is either not
+    /// <see cref="QuestDefinition.Repeatable"/> or marked as <see cref="QuestDefinition.OncePerReset"/>.
+    /// </returns>
+    public static bool IsBlockedByCompletionHistory(this QuestDefinition quest, QuestDefinition? lastFinishedQuest)
+    {
+        if (!Equals(lastFinishedQuest, quest))
+        {
+            return false;
+        }
+
+        return !quest.Repeatable || quest.OncePerReset;
+    }
+
+    /// <summary>
+    /// Clears finish history of quests marked as <see cref="QuestDefinition.OncePerReset"/> so they can be taken again after a character reset.
+    /// </summary>
+    /// <param name="character">The character that just reset.</param>
+    public static void ClearOncePerResetQuestHistory(this Character character)
+    {
+        foreach (var questState in character.QuestStates)
+        {
+            if (questState.LastFinishedQuest?.OncePerReset == true)
+            {
+                questState.LastFinishedQuest = null;
+            }
+        }
     }
 }

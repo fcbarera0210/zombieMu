@@ -4065,6 +4065,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<short>("Number")
                         .HasColumnType("smallint");
 
+                    b.Property<bool>("OncePerReset")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("QualifiedCharacterId")
                         .HasColumnType("uuid");
 

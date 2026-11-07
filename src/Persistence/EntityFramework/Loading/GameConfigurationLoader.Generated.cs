@@ -79,7 +79,7 @@ internal sealed partial class GameConfigurationLoader
         "select \"Id\", \"Money\" from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))",
         "select \"Id\", \"DefinitionId\", \"Durability\", \"HasSkill\", \"ItemSlot\", \"ItemStorageId\", \"Level\", \"PetExperience\", \"SocketCount\", \"StorePrice\", \"StorePriceCoinType\", \"StorePriceItemDefinitionId\" from data.\"Item\" where (\"ItemStorageId\" in (select \"Id\" from (select * from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))) \"ItemStorage\") or \"Id\" in (select \"ItemRewardId\" from config.\"QuestReward\"))",
         "select \"Id\", \"Index\", \"ItemId\", \"ItemOptionId\", \"Level\" from data.\"ItemOptionLink\" where (\"ItemId\" in (select \"Id\" from (select * from data.\"Item\" where (\"ItemStorageId\" in (select \"Id\" from (select * from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))) \"ItemStorage\") or \"Id\" in (select \"ItemRewardId\" from config.\"QuestReward\"))) \"Item\"))",
-        "select \"Id\", \"Group\", \"MaximumCharacterLevel\", \"MinimumCharacterLevel\", \"MonsterDefinitionId\", \"Name\", \"Number\", \"QualifiedCharacterId\", \"QuestGiverId\", \"RefuseNumber\", \"Repeatable\", \"RequiredStartMoney\", \"RequiresClientAction\", \"StartingNumber\" from config.\"QuestDefinition\"",
+        "select \"Id\", \"Group\", \"MaximumCharacterLevel\", \"MinimumCharacterLevel\", \"MonsterDefinitionId\", \"Name\", \"Number\", \"OncePerReset\", \"QualifiedCharacterId\", \"QuestGiverId\", \"RefuseNumber\", \"Repeatable\", \"RequiredStartMoney\", \"RequiresClientAction\", \"StartingNumber\" from config.\"QuestDefinition\"",
         "select \"Id\", \"DropItemGroupId\", \"ItemId\", \"MinimumNumber\", \"QuestDefinitionId\" from config.\"QuestItemRequirement\"",
         "select \"Id\", \"MinimumNumber\", \"MonsterId\", \"QuestDefinitionId\" from config.\"QuestMonsterKillRequirement\"",
         "select \"Id\", \"AttributeRewardId\", \"ItemRewardId\", \"QuestDefinitionId\", \"RewardType\", \"SkillRewardId\", \"Value\" from config.\"QuestReward\"",
@@ -1555,15 +1555,16 @@ internal sealed partial class GameConfigurationLoader
             entity.MinimumCharacterLevel = reader.GetInt32(3);
             entity.Name = reader.IsDBNull(5) ? default : new global::MUnique.OpenMU.Interfaces.LocalizedString(reader.GetString(5));
             entity.Number = reader.GetInt16(6);
-            if (!reader.IsDBNull(7)) { entity.QualifiedCharacterId = reader.GetGuid(7); }
-            if (!reader.IsDBNull(8)) { entity.QuestGiverId = reader.GetGuid(8); }
-            entity.RefuseNumber = reader.GetInt16(9);
-            entity.Repeatable = reader.GetBoolean(10);
-            entity.RequiredStartMoney = reader.GetInt32(11);
-            entity.RequiresClientAction = reader.GetBoolean(12);
-            entity.StartingNumber = reader.GetInt16(13);
+            entity.OncePerReset = reader.GetBoolean(7);
+            if (!reader.IsDBNull(8)) { entity.QualifiedCharacterId = reader.GetGuid(8); }
+            if (!reader.IsDBNull(9)) { entity.QuestGiverId = reader.GetGuid(9); }
+            entity.RefuseNumber = reader.GetInt16(10);
+            entity.Repeatable = reader.GetBoolean(11);
+            entity.RequiredStartMoney = reader.GetInt32(12);
+            entity.RequiresClientAction = reader.GetBoolean(13);
+            entity.StartingNumber = reader.GetInt16(14);
             this._QuestDefinition[entity.Id] = entity;
-            this._QuestDefinitionRows.Add((entity, reader.IsDBNull(7) ? null : reader.GetGuid(7), reader.IsDBNull(8) ? null : reader.GetGuid(8), reader.IsDBNull(4) ? null : reader.GetGuid(4)));
+            this._QuestDefinitionRows.Add((entity, reader.IsDBNull(8) ? null : reader.GetGuid(8), reader.IsDBNull(9) ? null : reader.GetGuid(9), reader.IsDBNull(4) ? null : reader.GetGuid(4)));
         }
     }
 

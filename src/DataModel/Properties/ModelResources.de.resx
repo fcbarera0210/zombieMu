@@ -2175,6 +2175,12 @@
   <data name="QuestDefinition_Repeatable_Caption" xml:space="preserve">
     <value>Wiederholbar</value>
   </data>
+  <data name="QuestDefinition_OncePerReset_Caption" xml:space="preserve">
+    <value>Einmal pro Reset</value>
+  </data>
+  <data name="QuestDefinition_OncePerReset_Description" xml:space="preserve">
+    <value>Wenn aktiv, kann die Quest nur einmal bis zum Charakter-Reset abgeschlossen werden; danach ist sie wieder verfuegbar. Mit deaktiviertem „Wiederholbar“ verwenden. Beide deaktiviert = einmal pro Charakter.</value>
+  </data>
   <data name="QuestDefinition_RequiresClientAction_Caption" xml:space="preserve">
     <value>Erfordert Client-Aktion</value>
   </data>

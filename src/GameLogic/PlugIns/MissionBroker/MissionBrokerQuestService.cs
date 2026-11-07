@@ -296,9 +296,8 @@ internal static class MissionBrokerQuestService
             return false;
         }
 
-        if (!quest.Repeatable
-            && player.SelectedCharacter?.QuestStates.Any(state =>
-                state.Group == quest.Group && object.Equals(state.LastFinishedQuest, quest)) == true)
+        if (player.SelectedCharacter?.QuestStates.Any(state =>
+                state.Group == quest.Group && quest.IsBlockedByCompletionHistory(state.LastFinishedQuest)) == true)
         {
             return false;
         }

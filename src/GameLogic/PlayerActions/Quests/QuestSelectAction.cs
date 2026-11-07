@@ -36,9 +36,9 @@ public class QuestSelectAction
             return;
         }
 
-        if (quest.Equals(questState?.LastFinishedQuest) && !quest.Repeatable)
+        if (quest.IsBlockedByCompletionHistory(questState?.LastFinishedQuest))
         {
-            player.Logger.LogDebug("The quest is not repeatable.");
+            player.Logger.LogDebug("The quest is blocked by completion history (not repeatable or once per reset).");
             return;
         }
 

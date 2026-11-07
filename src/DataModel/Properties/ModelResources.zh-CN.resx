@@ -4618,6 +4618,12 @@
   <data name="QuestDefinition_Repeatable_Description" xml:space="preserve">
     <value></value>
   </data>
+  <data name="QuestDefinition_OncePerReset_Caption" xml:space="preserve">
+    <value>每次转生一次</value>
+  </data>
+  <data name="QuestDefinition_OncePerReset_Description" xml:space="preserve">
+    <value>启用后，任务在角色转生前只能完成一次；转生后可再次接取。与“可重复”关闭配合使用；两者都关闭则为每个角色仅一次。</value>
+  </data>
   <data name="QuestDefinition_RequiresClientAction_Caption" xml:space="preserve">
     <value>需要客户端操作</value>
   </data>

@@ -2910,6 +2910,7 @@ internal sealed class BasicModelConverter
         target.StartingNumber = source.StartingNumber;
         target.RefuseNumber = source.RefuseNumber;
         target.Repeatable = source.Repeatable;
+        target.OncePerReset = source.OncePerReset;
         target.RequiresClientAction = source.RequiresClientAction;
         target.RequiredStartMoney = source.RequiredStartMoney;
         target.MinimumCharacterLevel = source.MinimumCharacterLevel;

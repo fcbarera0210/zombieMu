@@ -320,6 +320,8 @@ src/AdminPanel/wwwroot/content/js/app.js.map
 
 # AI
 .opencode/
+# Local Cursor MCP config may contain Admin Panel API keys.
+.cursor/mcp.json
 # Keys which are generated when the server runs locally.
 data-protection-keys/
 

@@ -25,7 +25,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition),
                 baseEntityType,
-                propertyCount: 14,
+                propertyCount: 15,
                 navigationCount: 5,
                 foreignKeyCount: 3,
                 unnamedIndexCount: 3,
@@ -90,6 +90,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Quests.QuestDefinition).GetField("<Number>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: (short)0);
             number.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var oncePerReset = runtimeEntityType.AddProperty(
+                "OncePerReset",
+                typeof(bool),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Quests.QuestDefinition).GetProperty("OncePerReset", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Quests.QuestDefinition).GetField("<OncePerReset>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: false);
+            oncePerReset.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var qualifiedCharacterId = runtimeEntityType.AddProperty(
                 "QualifiedCharacterId",

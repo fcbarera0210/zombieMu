@@ -106,7 +106,7 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
         var level = quest.MaximumCharacterLevel > 0
             ? $"Lv {quest.MinimumCharacterLevel}-{quest.MaximumCharacterLevel}"
             : $"Lv {quest.MinimumCharacterLevel}+";
-        var repeat = quest.Repeatable ? "repeatable" : "once";
+        var repeat = quest.OncePerReset ? "once/reset" : quest.Repeatable ? "repeatable" : "once";
         var kills = string.Join(
             ", ",
             quest.RequiredMonsterKills.Select(r =>

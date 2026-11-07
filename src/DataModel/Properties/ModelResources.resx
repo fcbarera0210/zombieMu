@@ -4936,6 +4936,12 @@
   <data name="QuestDefinition_Repeatable_Description" xml:space="preserve">
     <value></value>
   </data>
+  <data name="QuestDefinition_OncePerReset_Caption" xml:space="preserve">
+    <value>Once Per Reset</value>
+  </data>
+  <data name="QuestDefinition_OncePerReset_Description" xml:space="preserve">
+    <value>When enabled, the quest can be completed only once until the character resets. After a reset, it becomes available again. Use with Repeatable disabled. Leave both disabled for once per character.</value>
+  </data>
   <data name="QuestDefinition_RequiresClientAction_Caption" xml:space="preserve">
     <value>Requires Client Action</value>
   </data>
