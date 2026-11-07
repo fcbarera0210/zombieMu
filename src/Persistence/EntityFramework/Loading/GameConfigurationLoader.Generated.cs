@@ -79,10 +79,10 @@ internal sealed partial class GameConfigurationLoader
         "select \"Id\", \"Money\" from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))",
         "select \"Id\", \"DefinitionId\", \"Durability\", \"HasSkill\", \"ItemSlot\", \"ItemStorageId\", \"Level\", \"PetExperience\", \"SocketCount\", \"StorePrice\", \"StorePriceCoinType\", \"StorePriceItemDefinitionId\" from data.\"Item\" where (\"ItemStorageId\" in (select \"Id\" from (select * from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))) \"ItemStorage\") or \"Id\" in (select \"ItemRewardId\" from config.\"QuestReward\"))",
         "select \"Id\", \"Index\", \"ItemId\", \"ItemOptionId\", \"Level\" from data.\"ItemOptionLink\" where (\"ItemId\" in (select \"Id\" from (select * from data.\"Item\" where (\"ItemStorageId\" in (select \"Id\" from (select * from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))) \"ItemStorage\") or \"Id\" in (select \"ItemRewardId\" from config.\"QuestReward\"))) \"Item\"))",
-        "select \"Id\", \"Group\", \"MaximumCharacterLevel\", \"MinimumCharacterLevel\", \"MonsterDefinitionId\", \"Name\", \"Number\", \"OncePerReset\", \"QualifiedCharacterId\", \"QuestGiverId\", \"RefuseNumber\", \"Repeatable\", \"RequiredStartMoney\", \"RequiresClientAction\", \"StartingNumber\" from config.\"QuestDefinition\"",
+        "select \"Id\", \"Group\", \"MaximumCharacterLevel\", \"MinimumCharacterLevel\", \"MonsterDefinitionId\", \"Name\", \"Number\", \"OncePerReset\", \"QuestGiverId\", \"RefuseNumber\", \"Repeatable\", \"RequiredStartMoney\", \"RequiresClientAction\", \"StartingNumber\" from config.\"QuestDefinition\"",
         "select \"Id\", \"DropItemGroupId\", \"ItemId\", \"MinimumNumber\", \"QuestDefinitionId\" from config.\"QuestItemRequirement\"",
         "select \"Id\", \"MinimumNumber\", \"MonsterId\", \"QuestDefinitionId\" from config.\"QuestMonsterKillRequirement\"",
-        "select \"Id\", \"AttributeRewardId\", \"ItemRewardId\", \"QuestDefinitionId\", \"RewardType\", \"SkillRewardId\", \"Value\" from config.\"QuestReward\"",
+        "select \"Id\", \"AttributeRewardId\", \"IsChoiceOption\", \"ItemRewardId\", \"QuestDefinitionId\", \"RewardType\", \"SkillRewardId\", \"Value\" from config.\"QuestReward\"",
         "select \"Id\", \"CustomConfiguration\", \"CustomPlugInSource\", \"ExternalAssemblyName\", \"GameConfigurationId\", \"IsActive\", \"TypeId\" from config.\"PlugInConfiguration\"",
         "select \"Id\", \"AreaSkillSettingsId\", \"AttackDamage\", \"DamageType\", \"Description\", \"ElementalModifierTargetId\", \"GameConfigurationId\", \"ImplicitTargetRange\", \"MagicEffectDefId\", \"MasterDefinitionId\", \"MovesTarget\", \"MovesToTarget\", \"Name\", \"Number\", \"NumberOfHitsPerAttack\", \"Range\", \"SkillType\", \"SkipElementalModifier\", \"Target\", \"TargetRestriction\" from config.\"Skill\"",
         "select \"Id\", \"DelayBetweenHits\", \"DelayPerOneDistance\", \"EffectRange\", \"FrustumDistance\", \"FrustumEndWidth\", \"FrustumStartWidth\", \"HitChancePerDistanceMultiplier\", \"MaximumNumberOfHitsPerAttack\", \"MaximumNumberOfHitsPerTarget\", \"MinimumNumberOfHitsPerAttack\", \"MinimumNumberOfHitsPerTarget\", \"ProjectileCount\", \"TargetAreaDiameter\", \"UseDeferredHits\", \"UseFrustumFilter\", \"UseTargetAreaFilter\" from config.\"AreaSkillSettings\"",
@@ -98,6 +98,8 @@ internal sealed partial class GameConfigurationLoader
         "select \"ItemCraftingRequiredItemId\", \"ItemDefinitionId\" from config.\"ItemCraftingRequiredItemItemDefinition\"",
         "select \"ItemCraftingRequiredItemId\", \"ItemOptionTypeId\" from config.\"ItemCraftingRequiredItemItemOptionType\"",
         "select \"ItemId\", \"ItemOfItemSetId\" from data.\"ItemItemOfItemSet\" where \"ItemId\" in (select \"Id\" from (select * from data.\"Item\" where (\"ItemStorageId\" in (select \"Id\" from (select * from data.\"ItemStorage\" where (\"Id\" in (select \"MerchantStoreId\" from config.\"MonsterDefinition\"))) \"ItemStorage\") or \"Id\" in (select \"ItemRewardId\" from config.\"QuestReward\"))) \"Item\")",
+        "select \"QuestDefinitionId\", \"CharacterClassId\" from config.\"QuestDefinitionDisallowedCharacters\"",
+        "select \"QuestDefinitionId\", \"CharacterClassId\" from config.\"QuestDefinitionQualifiedCharacters\"",
         "select \"SkillId\", \"CharacterClassId\" from config.\"SkillCharacterClass\"",
         "select \"MasterSkillDefinitionId\", \"SkillId\" from config.\"MasterSkillDefinitionSkill\"",
     ];
@@ -235,7 +237,7 @@ internal sealed partial class GameConfigurationLoader
     private readonly global::System.Collections.Generic.Dictionary<global::System.Guid, global::MUnique.OpenMU.Persistence.EntityFramework.Model.ItemOptionLink> _ItemOptionLink = new();
     private readonly global::System.Collections.Generic.List<(global::MUnique.OpenMU.Persistence.EntityFramework.Model.ItemOptionLink Entity, global::System.Guid? Key0, global::System.Guid? Key1)> _ItemOptionLinkRows = new();
     private readonly global::System.Collections.Generic.Dictionary<global::System.Guid, global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition> _QuestDefinition = new();
-    private readonly global::System.Collections.Generic.List<(global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition Entity, global::System.Guid? Key0, global::System.Guid? Key1, global::System.Guid? Key2)> _QuestDefinitionRows = new();
+    private readonly global::System.Collections.Generic.List<(global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition Entity, global::System.Guid? Key0, global::System.Guid? Key1)> _QuestDefinitionRows = new();
     private readonly global::System.Collections.Generic.Dictionary<global::System.Guid, global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestItemRequirement> _QuestItemRequirement = new();
     private readonly global::System.Collections.Generic.List<(global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestItemRequirement Entity, global::System.Guid? Key0, global::System.Guid? Key1, global::System.Guid? Key2)> _QuestItemRequirementRows = new();
     private readonly global::System.Collections.Generic.Dictionary<global::System.Guid, global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestMonsterKillRequirement> _QuestMonsterKillRequirement = new();
@@ -262,6 +264,8 @@ internal sealed partial class GameConfigurationLoader
     private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _ItemCraftingRequiredItemItemDefinitionRows = new();
     private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _ItemCraftingRequiredItemItemOptionTypeRows = new();
     private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _ItemItemOfItemSetRows = new();
+    private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _QuestDefinitionDisallowedCharactersRows = new();
+    private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _QuestDefinitionQualifiedCharactersRows = new();
     private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _SkillCharacterClassRows = new();
     private readonly global::System.Collections.Generic.List<(global::System.Guid Key, global::System.Guid Other)> _MasterSkillDefinitionSkillRows = new();
 
@@ -354,8 +358,10 @@ internal sealed partial class GameConfigurationLoader
             case 82: await ReadJoinAsync(reader, this._ItemCraftingRequiredItemItemDefinitionRows, cancellationToken).ConfigureAwait(false); break;
             case 83: await ReadJoinAsync(reader, this._ItemCraftingRequiredItemItemOptionTypeRows, cancellationToken).ConfigureAwait(false); break;
             case 84: await ReadJoinAsync(reader, this._ItemItemOfItemSetRows, cancellationToken).ConfigureAwait(false); break;
-            case 85: await ReadJoinAsync(reader, this._SkillCharacterClassRows, cancellationToken).ConfigureAwait(false); break;
-            case 86: await ReadJoinAsync(reader, this._MasterSkillDefinitionSkillRows, cancellationToken).ConfigureAwait(false); break;
+            case 85: await ReadJoinAsync(reader, this._QuestDefinitionDisallowedCharactersRows, cancellationToken).ConfigureAwait(false); break;
+            case 86: await ReadJoinAsync(reader, this._QuestDefinitionQualifiedCharactersRows, cancellationToken).ConfigureAwait(false); break;
+            case 87: await ReadJoinAsync(reader, this._SkillCharacterClassRows, cancellationToken).ConfigureAwait(false); break;
+            case 88: await ReadJoinAsync(reader, this._MasterSkillDefinitionSkillRows, cancellationToken).ConfigureAwait(false); break;
             default: throw new global::System.ArgumentOutOfRangeException(nameof(statementIndex));
         }
     }
@@ -1556,15 +1562,14 @@ internal sealed partial class GameConfigurationLoader
             entity.Name = reader.IsDBNull(5) ? default : new global::MUnique.OpenMU.Interfaces.LocalizedString(reader.GetString(5));
             entity.Number = reader.GetInt16(6);
             entity.OncePerReset = reader.GetBoolean(7);
-            if (!reader.IsDBNull(8)) { entity.QualifiedCharacterId = reader.GetGuid(8); }
-            if (!reader.IsDBNull(9)) { entity.QuestGiverId = reader.GetGuid(9); }
-            entity.RefuseNumber = reader.GetInt16(10);
-            entity.Repeatable = reader.GetBoolean(11);
-            entity.RequiredStartMoney = reader.GetInt32(12);
-            entity.RequiresClientAction = reader.GetBoolean(13);
-            entity.StartingNumber = reader.GetInt16(14);
+            if (!reader.IsDBNull(8)) { entity.QuestGiverId = reader.GetGuid(8); }
+            entity.RefuseNumber = reader.GetInt16(9);
+            entity.Repeatable = reader.GetBoolean(10);
+            entity.RequiredStartMoney = reader.GetInt32(11);
+            entity.RequiresClientAction = reader.GetBoolean(12);
+            entity.StartingNumber = reader.GetInt16(13);
             this._QuestDefinition[entity.Id] = entity;
-            this._QuestDefinitionRows.Add((entity, reader.IsDBNull(8) ? null : reader.GetGuid(8), reader.IsDBNull(9) ? null : reader.GetGuid(9), reader.IsDBNull(4) ? null : reader.GetGuid(4)));
+            this._QuestDefinitionRows.Add((entity, reader.IsDBNull(8) ? null : reader.GetGuid(8), reader.IsDBNull(4) ? null : reader.GetGuid(4)));
         }
     }
 
@@ -1602,12 +1607,13 @@ internal sealed partial class GameConfigurationLoader
             var entity = new global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestReward();
             entity.Id = reader.GetGuid(0);
             if (!reader.IsDBNull(1)) { entity.AttributeRewardId = reader.GetGuid(1); }
-            if (!reader.IsDBNull(2)) { entity.ItemRewardId = reader.GetGuid(2); }
-            entity.RewardType = (global::MUnique.OpenMU.DataModel.Configuration.Quests.QuestRewardType)reader.GetInt32(4);
-            if (!reader.IsDBNull(5)) { entity.SkillRewardId = reader.GetGuid(5); }
-            entity.Value = reader.GetInt32(6);
+            entity.IsChoiceOption = reader.GetBoolean(2);
+            if (!reader.IsDBNull(3)) { entity.ItemRewardId = reader.GetGuid(3); }
+            entity.RewardType = (global::MUnique.OpenMU.DataModel.Configuration.Quests.QuestRewardType)reader.GetInt32(5);
+            if (!reader.IsDBNull(6)) { entity.SkillRewardId = reader.GetGuid(6); }
+            entity.Value = reader.GetInt32(7);
             this._QuestReward[entity.Id] = entity;
-            this._QuestRewardRows.Add((entity, reader.IsDBNull(1) ? null : reader.GetGuid(1), reader.IsDBNull(2) ? null : reader.GetGuid(2), reader.IsDBNull(5) ? null : reader.GetGuid(5), reader.IsDBNull(3) ? null : reader.GetGuid(3)));
+            this._QuestRewardRows.Add((entity, reader.IsDBNull(1) ? null : reader.GetGuid(1), reader.IsDBNull(3) ? null : reader.GetGuid(3), reader.IsDBNull(6) ? null : reader.GetGuid(6), reader.IsDBNull(4) ? null : reader.GetGuid(4)));
         }
     }
 
@@ -2373,14 +2379,6 @@ internal sealed partial class GameConfigurationLoader
         foreach (var row in this._QuestDefinitionRows)
         {
             if (row.Key0 is { } id)
-            {
-                row.Entity.RawQualifiedCharacter = this.GetCharacterClass(id);
-            }
-        }
-
-        foreach (var row in this._QuestDefinitionRows)
-        {
-            if (row.Key1 is { } id)
             {
                 row.Entity.RawQuestGiver = this.GetMonsterDefinition(id);
             }
@@ -3397,7 +3395,7 @@ internal sealed partial class GameConfigurationLoader
 
         foreach (var row in this._QuestDefinitionRows)
         {
-            if (row.Key2 is { } id && this._MonsterDefinition.TryGetValue(id, out var parent))
+            if (row.Key1 is { } id && this._MonsterDefinition.TryGetValue(id, out var parent))
             {
                 var collection = (global::System.Collections.Generic.ICollection<global::MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition>)parent.RawQuests;
                 var item = row.Entity;
@@ -3635,6 +3633,32 @@ internal sealed partial class GameConfigurationLoader
             {
                 var collection = (global::System.Collections.Generic.ICollection<global::MUnique.OpenMU.DataModel.Configuration.Items.ItemOfItemSet>)parent.ItemSetGroups;
                 var item = this.GetItemOfItemSet(other);
+                if (!collection.Contains(item))
+                {
+                    collection.Add(item);
+                }
+            }
+        }
+
+        foreach (var (key, other) in this._QuestDefinitionDisallowedCharactersRows)
+        {
+            if (this._QuestDefinition.TryGetValue(key, out var parent))
+            {
+                var collection = (global::System.Collections.Generic.ICollection<global::MUnique.OpenMU.DataModel.Configuration.CharacterClass>)parent.DisallowedCharacters;
+                var item = this.GetCharacterClass(other);
+                if (!collection.Contains(item))
+                {
+                    collection.Add(item);
+                }
+            }
+        }
+
+        foreach (var (key, other) in this._QuestDefinitionQualifiedCharactersRows)
+        {
+            if (this._QuestDefinition.TryGetValue(key, out var parent))
+            {
+                var collection = (global::System.Collections.Generic.ICollection<global::MUnique.OpenMU.DataModel.Configuration.CharacterClass>)parent.QualifiedCharacters;
+                var item = this.GetCharacterClass(other);
                 if (!collection.Contains(item))
                 {
                     collection.Add(item);

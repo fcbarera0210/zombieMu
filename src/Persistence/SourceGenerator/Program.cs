@@ -46,7 +46,7 @@ public static class Program
         }
 
         var targetFolder = args[1];
-        var previouslyGeneratedFile = Directory.EnumerateFiles(targetFolder, ".Generated.cs");
+        var previouslyGeneratedFile = Directory.EnumerateFiles(targetFolder, "*.Generated.cs");
         foreach (var file in previouslyGeneratedFile)
         {
             File.Delete(file);

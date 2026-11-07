@@ -1825,6 +1825,24 @@ namespace MUnique.OpenMU.GameLogic.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Quest reward choice.
+        /// </summary>
+        public static string QuestRewardChoiceChatPlugIn_Name {
+            get {
+                return ResourceManager.GetString("QuestRewardChoiceChatPlugIn_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When a quest has choice-option rewards, prompts the player in chat to pick one and applies that selection on completion.
+        /// </summary>
+        public static string QuestRewardChoiceChatPlugIn_Description {
+            get {
+                return ResourceManager.GetString("QuestRewardChoiceChatPlugIn_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Handles the chat command &apos;/missions&apos;. Lists the player&apos;s active Mission Broker missions, kill progress and hunt-zone hints in chat..
         /// </summary>
         public static string MissionsChatCommandPlugIn_Description {

@@ -105,9 +105,12 @@ internal class Quests : InitializerBase
         questDefinition.Repeatable = true;
         if (qualifiedCharacter.HasValue)
         {
-            questDefinition.QualifiedCharacter =
-                this.GameConfiguration.CharacterClasses.FirstOrDefault(c =>
+            var allowedClass = this.GameConfiguration.CharacterClasses.FirstOrDefault(c =>
                     c.Number == (byte)qualifiedCharacter.Value);
+            if (allowedClass is not null)
+            {
+                questDefinition.QualifiedCharacters.Add(allowedClass);
+            }
         }
 
         return questDefinition;
@@ -230,7 +233,7 @@ internal class Quests : InitializerBase
         secretDarkStone.Number = 3;
         secretDarkStone.RequiredStartMoney = 2000000;
         secretDarkStone.MinimumCharacterLevel = 220;
-        secretDarkStone.QualifiedCharacter = this.GetCharacterClass(CharacterClassNumber.BladeKnight);
+        secretDarkStone.QualifiedCharacters.Add(this.GetCharacterClass(CharacterClassNumber.BladeKnight)!);
         this.AddItemRequirement(secretDarkStone, 14, Quest.BrokenSwordNumber, 1, 78, 108);
 
         // Rewards:
@@ -255,7 +258,7 @@ internal class Quests : InitializerBase
         heroStatus.Number = 2;
         heroStatus.RequiredStartMoney = 3000000;
         heroStatus.MinimumCharacterLevel = 220;
-        heroStatus.QualifiedCharacter = this.GetCharacterClass(characterClass);
+        heroStatus.QualifiedCharacters.Add(this.GetCharacterClass(characterClass)!);
         heroStatus.Name = QuestNames.ResourceManager.GetLocalizedString($"GainHeroStatus{characterClass}");
         this.AddItemRequirement(heroStatus, 14, Quest.ScrollOfEmperorNumber, 1, 72, 108);
 
@@ -296,7 +299,7 @@ internal class Quests : InitializerBase
         treasuresOfMu.Number = 1;
         treasuresOfMu.RequiredStartMoney = 2000000;
         treasuresOfMu.MinimumCharacterLevel = 150;
-        treasuresOfMu.QualifiedCharacter = this.GetCharacterClass(characterClass);
+        treasuresOfMu.QualifiedCharacters.Add(this.GetCharacterClass(characterClass)!);
         treasuresOfMu.Name = QuestNames.ResourceManager.GetLocalizedString($"TreasuresOfMU{characterClass}");
         this.AddItemRequirement(treasuresOfMu, 14, itemNumber, 0, 62, 76);
 
@@ -322,7 +325,7 @@ internal class Quests : InitializerBase
         findScrollOfEmperor.Number = 0;
         findScrollOfEmperor.RequiredStartMoney = 1000000;
         findScrollOfEmperor.MinimumCharacterLevel = 150;
-        findScrollOfEmperor.QualifiedCharacter = this.GetCharacterClass(characterClass);
+        findScrollOfEmperor.QualifiedCharacters.Add(this.GetCharacterClass(characterClass)!);
         findScrollOfEmperor.Name = QuestNames.ResourceManager.GetLocalizedString($"FindTheScrollOfEmperor{characterClass}");
 
         this.AddItemRequirement(findScrollOfEmperor, 14, Quest.ScrollOfEmperorNumber, 0, 45, 60);
@@ -357,13 +360,13 @@ internal class Quests : InitializerBase
         itemRequirement.Item = this.GameConfiguration.Items.First(item => item.Group == itemGroup && item.Number == itemNumber);
 
         var dropItemGroup = this.Context.CreateNew<DropItemGroup>();
-        dropItemGroup.SetGuid(quest.Number, itemNumber, quest.QualifiedCharacter?.Number ?? 0);
+        dropItemGroup.SetGuid(quest.Number, itemNumber, quest.QualifiedCharacters.FirstOrDefault()?.Number ?? 0);
         if (!LocalizedStringResources.TryResolve(itemRequirement.Item.Name.SourceKey, out _, out var itemKey))
         {
             throw new InvalidOperationException("A built-in quest item must have a resource-backed name.");
         }
 
-        var classKey = quest.QualifiedCharacter is { } characterClass ? ((CharacterClassNumber)characterClass.Number).ToString() : string.Empty;
+        var classKey = quest.QualifiedCharacters.FirstOrDefault() is { } characterClass ? ((CharacterClassNumber)characterClass.Number).ToString() : string.Empty;
         dropItemGroup.Description = DropGroupDescriptions.ResourceManager.GetLocalizedString($"QuestItem{itemKey}{classKey}");
         dropItemGroup.PossibleItems.Add(itemRequirement.Item);
         dropItemGroup.Chance = 10.0 / 10000.0;

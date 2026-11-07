@@ -45,7 +45,7 @@ public static class PlayerQuestExtensions
     {
         var possibleQuestsOfGroup = GetQuestsLinkedToNpc(player, player.OpenedNpc?.Definition)
                 .Where(q => q.Group == group)
-                .Where(q => q.QualifiedCharacter is null || Equals(q.QualifiedCharacter, player.SelectedCharacter?.CharacterClass))
+                .Where(q => q.IsAllowedForCharacterClass(player.SelectedCharacter?.CharacterClass))
                 .Where(q => !q.EvolvesIntoInactiveClass(player))
                 .OrderBy(q => q.Number);
 
@@ -69,8 +69,7 @@ public static class PlayerQuestExtensions
         }
 
         return GetQuestsLinkedToNpc(player, npc)
-            .Where(q => q.QualifiedCharacter is null
-                        || Equals(q.QualifiedCharacter, player.SelectedCharacter?.CharacterClass))
+            .Where(q => q.IsAllowedForCharacterClass(player.SelectedCharacter?.CharacterClass))
             .Where(q => !q.EvolvesIntoInactiveClass(player))
             .Where(q => player.HasActiveQuest(q) || IsWithinQuestLevelRange(player, q));
     }

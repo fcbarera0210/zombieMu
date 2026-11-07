@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel.Configuration.Quests;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.Character;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.GameLogic.Views.Quest;
@@ -18,12 +19,17 @@ using MUnique.OpenMU.Persistence;
 public class QuestCompletionAction
 {
     /// <summary>
-    /// Tries to completes the quest of the given group and number for the specified player.
+    /// Tries to complete the quest of the given group and number for the specified player.
     /// </summary>
     /// <param name="player">The player.</param>
     /// <param name="group">The group.</param>
     /// <param name="number">The number.</param>
-    public async ValueTask CompleteQuestAsync(Player player, short group, short number)
+    /// <param name="selectedChoice">
+    /// When the quest has <see cref="QuestReward.IsChoiceOption"/> rewards, the one the player picked.
+    /// If omitted and choices exist, a chat menu is opened and completion is deferred.
+    /// </param>
+    /// <returns><c>true</c> when the quest was completed and rewards applied.</returns>
+    public async ValueTask<bool> CompleteQuestAsync(Player player, short group, short number, QuestReward? selectedChoice = null)
     {
         using var loggerScope = player.Logger.BeginScope(this.GetType());
         var questState = player.GetQuestState(group, number);
@@ -31,7 +37,7 @@ public class QuestCompletionAction
         if (activeQuest is null)
         {
             player.Logger.LogDebug("Failed, no active quest");
-            return;
+            return false;
         }
 
         foreach (var requiredItem in activeQuest.RequiredItems)
@@ -47,7 +53,7 @@ public class QuestCompletionAction
             }
 
             player.Logger.LogDebug("Failed, required item not found: {0}", requiredItem.Item!.GetNameForLevel(requiredLevel ?? 0));
-            return;
+            return false;
         }
 
         foreach (var requiredKills in activeQuest.RequiredMonsterKills)
@@ -59,19 +65,34 @@ public class QuestCompletionAction
             }
 
             player.Logger.LogDebug("Failed, required kills of monster {0}: {1}/{2};", requiredKills.Monster?.Designation, currentKillCount, requiredKills.MinimumNumber);
-            return;
+            return false;
         }
 
         if (activeQuest.RequiresClientAction && !questState!.ClientActionPerformed)
         {
             player.Logger.LogDebug("Failed, client action not performed.");
-            return;
+            return false;
         }
 
         if (activeQuest.EvolvesIntoInactiveClass(player))
         {
             player.Logger.LogDebug("Failed, the quest evolves into the inactive class {0}.", player.SelectedCharacter?.CharacterClass?.NextGenerationClass);
-            return;
+            return false;
+        }
+
+        var choiceRewards = activeQuest.GetChoiceRewards();
+        if (choiceRewards.Count > 0)
+        {
+            if (selectedChoice is null || !choiceRewards.Contains(selectedChoice))
+            {
+                if (player.SelectedCharacter is { } character)
+                {
+                    await PromptRewardChoiceAsync(player, character.Id, activeQuest, choiceRewards).ConfigureAwait(false);
+                }
+
+                player.Logger.LogDebug("Deferred, waiting for reward choice ({0} options).", choiceRewards.Count);
+                return false;
+            }
         }
 
         questState!.LastFinishedQuest = activeQuest;
@@ -92,6 +113,11 @@ public class QuestCompletionAction
 
         foreach (var reward in activeQuest.Rewards)
         {
+            if (reward.IsChoiceOption && !Equals(reward, selectedChoice))
+            {
+                continue;
+            }
+
             try
             {
                 await AddRewardAsync(player, reward, activeQuest).ConfigureAwait(false);
@@ -103,8 +129,32 @@ public class QuestCompletionAction
             }
         }
 
+        if (player.SelectedCharacter is { } completedCharacter)
+        {
+            QuestRewardChoiceState.Clear(completedCharacter.Id);
+        }
+
         await questState.ClearAsync(player.PersistenceContext).ConfigureAwait(false);
         await player.InvokeViewPlugInAsync<IQuestCompletionResponsePlugIn>(p => p.QuestCompletedAsync(activeQuest)).ConfigureAwait(false);
+        return true;
+    }
+
+    private static async ValueTask PromptRewardChoiceAsync(
+        Player player,
+        Guid characterId,
+        QuestDefinition quest,
+        IList<QuestReward> choices)
+    {
+        QuestRewardChoiceState.Open(characterId, quest, choices);
+        var questName = quest.Name.GetTranslation(player.Culture) ?? quest.Name.ToString() ?? "Quest";
+        await player.ShowGoldenMessageAsync($"[Quest] Choose a reward for '{questName}'. Type the number in chat.").ConfigureAwait(false);
+        await player.InvokeViewPlugInAsync<IChatViewPlugIn>(
+            p => p.ChatMessageAsync($"[Quest] Rewards for '{questName}':", "Quest", ChatMessageType.Whisper)).ConfigureAwait(false);
+        for (var i = 0; i < choices.Count; i++)
+        {
+            await player.InvokeViewPlugInAsync<IChatViewPlugIn>(
+                p => p.ChatMessageAsync($"  {i + 1}) {choices[i]}", "Quest", ChatMessageType.Whisper)).ConfigureAwait(false);
+        }
     }
 
     private static async ValueTask AddRewardAsync(Player player, QuestReward reward, QuestDefinition quest)

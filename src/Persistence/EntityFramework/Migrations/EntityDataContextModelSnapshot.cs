@@ -4068,9 +4068,6 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<bool>("OncePerReset")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("QualifiedCharacterId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("QuestGiverId")
                         .HasColumnType("uuid");
 
@@ -4093,11 +4090,39 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
                     b.HasIndex("MonsterDefinitionId");
 
-                    b.HasIndex("QualifiedCharacterId");
-
                     b.HasIndex("QuestGiverId");
 
                     b.ToTable("QuestDefinition", "config");
+                });
+
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinitionDisallowedCharacters", b =>
+                {
+                    b.Property<Guid>("QuestDefinitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CharacterClassId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("QuestDefinitionId", "CharacterClassId");
+
+                    b.HasIndex("CharacterClassId");
+
+                    b.ToTable("QuestDefinitionDisallowedCharacters", "config");
+                });
+
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinitionQualifiedCharacters", b =>
+                {
+                    b.Property<Guid>("QuestDefinitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CharacterClassId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("QuestDefinitionId", "CharacterClassId");
+
+                    b.HasIndex("CharacterClassId");
+
+                    b.ToTable("QuestDefinitionQualifiedCharacters", "config");
                 });
 
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestItemRequirement", b =>
@@ -4185,6 +4210,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
                     b.Property<Guid?>("AttributeRewardId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("IsChoiceOption")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid?>("ItemRewardId")
                         .HasColumnType("uuid");
@@ -6262,17 +6290,49 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .HasForeignKey("MonsterDefinitionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterClass", "RawQualifiedCharacter")
-                        .WithMany()
-                        .HasForeignKey("QualifiedCharacterId");
-
                     b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.MonsterDefinition", "RawQuestGiver")
                         .WithMany()
                         .HasForeignKey("QuestGiverId");
 
-                    b.Navigation("RawQualifiedCharacter");
-
                     b.Navigation("RawQuestGiver");
+                });
+
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinitionDisallowedCharacters", b =>
+                {
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterClass", "CharacterClass")
+                        .WithMany()
+                        .HasForeignKey("CharacterClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition", "QuestDefinition")
+                        .WithMany("JoinedDisallowedCharacters")
+                        .HasForeignKey("QuestDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterClass");
+
+                    b.Navigation("QuestDefinition");
+                });
+
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinitionQualifiedCharacters", b =>
+                {
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterClass", "CharacterClass")
+                        .WithMany()
+                        .HasForeignKey("CharacterClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition", "QuestDefinition")
+                        .WithMany("JoinedQualifiedCharacters")
+                        .HasForeignKey("QuestDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterClass");
+
+                    b.Navigation("QuestDefinition");
                 });
 
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestItemRequirement", b =>
@@ -6782,6 +6842,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition", b =>
                 {
+                    b.Navigation("JoinedDisallowedCharacters");
+
+                    b.Navigation("JoinedQualifiedCharacters");
+
                     b.Navigation("RawRequiredItems");
 
                     b.Navigation("RawRequiredMonsterKills");

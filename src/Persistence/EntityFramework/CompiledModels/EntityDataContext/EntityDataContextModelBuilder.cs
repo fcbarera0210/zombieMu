@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("3b3c69ff-76e7-4ac8-bf7a-63f5355fa1cb"), entityTypeCount: 128)
+            : base(skipDetectChanges: false, modelId: new Guid("29ca401c-d358-4c54-840c-85c433a510cf"), entityTypeCount: 130)
         {
         }
 
@@ -131,6 +131,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             var powerUpDefinition = PowerUpDefinitionEntityType.Create(this);
             var powerUpDefinitionValue = PowerUpDefinitionValueEntityType.Create(this);
             var questDefinition = QuestDefinitionEntityType.Create(this);
+            var questDefinitionDisallowedCharacters = QuestDefinitionDisallowedCharactersEntityType.Create(this);
+            var questDefinitionQualifiedCharacters = QuestDefinitionQualifiedCharactersEntityType.Create(this);
             var questItemRequirement = QuestItemRequirementEntityType.Create(this);
             var questMonsterKillRequirement = QuestMonsterKillRequirementEntityType.Create(this);
             var questMonsterKillRequirementState = QuestMonsterKillRequirementStateEntityType.Create(this);
@@ -367,8 +369,11 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             PowerUpDefinitionEntityType.CreateForeignKey5(powerUpDefinition, masterSkillDefinition);
             PowerUpDefinitionEntityType.CreateForeignKey6(powerUpDefinition, attributeDefinition);
             QuestDefinitionEntityType.CreateForeignKey1(questDefinition, monsterDefinition);
-            QuestDefinitionEntityType.CreateForeignKey2(questDefinition, characterClass);
-            QuestDefinitionEntityType.CreateForeignKey3(questDefinition, monsterDefinition);
+            QuestDefinitionEntityType.CreateForeignKey2(questDefinition, monsterDefinition);
+            QuestDefinitionDisallowedCharactersEntityType.CreateForeignKey1(questDefinitionDisallowedCharacters, characterClass);
+            QuestDefinitionDisallowedCharactersEntityType.CreateForeignKey2(questDefinitionDisallowedCharacters, questDefinition);
+            QuestDefinitionQualifiedCharactersEntityType.CreateForeignKey1(questDefinitionQualifiedCharacters, characterClass);
+            QuestDefinitionQualifiedCharactersEntityType.CreateForeignKey2(questDefinitionQualifiedCharacters, questDefinition);
             QuestItemRequirementEntityType.CreateForeignKey1(questItemRequirement, dropItemGroup);
             QuestItemRequirementEntityType.CreateForeignKey2(questItemRequirement, itemDefinition);
             QuestItemRequirementEntityType.CreateForeignKey3(questItemRequirement, questDefinition);
@@ -512,6 +517,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             PowerUpDefinitionEntityType.CreateAnnotations(powerUpDefinition);
             PowerUpDefinitionValueEntityType.CreateAnnotations(powerUpDefinitionValue);
             QuestDefinitionEntityType.CreateAnnotations(questDefinition);
+            QuestDefinitionDisallowedCharactersEntityType.CreateAnnotations(questDefinitionDisallowedCharacters);
+            QuestDefinitionQualifiedCharactersEntityType.CreateAnnotations(questDefinitionQualifiedCharacters);
             QuestItemRequirementEntityType.CreateAnnotations(questItemRequirement);
             QuestMonsterKillRequirementEntityType.CreateAnnotations(questMonsterKillRequirement);
             QuestMonsterKillRequirementStateEntityType.CreateAnnotations(questMonsterKillRequirementState);

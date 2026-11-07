@@ -187,8 +187,9 @@ internal partial class {className} : {fullName}, IIdentifiable
         foreach (PropertyInfo propertyInfo in standaloneCollectionProperties)
         {
             var elementType = propertyInfo.PropertyType.GenericTypeArguments[0];
-            var joinTypeName = propertyInfo.ReflectedType!.Name + elementType.Name;
+            var joinTypeName = GetJoinEntityTypeName(propertyInfo, standaloneCollectionProperties);
 
+            var parentTypeName = propertyInfo.ReflectedType!.Name;
             var source = $@"{string.Format(ModelGeneratorHelper.FileHeaderTemplate, joinTypeName)}
 
 namespace MUnique.OpenMU.Persistence.EntityFramework.Model;
@@ -200,20 +201,38 @@ using MUnique.OpenMU.Persistence.EntityFramework;
 [Table(nameof({joinTypeName}), Schema = {(ModelGeneratorHelper.IsConfigurationType(propertyInfo.ReflectedType) ? "SchemaNames.Configuration" : "SchemaNames.AccountData")})]
 internal partial class {joinTypeName}
 {{
-    public Guid {propertyInfo.ReflectedType.Name}Id {{ get; set; }}
-    public {propertyInfo.ReflectedType.Name} {propertyInfo.ReflectedType.Name} {{ get; set; }}
+    public Guid {parentTypeName}Id {{ get; set; }}
+    public {parentTypeName} {parentTypeName} {{ get; set; }}
 
     public Guid {elementType.Name}Id {{ get; set; }}
     public {elementType.Name} {elementType.Name} {{ get; set; }}
 }}
 
-internal partial class {propertyInfo.ReflectedType.Name}
+internal partial class {parentTypeName}
 {{
     public ICollection<{joinTypeName}> Joined{propertyInfo.Name} {{ get; }} = new EntityFramework.List<{joinTypeName}>();
 }}
 ";
             yield return (joinTypeName, source);
         }
+    }
+
+    /// <summary>
+    /// Builds the join entity type name. Uses Type+Element by default (e.g. ItemDefinitionCharacterClass).
+    /// When the same parent type has multiple collections of the same element type, includes the
+    /// property name so each relationship gets its own join entity and table.
+    /// </summary>
+    private static string GetJoinEntityTypeName(PropertyInfo propertyInfo, IReadOnlyCollection<PropertyInfo> allStandaloneCollectionProperties)
+    {
+        var elementType = propertyInfo.PropertyType.GenericTypeArguments[0];
+        var parentTypeName = propertyInfo.ReflectedType!.Name;
+        var defaultName = parentTypeName + elementType.Name;
+        var conflicting = allStandaloneCollectionProperties.Count(p =>
+            p.ReflectedType == propertyInfo.ReflectedType
+            && p.PropertyType.GenericTypeArguments[0] == elementType);
+        return conflicting > 1
+            ? parentTypeName + propertyInfo.Name
+            : defaultName;
     }
 
     /// <summary>
@@ -415,9 +434,9 @@ internal sealed class BasicModelConverter
         foreach (PropertyInfo propertyInfo in allStandaloneCollectionProperties)
         {
             var elementType = propertyInfo.PropertyType.GenericTypeArguments[0];
-            var joinTypeName = propertyInfo.ReflectedType!.Name + elementType.Name;
+            var joinTypeName = GetJoinEntityTypeName(propertyInfo, allStandaloneCollectionProperties);
             joinDefinitions
-                .AppendLine($"        modelBuilder.Entity<{propertyInfo.ReflectedType.Name}>().HasMany(entity => entity.Joined{propertyInfo.Name}).WithOne(join => join.{propertyInfo.ReflectedType.Name});")
+                .AppendLine($"        modelBuilder.Entity<{propertyInfo.ReflectedType!.Name}>().HasMany(entity => entity.Joined{propertyInfo.Name}).WithOne(join => join.{propertyInfo.ReflectedType.Name});")
                 .AppendLine($"        modelBuilder.Entity<{joinTypeName}>().HasKey(join => new {{ join.{propertyInfo.ReflectedType.Name}Id, join.{elementType.Name}Id }});");
         }
 
@@ -485,10 +504,12 @@ public class ExtendedTypeContext : Microsoft.EntityFrameworkCore.DbContext
         var result = new StringBuilder().AppendLine(@"protected void InitJoinCollections()
     {");
 
+        // Pass a list so GetJoinEntityTypeName can detect sibling collections of the same element type.
+        var allStandaloneForLookup = standaloneCollectionProperties.ToList();
         foreach (PropertyInfo propertyInfo in standaloneCollectionProperties)
         {
             var elementType = propertyInfo.PropertyType.GenericTypeArguments[0];
-            var joinTypeName = propertyInfo.ReflectedType!.Name + elementType.Name;
+            var joinTypeName = GetJoinEntityTypeName(propertyInfo, allStandaloneForLookup);
             result.AppendLine($@"        this.{propertyInfo.Name} = new ManyToManyCollectionAdapter<{elementType.FullName}, {joinTypeName}>(this.Joined{propertyInfo.Name}, joinEntity => joinEntity.{elementType.Name}, entity => new {joinTypeName} {{ {type.Name} = this, {type.Name}Id = this.Id, {elementType.Name} = ({elementType.Name})entity, {elementType.Name}Id = (({elementType.Name})entity).Id}});");
         }
 

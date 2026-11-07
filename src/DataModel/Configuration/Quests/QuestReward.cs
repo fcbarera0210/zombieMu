@@ -28,6 +28,13 @@ public partial class QuestReward
     public int Value { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether this reward is one option in a player choice pool.
+    /// When any reward of a quest has this set, the player must pick exactly one choice reward
+    /// on completion; non-choice rewards are always granted.
+    /// </summary>
+    public bool IsChoiceOption { get; set; }
+
+    /// <summary>
     /// Gets or sets the item reward.
     /// The <see cref="Value"/> contains how often the item is rewarded.
     /// </summary>

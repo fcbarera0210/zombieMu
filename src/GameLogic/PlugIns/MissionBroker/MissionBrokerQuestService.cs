@@ -87,7 +87,7 @@ internal static class MissionBrokerQuestService
     {
         var characterClass = player.SelectedCharacter?.CharacterClass;
         return GetQuestsLinkedToNpc(player, npc)
-            .Where(quest => quest.QualifiedCharacter is null || Equals(quest.QualifiedCharacter, characterClass))
+            .Where(quest => quest.IsAllowedForCharacterClass(characterClass))
             .Where(quest => quest.MinimumCharacterLevel <= player.Level
                             && (quest.MaximumCharacterLevel == default || quest.MaximumCharacterLevel >= player.Level))
             .Where(quest => !quest.EvolvesIntoInactiveClass(player))
@@ -234,8 +234,7 @@ internal static class MissionBrokerQuestService
         }
 
         var completion = new QuestCompletionAction();
-        await completion.CompleteQuestAsync(player, quest.Group, quest.Number).ConfigureAwait(false);
-        return GetMissionState(player, quest) is null;
+        return await completion.CompleteQuestAsync(player, quest.Group, quest.Number).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -292,6 +291,11 @@ internal static class MissionBrokerQuestService
         }
 
         if (!CanAcceptAnother(player))
+        {
+            return false;
+        }
+
+        if (!quest.IsAllowedForCharacterClass(player.SelectedCharacter?.CharacterClass))
         {
             return false;
         }

@@ -290,6 +290,10 @@ public class ExtendedTypeContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Entity<MonsterDefinitionDropItemGroup>().HasKey(join => new { join.MonsterDefinitionId, join.DropItemGroupId });
         modelBuilder.Entity<Skill>().HasMany(entity => entity.JoinedQualifiedCharacters).WithOne(join => join.Skill);
         modelBuilder.Entity<SkillCharacterClass>().HasKey(join => new { join.SkillId, join.CharacterClassId });
+        modelBuilder.Entity<QuestDefinition>().HasMany(entity => entity.JoinedQualifiedCharacters).WithOne(join => join.QuestDefinition);
+        modelBuilder.Entity<QuestDefinitionQualifiedCharacters>().HasKey(join => new { join.QuestDefinitionId, join.CharacterClassId });
+        modelBuilder.Entity<QuestDefinition>().HasMany(entity => entity.JoinedDisallowedCharacters).WithOne(join => join.QuestDefinition);
+        modelBuilder.Entity<QuestDefinitionDisallowedCharacters>().HasKey(join => new { join.QuestDefinitionId, join.CharacterClassId });
         modelBuilder.Entity<ItemDefinition>().HasMany(entity => entity.JoinedQualifiedCharacters).WithOne(join => join.ItemDefinition);
         modelBuilder.Entity<ItemDefinitionCharacterClass>().HasKey(join => new { join.ItemDefinitionId, join.CharacterClassId });
         modelBuilder.Entity<ItemDefinition>().HasMany(entity => entity.JoinedPossibleItemSetGroups).WithOne(join => join.ItemDefinition);

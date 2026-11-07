@@ -86,9 +86,16 @@ public partial class QuestDefinition
     public int MaximumCharacterLevel { get; set; }
 
     /// <summary>
-    /// Gets or sets the qualified character class. If <c>null</c>, it's valid for all character classes.
+    /// Gets or sets the character classes which may accept this quest.
+    /// Empty means all classes are allowed (except those in <see cref="DisallowedCharacters"/>).
     /// </summary>
-    public virtual CharacterClass? QualifiedCharacter { get; set; }
+    public virtual ICollection<CharacterClass> QualifiedCharacters { get; protected set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the character classes which may not accept this quest.
+    /// Takes precedence over <see cref="QualifiedCharacters"/>.
+    /// </summary>
+    public virtual ICollection<CharacterClass> DisallowedCharacters { get; protected set; } = null!;
 
     /// <summary>
     /// Gets or sets the required monster kills to be able to complete this quest.
@@ -105,6 +112,8 @@ public partial class QuestDefinition
 
     /// <summary>
     /// Gets or sets the rewards when completing the quest successfully.
+    /// Rewards with <see cref="QuestReward.IsChoiceOption"/> form a choice pool:
+    /// the player selects exactly one of them on completion; the others are not granted.
     /// </summary>
     [MemberOfAggregate]
     public virtual ICollection<QuestReward> Rewards { get; protected set; } = null!;

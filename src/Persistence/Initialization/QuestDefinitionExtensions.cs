@@ -29,7 +29,7 @@ internal static class QuestDefinitionExtensions
     {
         var killRequirement = context.CreateNew<QuestMonsterKillRequirement>();
         var parentNumber = (ushort)((ushort)questDefinition.Number | (questDefinition.Group << 10));
-        killRequirement.SetGuid(parentNumber.ToSigned(), monsterNumber, questDefinition.QualifiedCharacter?.Number ?? 0);
+        killRequirement.SetGuid(parentNumber.ToSigned(), monsterNumber, questDefinition.QualifiedCharacters.FirstOrDefault()?.Number ?? 0);
         killRequirement.MinimumNumber = amount;
         killRequirement.Monster = gameConfiguration.Monsters.First(m => m.Number == monsterNumber);
         questDefinition.RequiredMonsterKills.Add(killRequirement);

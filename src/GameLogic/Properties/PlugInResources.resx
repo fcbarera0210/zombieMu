@@ -1759,4 +1759,10 @@
   <data name="MissionBrokerNpcPlugIn_Description" xml:space="preserve">
     <value>Handles the dedicated Mission Broker NPC for custom kill missions (several active at once in group 200). Configure quests on that NPC in the admin panel; talk to see actives and offers, then type a mission number or ABANDON [N] in chat. Accepting a mission also shows approximate hunt zones from spawn data.</value>
   </data>
+  <data name="QuestRewardChoiceChatPlugIn_Name" xml:space="preserve">
+    <value>Quest reward choice</value>
+  </data>
+  <data name="QuestRewardChoiceChatPlugIn_Description" xml:space="preserve">
+    <value>When a quest has choice-option rewards, prompts the player in chat to pick one and applies that selection on completion.</value>
+  </data>
 </root>

@@ -26,6 +26,48 @@ public partial class QuestDefinition : MUnique.OpenMU.DataModel.Configuration.Qu
     public Guid Id { get; set; }
     
     /// <summary>
+    /// Gets the raw collection of <see cref="QualifiedCharacters" />.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("qualifiedCharacters")]
+    public ICollection<CharacterClass> RawQualifiedCharacters { get; } = new List<CharacterClass>();
+    
+    /// <inheritdoc/>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override ICollection<MUnique.OpenMU.DataModel.Configuration.CharacterClass> QualifiedCharacters
+    {
+        get => base.QualifiedCharacters ??= new CollectionAdapter<MUnique.OpenMU.DataModel.Configuration.CharacterClass, CharacterClass>(this.RawQualifiedCharacters);
+        protected set
+        {
+            this.QualifiedCharacters.Clear();
+            foreach (var item in value)
+            {
+                this.QualifiedCharacters.Add(item);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the raw collection of <see cref="DisallowedCharacters" />.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("disallowedCharacters")]
+    public ICollection<CharacterClass> RawDisallowedCharacters { get; } = new List<CharacterClass>();
+    
+    /// <inheritdoc/>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override ICollection<MUnique.OpenMU.DataModel.Configuration.CharacterClass> DisallowedCharacters
+    {
+        get => base.DisallowedCharacters ??= new CollectionAdapter<MUnique.OpenMU.DataModel.Configuration.CharacterClass, CharacterClass>(this.RawDisallowedCharacters);
+        protected set
+        {
+            this.DisallowedCharacters.Clear();
+            foreach (var item in value)
+            {
+                this.DisallowedCharacters.Add(item);
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets the raw collection of <see cref="RequiredMonsterKills" />.
     /// </summary>
     [System.Text.Json.Serialization.JsonPropertyName("requiredMonsterKills")]
@@ -104,24 +146,6 @@ public partial class QuestDefinition : MUnique.OpenMU.DataModel.Configuration.Qu
     {
         get => base.QuestGiver;
         set => base.QuestGiver = value;
-    }
-
-    /// <summary>
-    /// Gets the raw object of <see cref="QualifiedCharacter" />.
-    /// </summary>
-    [System.Text.Json.Serialization.JsonPropertyName("qualifiedCharacter")]
-    public CharacterClass RawQualifiedCharacter
-    {
-        get => base.QualifiedCharacter as CharacterClass;
-        set => base.QualifiedCharacter = value;
-    }
-
-    /// <inheritdoc/>
-    [System.Text.Json.Serialization.JsonIgnore]
-    public override MUnique.OpenMU.DataModel.Configuration.CharacterClass QualifiedCharacter
-    {
-        get => base.QualifiedCharacter;
-        set => base.QualifiedCharacter = value;
     }
 
     /// <inheritdoc />

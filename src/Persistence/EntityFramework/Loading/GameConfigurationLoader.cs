@@ -82,9 +82,10 @@ internal sealed partial class GameConfigurationLoader
         foreach (var row in this._QuestDefinitionRows)
         {
             var quest = row.Entity;
-            // Row keys: Key0 = QualifiedCharacterId, Key1 = QuestGiverId, Key2 = MonsterDefinitionId.
-            var questGiverId = row.Key1;
-            var monsterDefinitionId = row.Key2;
+
+            // Row keys: Key0 = QuestGiverId, Key1 = MonsterDefinitionId.
+            var questGiverId = row.Key0;
+            var monsterDefinitionId = row.Key1;
 
             if (monsterDefinitionId is { } collectionParentId
                 && this._MonsterDefinition.TryGetValue(collectionParentId, out var collectionParent))

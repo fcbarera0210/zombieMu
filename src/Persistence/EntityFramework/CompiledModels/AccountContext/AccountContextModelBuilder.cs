@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
     public partial class AccountContextModel
     {
         private AccountContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("130119c7-a22d-41c8-a794-616d9af6f02d"), entityTypeCount: 48)
+            : base(skipDetectChanges: false, modelId: new Guid("93bc0e16-62ea-455d-893e-b17d3a1d5800"), entityTypeCount: 50)
         {
         }
 
@@ -62,6 +62,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
             var plugInConfiguration = PlugInConfigurationEntityType.Create(this);
             var powerUpDefinition = PowerUpDefinitionEntityType.Create(this);
             var powerUpDefinitionValue = PowerUpDefinitionValueEntityType.Create(this);
+            var questDefinitionDisallowedCharacters = QuestDefinitionDisallowedCharactersEntityType.Create(this);
+            var questDefinitionQualifiedCharacters = QuestDefinitionQualifiedCharactersEntityType.Create(this);
             var questMonsterKillRequirementState = QuestMonsterKillRequirementStateEntityType.Create(this);
             var skillCharacterClass = SkillCharacterClassEntityType.Create(this);
             var skillEntry = SkillEntryEntityType.Create(this);
@@ -142,6 +144,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
             PlugInConfigurationEntityType.CreateAnnotations(plugInConfiguration);
             PowerUpDefinitionEntityType.CreateAnnotations(powerUpDefinition);
             PowerUpDefinitionValueEntityType.CreateAnnotations(powerUpDefinitionValue);
+            QuestDefinitionDisallowedCharactersEntityType.CreateAnnotations(questDefinitionDisallowedCharacters);
+            QuestDefinitionQualifiedCharactersEntityType.CreateAnnotations(questDefinitionQualifiedCharacters);
             QuestMonsterKillRequirementStateEntityType.CreateAnnotations(questMonsterKillRequirementState);
             SkillCharacterClassEntityType.CreateAnnotations(skillCharacterClass);
             SkillEntryEntityType.CreateAnnotations(skillEntry);

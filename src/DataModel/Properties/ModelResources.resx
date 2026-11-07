@@ -4942,6 +4942,24 @@
   <data name="QuestDefinition_OncePerReset_Description" xml:space="preserve">
     <value>When enabled, the quest can be completed only once until the character resets. After a reset, it becomes available again. Use with Repeatable disabled. Leave both disabled for once per character.</value>
   </data>
+  <data name="QuestDefinition_QualifiedCharacters_Caption" xml:space="preserve">
+    <value>Allowed Character Classes</value>
+  </data>
+  <data name="QuestDefinition_QualifiedCharacters_Description" xml:space="preserve">
+    <value>Character classes that may accept this quest. Leave empty to allow all classes (except Disallowed).</value>
+  </data>
+  <data name="QuestDefinition_DisallowedCharacters_Caption" xml:space="preserve">
+    <value>Disallowed Character Classes</value>
+  </data>
+  <data name="QuestDefinition_DisallowedCharacters_Description" xml:space="preserve">
+    <value>Character classes that may not accept this quest. Overrides Allowed Character Classes.</value>
+  </data>
+  <data name="QuestReward_IsChoiceOption_Caption" xml:space="preserve">
+    <value>Choice Option</value>
+  </data>
+  <data name="QuestReward_IsChoiceOption_Description" xml:space="preserve">
+    <value>When enabled, this reward is one of several options the player must pick on completion. Non-choice rewards are always granted.</value>
+  </data>
   <data name="QuestDefinition_RequiresClientAction_Caption" xml:space="preserve">
     <value>Requires Client Action</value>
   </data>

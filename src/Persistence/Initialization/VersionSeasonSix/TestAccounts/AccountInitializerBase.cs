@@ -249,8 +249,8 @@ internal abstract class AccountInitializerBase : InitializerBase
             // Some skills require a completed level 220 quest, so we add it here.
             var marlonNpc = this.GameConfiguration.Monsters.First(m => m.Designation.ValueInNeutralLanguage == "Marlon");
             if (marlonNpc.Quests
-                    .Where(q => q.QualifiedCharacter == character.CharacterClass
-                                || q.QualifiedCharacter!.NextGenerationClass == character.CharacterClass)
+                    .Where(q => q.QualifiedCharacters.Contains(character.CharacterClass!)
+                                || q.QualifiedCharacters.Any(c => c.NextGenerationClass == character.CharacterClass))
                     .OrderByDescending(q => q.Number).FirstOrDefault() is { } marlonQuest)
             {
                 var questInfo220 = this.Context.CreateNew<CharacterQuestState>();
@@ -260,8 +260,8 @@ internal abstract class AccountInitializerBase : InitializerBase
             }
 
             var comboQuest = marlonNpc.Quests
-                .Where(q => q.QualifiedCharacter == character.CharacterClass
-                            || q.QualifiedCharacter!.NextGenerationClass == character.CharacterClass)
+                .Where(q => q.QualifiedCharacters.Contains(character.CharacterClass!)
+                            || q.QualifiedCharacters.Any(c => c.NextGenerationClass == character.CharacterClass))
                 .FirstOrDefault(q => q.Rewards.Any(r => r.AttributeReward == Stats.IsSkillComboAvailable));
             if (comboQuest is { })
             {

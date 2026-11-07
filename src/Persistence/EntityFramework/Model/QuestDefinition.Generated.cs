@@ -21,7 +21,12 @@ using MUnique.OpenMU.Persistence;
 [Table(nameof(QuestDefinition), Schema = SchemaNames.Configuration)]
 internal partial class QuestDefinition : MUnique.OpenMU.DataModel.Configuration.Quests.QuestDefinition, IIdentifiable
 {
-    
+    /// <inheritdoc />
+    public QuestDefinition()
+    {
+        this.InitJoinCollections();
+    }
+
     
     /// <summary>
     /// Gets or sets the identifier of this instance.
@@ -81,32 +86,6 @@ internal partial class QuestDefinition : MUnique.OpenMU.DataModel.Configuration.
         }
     }
 
-    /// <summary>
-    /// Gets or sets the identifier of <see cref="QualifiedCharacter"/>.
-    /// </summary>
-    public Guid? QualifiedCharacterId { get; set; }
-
-    /// <summary>
-    /// Gets the raw object of <see cref="QualifiedCharacter" />.
-    /// </summary>
-    [ForeignKey(nameof(QualifiedCharacterId))]
-    public CharacterClass RawQualifiedCharacter
-    {
-        get => base.QualifiedCharacter as CharacterClass;
-        set => base.QualifiedCharacter = value;
-    }
-
-    /// <inheritdoc/>
-    [NotMapped]
-    public override MUnique.OpenMU.DataModel.Configuration.CharacterClass QualifiedCharacter
-    {
-        get => base.QualifiedCharacter;set
-        {
-            base.QualifiedCharacter = value;
-            this.QualifiedCharacterId = this.RawQualifiedCharacter?.Id;
-        }
-    }
-
     /// <inheritdoc />
     public override MUnique.OpenMU.DataModel.Configuration.Quests.QuestDefinition Clone(MUnique.OpenMU.DataModel.Configuration.GameConfiguration gameConfiguration)
     {
@@ -140,5 +119,9 @@ internal partial class QuestDefinition : MUnique.OpenMU.DataModel.Configuration.
         return this.Id.GetHashCode();
     }
 
-    
+    protected void InitJoinCollections()
+    {
+        this.QualifiedCharacters = new ManyToManyCollectionAdapter<MUnique.OpenMU.DataModel.Configuration.CharacterClass, QuestDefinitionQualifiedCharacters>(this.JoinedQualifiedCharacters, joinEntity => joinEntity.CharacterClass, entity => new QuestDefinitionQualifiedCharacters { QuestDefinition = this, QuestDefinitionId = this.Id, CharacterClass = (CharacterClass)entity, CharacterClassId = ((CharacterClass)entity).Id});
+        this.DisallowedCharacters = new ManyToManyCollectionAdapter<MUnique.OpenMU.DataModel.Configuration.CharacterClass, QuestDefinitionDisallowedCharacters>(this.JoinedDisallowedCharacters, joinEntity => joinEntity.CharacterClass, entity => new QuestDefinitionDisallowedCharacters { QuestDefinition = this, QuestDefinitionId = this.Id, CharacterClass = (CharacterClass)entity, CharacterClassId = ((CharacterClass)entity).Id});
+    }
 }

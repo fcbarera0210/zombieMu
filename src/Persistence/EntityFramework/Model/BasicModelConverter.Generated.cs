@@ -2915,7 +2915,22 @@ internal sealed class BasicModelConverter
         target.RequiredStartMoney = source.RequiredStartMoney;
         target.MinimumCharacterLevel = source.MinimumCharacterLevel;
         target.MaximumCharacterLevel = source.MaximumCharacterLevel;
-        target.QualifiedCharacter = (MUnique.OpenMU.DataModel.Configuration.CharacterClass)this.ConvertObject(source.QualifiedCharacter)!;
+        if (source.QualifiedCharacters is { } qualifiedCharactersItems)
+        {
+            foreach (var item in qualifiedCharactersItems)
+            {
+                target.QualifiedCharacters.Add((MUnique.OpenMU.DataModel.Configuration.CharacterClass)this.ConvertObject(item)!);
+            }
+        }
+
+        if (source.DisallowedCharacters is { } disallowedCharactersItems)
+        {
+            foreach (var item in disallowedCharactersItems)
+            {
+                target.DisallowedCharacters.Add((MUnique.OpenMU.DataModel.Configuration.CharacterClass)this.ConvertObject(item)!);
+            }
+        }
+
         if (source.RequiredMonsterKills is { } requiredMonsterKillsItems)
         {
             foreach (var item in requiredMonsterKillsItems)
@@ -3001,6 +3016,7 @@ internal sealed class BasicModelConverter
         target.Id = source.Id;
         target.RewardType = source.RewardType;
         target.Value = source.Value;
+        target.IsChoiceOption = source.IsChoiceOption;
         target.ItemReward = (MUnique.OpenMU.DataModel.Entities.Item)this.ConvertObject(source.ItemReward)!;
         target.AttributeReward = (MUnique.OpenMU.AttributeSystem.AttributeDefinition)this.ConvertObject(source.AttributeReward)!;
         target.SkillReward = (MUnique.OpenMU.DataModel.Configuration.Skill)this.ConvertObject(source.SkillReward)!;

@@ -149,7 +149,7 @@ public class TalkNpcAction
     private async ValueTask ShowLegacyQuestDialogAsync(Player player)
     {
         var quests = player.OpenedNpc!.Definition.Quests
-            .Where(q => q.QualifiedCharacter is null || Equals(q.QualifiedCharacter, player.SelectedCharacter!.CharacterClass));
+            .Where(q => q.IsAllowedForCharacterClass(player.SelectedCharacter!.CharacterClass));
 
         if (!quests.Any())
         {

@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 
+using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Quests;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.Persistence;
@@ -48,6 +49,41 @@ public static class QuestExtensions
 
         return !quest.Repeatable || quest.OncePerReset;
     }
+
+    /// <summary>
+    /// Determines whether the character class may accept the quest based on allowed/disallowed lists.
+    /// </summary>
+    /// <param name="quest">The quest.</param>
+    /// <param name="characterClass">The character class.</param>
+    /// <returns><c>true</c> when the class is allowed.</returns>
+    public static bool IsAllowedForCharacterClass(this QuestDefinition quest, CharacterClass? characterClass)
+    {
+        if (characterClass is null)
+        {
+            return false;
+        }
+
+        if (quest.DisallowedCharacters is { Count: > 0 }
+            && quest.DisallowedCharacters.Any(c => Equals(c, characterClass)))
+        {
+            return false;
+        }
+
+        if (quest.QualifiedCharacters is not { Count: > 0 })
+        {
+            return true;
+        }
+
+        return quest.QualifiedCharacters.Any(c => Equals(c, characterClass));
+    }
+
+    /// <summary>
+    /// Gets the rewards the player must choose from (exactly one) on completion.
+    /// </summary>
+    /// <param name="quest">The quest.</param>
+    /// <returns>The choice-option rewards.</returns>
+    public static IList<QuestReward> GetChoiceRewards(this QuestDefinition quest)
+        => quest.Rewards.Where(reward => reward.IsChoiceOption).ToList();
 
     /// <summary>
     /// Clears finish history of quests marked as <see cref="QuestDefinition.OncePerReset"/> so they can be taken again after a character reset.

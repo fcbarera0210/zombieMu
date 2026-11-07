@@ -25,10 +25,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition),
                 baseEntityType,
-                propertyCount: 15,
-                navigationCount: 5,
-                foreignKeyCount: 3,
-                unnamedIndexCount: 3,
+                propertyCount: 14,
+                navigationCount: 6,
+                foreignKeyCount: 2,
+                unnamedIndexCount: 2,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -99,14 +99,6 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 sentinel: false);
             oncePerReset.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
-            var qualifiedCharacterId = runtimeEntityType.AddProperty(
-                "QualifiedCharacterId",
-                typeof(Guid?),
-                propertyInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition).GetProperty("QualifiedCharacterId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition).GetField("<QualifiedCharacterId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                nullable: true);
-            qualifiedCharacterId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
-
             var questGiverId = runtimeEntityType.AddProperty(
                 "QuestGiverId",
                 typeof(Guid?),
@@ -163,9 +155,6 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 new[] { monsterDefinitionId });
 
             var index0 = runtimeEntityType.AddIndex(
-                new[] { qualifiedCharacterId });
-
-            var index1 = runtimeEntityType.AddIndex(
                 new[] { questGiverId });
 
             return runtimeEntityType;
@@ -189,21 +178,6 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
         }
 
         public static RuntimeForeignKey CreateForeignKey2(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
-        {
-            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("QualifiedCharacterId") },
-                principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
-                principalEntityType);
-
-            var rawQualifiedCharacter = declaringEntityType.AddNavigation("RawQualifiedCharacter",
-                runtimeForeignKey,
-                onDependent: true,
-                typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterClass),
-                propertyInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition).GetProperty("RawQualifiedCharacter", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-
-            return runtimeForeignKey;
-        }
-
-        public static RuntimeForeignKey CreateForeignKey3(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
         {
             var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("QuestGiverId") },
                 principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),

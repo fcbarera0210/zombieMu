@@ -49,7 +49,10 @@ public class InfinityArrowSkillOnQuestCompletionPlugIn : UpdatePlugInBase
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
     {
         var marlon = gameConfiguration.Monsters.First(m => m.Number == 229);
-        var quest = marlon.Quests.First(q => q.Number == 2 && q.Group == QuestConstants.LegacyQuestGroup && q.QualifiedCharacter?.Number == (byte)CharacterClassNumber.MuseElf);
+        var quest = marlon.Quests.First(q =>
+            q.Number == 2
+            && q.Group == QuestConstants.LegacyQuestGroup
+            && q.QualifiedCharacters.Any(c => c.Number == (byte)CharacterClassNumber.MuseElf));
 
         if (quest.Rewards.Any(r => r.RewardType == QuestRewardType.Skill))
         {

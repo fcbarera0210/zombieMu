@@ -23,7 +23,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.QuestReward",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestReward),
                 baseEntityType,
-                propertyCount: 7,
+                propertyCount: 8,
                 navigationCount: 3,
                 foreignKeyCount: 4,
                 unnamedIndexCount: 4,
@@ -47,6 +47,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.QuestReward).GetField("<AttributeRewardId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             attributeRewardId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var isChoiceOption = runtimeEntityType.AddProperty(
+                "IsChoiceOption",
+                typeof(bool),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Quests.QuestReward).GetProperty("IsChoiceOption", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.Quests.QuestReward).GetField("<IsChoiceOption>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: false);
+            isChoiceOption.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var itemRewardId = runtimeEntityType.AddProperty(
                 "ItemRewardId",

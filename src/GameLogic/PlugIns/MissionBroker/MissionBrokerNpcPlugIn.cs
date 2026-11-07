@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using MUnique.OpenMU.DataModel.Configuration.Quests;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic.NPC;
+using MUnique.OpenMU.GameLogic.PlayerActions.Quests;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.PlugIns;
 
@@ -136,6 +137,13 @@ public class MissionBrokerNpcPlugIn : NpcTalkPlugInBase, IChatMessageReceivedPlu
                 completed++;
                 var name = GetQuestName(player, quest);
                 await player.ShowGoldenMessageAsync($"[Mission Broker] Completed: {name}").ConfigureAwait(false);
+            }
+            else if (player.SelectedCharacter is { } character
+                     && QuestRewardChoiceState.TryGet(character.Id, out _))
+            {
+                // Completion deferred: player must pick a choice reward in chat.
+                await MissionBrokerQuestService.SayAsync(player, npc, "Choose your reward in chat.").ConfigureAwait(false);
+                return;
             }
             else
             {
