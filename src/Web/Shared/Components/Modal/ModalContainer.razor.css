@@ -23,3 +23,26 @@
     max-height: calc(100vh - 9rem);
     overflow-y: auto;
 }
+
+/*
+ * Typeahead / multi-lookup menus are position:absolute. With overflow:auto on
+ * .modal-body they get clipped (and the modal grows a second scrollbar). Render
+ * them in-flow inside modals so the full option list stays reachable.
+ */
+.modal-body .typeahead-results.dropdown-menu.show,
+.modal-body .multi-lookup-field__dropdown {
+    position: static;
+    max-height: min(50vh, 24rem);
+    margin-top: 0.35rem;
+    border-radius: 0.25rem;
+    box-shadow: none;
+}
+
+.modal-body .multi-lookup-field__dropdown {
+    border-top: var(--bs-border-width) solid var(--omu-border);
+}
+
+.modal-body .multi-lookup-field__container {
+    display: block;
+    width: 100%;
+}

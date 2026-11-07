@@ -35,16 +35,32 @@ public class QuestStepInfoExtendedPlugIn : IQuestStepInfoPlugIn
     /// <inheritdoc/>
     public async ValueTask ShowQuestStepInfoAsync(short questGroup, short stepNumber)
     {
+        if (this._player.Connection is null)
+        {
+            return;
+        }
+
         var quest = this._player.GetQuest(questGroup, stepNumber);
-        var name = quest?.Name.GetTranslation(this._player.Culture)
-                   ?? quest?.Name.ToString()
-                   ?? string.Empty;
+        var name = QuestTextHelper.GetName(quest, this._player.Culture);
+        var summary = QuestTextHelper.BuildSummary(quest, this._player.Culture);
 
         await this._player.Connection.SendQuestTextExtendedAsync(
             (ushort)stepNumber,
             (ushort)questGroup,
             name,
-            name).ConfigureAwait(false);
+            summary).ConfigureAwait(false);
+
+        // When the quest is already active and this is the progress Number (not StartingNumber),
+        // skip stock StepInfo — it would re-open Accept/Refuse on MuMain.
+        var active = this._player.GetQuestState(questGroup)?.ActiveQuest;
+        if (active is not null
+            && object.Equals(active, quest)
+            && quest is not null
+            && quest.Number == stepNumber
+            && quest.StartingNumber != stepNumber)
+        {
+            return;
+        }
 
         await this._player.Connection.SendQuestStepInfoAsync((ushort)stepNumber, (ushort)questGroup).ConfigureAwait(false);
     }

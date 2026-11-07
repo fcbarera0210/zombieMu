@@ -154,7 +154,11 @@ public partial class ItemTable<TItem>
         var parameters = new ModalParameters();
         parameters.Add(nameof(ModalCreateNew<TItem>.PersistenceContext), this.PersistenceContext);
 
-        var modal = this._modal.Show<ModalObjectMultiSelection<TItem>>(string.Format(MUnique.OpenMU.Web.Shared.Properties.Resources.SelectType, typeof(TItem).GetTypeCaption()), parameters);
+        var options = new ModalOptions { Size = ModalSize.Large };
+        var modal = this._modal.Show<ModalObjectMultiSelection<TItem>>(
+            string.Format(MUnique.OpenMU.Web.Shared.Properties.Resources.SelectType, typeof(TItem).GetTypeCaption()),
+            parameters,
+            options);
         var result = await modal.Result.ConfigureAwait(false);
         if (result.Cancelled || result.Data is not IList<TItem> items)
         {

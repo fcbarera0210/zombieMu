@@ -57,9 +57,11 @@ public partial class QuestRewardsEditor
         var parameters = new ModalParameters();
         parameters.Add(nameof(ModalObjectMultiSelection<ItemDefinition>.PersistenceContext), this.PersistenceContext);
 
+        var options = new ModalOptions { Size = ModalSize.Large };
         var modal = this.ModalService.Show<ModalObjectMultiSelection<ItemDefinition>>(
             string.Format(Resources.SelectType, typeof(ItemDefinition).GetTypeCaption()),
-            parameters);
+            parameters,
+            options);
         var result = await modal.Result.ConfigureAwait(true);
         if (result.Cancelled || result.Data is not IList<ItemDefinition> definitions || definitions.Count == 0)
         {

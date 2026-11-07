@@ -49,8 +49,8 @@ public class QuestStartedPlugIn : IQuestStartedPlugIn
             var state = this._player.GetQuestState(quest.Group);
             if (state?.ActiveQuest == quest)
             {
-                // Use IQuestStepInfoPlugIn so the Extended client also receives QuestTextExtended
-                // for quest.Number (accept UI used StartingNumber; active tracking uses Number).
+                // Register Number via Extended text (StepInfo body skipped while active — see
+                // QuestStepInfoExtendedPlugIn), then send conditions/rewards progress packet.
                 await this._player.InvokeViewPlugInAsync<IQuestStepInfoPlugIn>(
                     p => p.ShowQuestStepInfoAsync(quest.Group, quest.Number)).ConfigureAwait(false);
                 await this._player.InvokeViewPlugInAsync<IQuestProgressPlugIn>(p => p.ShowQuestProgressAsync(quest, true)).ConfigureAwait(false);

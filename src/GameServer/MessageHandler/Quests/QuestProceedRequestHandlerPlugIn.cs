@@ -40,8 +40,10 @@ public class QuestProceedRequestHandlerPlugIn : ISubPacketHandlerPlugIn
         {
             if (questState?.ActiveQuest != null)
             {
-                // keep it running and confirm that it started
-                await player.InvokeViewPlugInAsync<IQuestStartedPlugIn>(p => p.QuestStartedAsync(questState.ActiveQuest)).ConfigureAwait(false);
+                // Already accepted: only refresh progress/rewards. Do NOT re-run QuestStarted
+                // (StepInfo for Number recreates Accept UI and loops on the client).
+                await player.InvokeViewPlugInAsync<IQuestProgressPlugIn>(
+                    p => p.ShowQuestProgressAsync(questState.ActiveQuest, true)).ConfigureAwait(false);
             }
             else
             {

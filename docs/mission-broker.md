@@ -40,4 +40,7 @@ Do **not** put multiple Mission Broker missions in the same Group if you want th
 
 - NPC window type is `NpcDialog` (not the legacy chat menu).
 - OpenMU sends Extended quest packets (`F6/1C`, `F6/1D`, `F6/1E`) with display names for MuMain.
+- `F6/1E` Summary is built from kill/item requirements (there is no free-text description on `QuestDefinition`). Live counts still come from the progress packet (`F6/0C` Extended).
+- After accept the server tracks by `Number`. Re-sending Accept/`QuestStepInfo` for that Number must not reopen Accept/Refuse on the client.
+- If a quest has `IsChoiceOption` rewards, completing opens a chat prompt (`1`, `2`, …) before rewards are granted.
 - The old chat accept / `ABANDON` talk plugin is inactive; prefer the quest window give-up button.
