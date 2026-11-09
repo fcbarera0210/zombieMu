@@ -31,9 +31,9 @@ public class QuestSelectAction
                 player.OpenedNpc?.Definition.Number,
                 player.SelectedCharacter?.CharacterClass?.Name,
                 player.Level);
-            await player.ShowGoldenMessageAsync(
-                    "[Quest] This mission is not available (missing definition, wrong NPC link, or class filter).")
-                .ConfigureAwait(false);
+            const string msg = "[Quest] This mission is not available (missing definition, wrong NPC link, or class filter).";
+            await player.ShowGoldenMessageAsync(msg).ConfigureAwait(false);
+            await player.ShowBlueMessageAsync(msg).ConfigureAwait(false);
             return;
         }
 
@@ -56,12 +56,9 @@ public class QuestSelectAction
                 quest.Number,
                 quest.Repeatable,
                 quest.OncePerReset);
-            await player.ShowGoldenMessageAsync(
-                    $"[Quest] '{questName}' was already completed and cannot be taken again.")
-                .ConfigureAwait(false);
-            await player.ShowBlueMessageAsync(
-                    "[Quest] This mission is one-time only for this character.")
-                .ConfigureAwait(false);
+            var msg = $"[Quest] '{questName}' was already completed and cannot be taken again.";
+            await player.ShowGoldenMessageAsync(msg).ConfigureAwait(false);
+            await player.ShowBlueMessageAsync(msg).ConfigureAwait(false);
             return;
         }
 
@@ -95,7 +92,26 @@ public class QuestSelectAction
         // where StartingNumber == Number (Mission Broker and similar).
         if (quest.StartingNumber == number || quest.Number == number)
         {
+            player.Logger.LogInformation(
+                "Quest select OK: opening step for {QuestName} (G{Group}/S{Starting}/N{Number}).",
+                questName,
+                quest.Group,
+                quest.StartingNumber,
+                quest.Number);
+            await player.ShowBlueMessageAsync($"[Quest] Opening: {questName}").ConfigureAwait(false);
             await player.InvokeViewPlugInAsync<IQuestStepInfoPlugIn>(p => p.ShowQuestStepInfoAsync(quest.Group, quest.StartingNumber)).ConfigureAwait(false);
+        }
+        else
+        {
+            player.Logger.LogWarning(
+                "Quest select matched {QuestName} but number {Number} is neither StartingNumber {Starting} nor Number {QuestNumber}.",
+                questName,
+                number,
+                quest.StartingNumber,
+                quest.Number);
+            await player.ShowGoldenMessageAsync(
+                    $"[Quest] '{questName}' has invalid StartingNumber/Number configuration.")
+                .ConfigureAwait(false);
         }
     }
 }
