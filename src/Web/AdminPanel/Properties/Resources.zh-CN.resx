@@ -2107,6 +2107,18 @@
   <data name="LeaderboardGames" xml:space="preserve">
     <value>场次</value>
   </data>
+  <data name="CharacterLeaderboards" xml:space="preserve">
+    <value>角色排行</value>
+  </data>
+  <data name="CharacterLeaderboardsDescription" xml:space="preserve">
+    <value>服务器上的顶级角色，按转生、大师等级、等级和经验排序。机器人、模板和游戏管理员不计入。</value>
+  </data>
+  <data name="CharacterLeaderboardNoEntries" xml:space="preserve">
+    <value>暂无角色。</value>
+  </data>
+  <data name="Resets" xml:space="preserve">
+    <value>转生</value>
+  </data>
   <data name="EditorContextChanged" xml:space="preserve">
     <value>此编辑器打开期间配置已更改。请先复制未保存的修改，再使用刷新加载当前数据后保存。</value>
   </data>

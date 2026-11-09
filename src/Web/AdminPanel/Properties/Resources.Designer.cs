@@ -2281,6 +2281,33 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to No characters yet..
+        /// </summary>
+        public static string CharacterLeaderboardNoEntries {
+            get {
+                return ResourceManager.GetString("CharacterLeaderboardNoEntries", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Character ranking.
+        /// </summary>
+        public static string CharacterLeaderboards {
+            get {
+                return ResourceManager.GetString("CharacterLeaderboards", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The best characters of the server, ranked by resets, mast....
+        /// </summary>
+        public static string CharacterLeaderboardsDescription {
+            get {
+                return ResourceManager.GetString("CharacterLeaderboardsDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Chat commands.
         /// </summary>
         public static string ChatCommands {
@@ -7266,6 +7293,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string ResetTwoFactor {
             get {
                 return ResourceManager.GetString("ResetTwoFactor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Resets.
+        /// </summary>
+        public static string Resets {
+            get {
+                return ResourceManager.GetString("Resets", resourceCulture);
             }
         }
 

@@ -2578,6 +2578,18 @@
   <data name="LeaderboardGames" xml:space="preserve">
     <value>Spiele</value>
   </data>
+  <data name="CharacterLeaderboards" xml:space="preserve">
+    <value>Charakter-Rangliste</value>
+  </data>
+  <data name="CharacterLeaderboardsDescription" xml:space="preserve">
+    <value>Die besten Charaktere des Servers, sortiert nach Resets, Master Level, Level und Erfahrung. Bots, Vorlagen und Game Master werden nicht berücksichtigt.</value>
+  </data>
+  <data name="CharacterLeaderboardNoEntries" xml:space="preserve">
+    <value>Noch keine Charaktere.</value>
+  </data>
+  <data name="Resets" xml:space="preserve">
+    <value>Resets</value>
+  </data>
   <data name="EditorContextChanged" xml:space="preserve">
     <value>Die Konfiguration wurde geändert, während dieser Editor geöffnet war. Kopieren Sie ungespeicherte Änderungen und laden Sie die aktuellen Daten mit Aktualisieren neu, bevor Sie speichern.</value>
   </data>

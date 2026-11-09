@@ -31,6 +31,7 @@ public static class AdminOperationsExtensions
         services.AddScoped<ConfigurationReadOperations>();
         services.AddScoped<PluginReadOperations>();
         services.AddScoped<MiniGameReadOperations>();
+        services.AddScoped<CharacterReadOperations>();
         services.TryAddScoped<IAdminOperationContext, UnconfiguredAdminOperationContext>();
         services.TryAddSingleton<IAdminAuditRepository, UnconfiguredAdminAuditRepository>();
         services.TryAddSingleton<AdminWriteSettings>();

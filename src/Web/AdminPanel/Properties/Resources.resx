@@ -2680,6 +2680,18 @@
   <data name="LeaderboardGames" xml:space="preserve">
     <value>Games</value>
   </data>
+  <data name="CharacterLeaderboards" xml:space="preserve">
+    <value>Character ranking</value>
+  </data>
+  <data name="CharacterLeaderboardsDescription" xml:space="preserve">
+    <value>The best characters of the server, ranked by resets, master level, level and experience. Bots, templates and game masters are not included.</value>
+  </data>
+  <data name="CharacterLeaderboardNoEntries" xml:space="preserve">
+    <value>No characters yet.</value>
+  </data>
+  <data name="Resets" xml:space="preserve">
+    <value>Resets</value>
+  </data>
   <data name="AllowedMcpTools" xml:space="preserve">
     <value>Allowed MCP tools (comma separated; empty allows all tools for the role)</value>
   </data>
