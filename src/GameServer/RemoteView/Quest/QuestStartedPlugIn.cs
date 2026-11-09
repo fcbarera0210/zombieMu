@@ -49,10 +49,9 @@ public class QuestStartedPlugIn : IQuestStartedPlugIn
             var state = this._player.GetQuestState(quest.Group);
             if (state?.ActiveQuest == quest)
             {
-                // Register Number via Extended text (StepInfo body skipped while active — see
-                // QuestStepInfoExtendedPlugIn), then send conditions/rewards progress packet.
-                await this._player.InvokeViewPlugInAsync<IQuestStepInfoPlugIn>(
-                    p => p.ShowQuestStepInfoAsync(quest.Group, quest.Number)).ConfigureAwait(false);
+                // Only send progress/rewards for Number. Do NOT send QuestTextExtended here:
+                // MuMain opens Accept/Refuse on QuestText, which would re-show Accept after start.
+                // Name for Number is copied client-side from the StartingNumber entry of the group.
                 await this._player.InvokeViewPlugInAsync<IQuestProgressPlugIn>(p => p.ShowQuestProgressAsync(quest, true)).ConfigureAwait(false);
             }
         }
