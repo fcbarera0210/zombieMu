@@ -31,10 +31,14 @@ Rules for each mission:
 | **RefuseNumber** | Optional refuse dialog id (often `0`). |
 | **Name** | Shown in the open-source client via Extended packets (no BMD required). |
 | **QuestGiver** | Keep linked to monster 379. |
+| **Repeatable** | `false` for one-time missions (e.g. first wings). Completed ones are hidden from the NPC list. |
+| **OncePerReset** | Optional: can be taken again only after character reset. |
 
 Example (sample *Pest Control*): Group `200`, StartingNumber `1`, Number `2`.
 
 Do **not** put multiple Mission Broker missions in the same Group if you want them to run in parallel.
+
+If a click on a listed mission does nothing, check server logs / in-game golden messages: already completed, wrong level, `StartingNumber == Number`, or class filter. Each mission needs its **own Group** in 200–299.
 
 ## Technical notes
 

@@ -24,10 +24,20 @@ public class QuestSelectAction
         var quest = player.GetQuest(group, number);
         if (quest is null)
         {
-            player.Logger.LogDebug("Failed, quest not found");
+            player.Logger.LogWarning(
+                "Quest select failed: no quest for group {Group} number {Number} (OpenedNpc={Npc}, class={Class}, level={Level}).",
+                group,
+                number,
+                player.OpenedNpc?.Definition.Number,
+                player.SelectedCharacter?.CharacterClass?.Name,
+                player.Level);
+            await player.ShowGoldenMessageAsync(
+                    "[Quest] This mission is not available (missing definition, wrong NPC link, or class filter).")
+                .ConfigureAwait(false);
             return;
         }
 
+        var questName = quest.Name.GetTranslation(player.Culture) ?? quest.Name.ToString() ?? "Quest";
         var questState = player.SelectedCharacter?.QuestStates.FirstOrDefault(q => q.Group == group);
         if (questState?.ActiveQuest != null)
         {
@@ -38,15 +48,47 @@ public class QuestSelectAction
 
         if (quest.IsBlockedByCompletionHistory(questState?.LastFinishedQuest))
         {
-            player.Logger.LogDebug("The quest is blocked by completion history (not repeatable or once per reset).");
+            player.Logger.LogInformation(
+                "Quest select blocked by history: {QuestName} (G{Group}/S{Starting}/N{Number}), Repeatable={Repeatable}, OncePerReset={OncePerReset}.",
+                questName,
+                quest.Group,
+                quest.StartingNumber,
+                quest.Number,
+                quest.Repeatable,
+                quest.OncePerReset);
+            await player.ShowGoldenMessageAsync(
+                    $"[Quest] '{questName}' was already completed and cannot be taken again.")
+                .ConfigureAwait(false);
+            await player.ShowBlueMessageAsync(
+                    "[Quest] This mission is one-time only for this character.")
+                .ConfigureAwait(false);
             return;
         }
 
         // Level range only gates starting a new quest; active missions are handled above.
         if (!player.IsWithinQuestLevelRange(quest))
         {
-            player.Logger.LogDebug("Failed, character level {0} not in allowed range {1} to {2}.", player.Level, quest.MinimumCharacterLevel, quest.MaximumCharacterLevel);
+            var maxText = quest.MaximumCharacterLevel > 0
+                ? quest.MaximumCharacterLevel.ToString()
+                : "∞";
+            player.Logger.LogInformation(
+                "Quest select failed level range: {QuestName}, player {Level}, allowed {Min}-{Max}.",
+                questName,
+                player.Level,
+                quest.MinimumCharacterLevel,
+                quest.MaximumCharacterLevel);
+            await player.ShowGoldenMessageAsync(
+                    $"[Quest] '{questName}' requires level {quest.MinimumCharacterLevel}-{maxText} (you are {player.Level}).")
+                .ConfigureAwait(false);
             return;
+        }
+
+        if (quest.StartingNumber == quest.Number)
+        {
+            player.Logger.LogWarning(
+                "Quest {QuestName} has StartingNumber == Number ({Number}). Accept UI may loop; configure distinct values.",
+                questName,
+                quest.Number);
         }
 
         // Always send starting-step info for selectable quests, including simple missions

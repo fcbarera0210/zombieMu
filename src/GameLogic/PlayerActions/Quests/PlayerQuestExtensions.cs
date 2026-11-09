@@ -43,13 +43,22 @@ public static class PlayerQuestExtensions
     /// <returns>The quest definition for the specified group and number depending on the players character class.</returns>
     public static QuestDefinition? GetQuest(this Player player, short group, short number)
     {
-        var possibleQuestsOfGroup = GetQuestsLinkedToNpc(player, player.OpenedNpc?.Definition)
+        // Prefer the opened NPC; if the client already closed the dialog (common when the
+        // accept/progress window opens), fall back to any configured quest of that group.
+        IEnumerable<QuestDefinition> linked = player.OpenedNpc?.Definition is { } npc
+            ? GetQuestsLinkedToNpc(player, npc)
+            : player.GameContext.Configuration.Monsters.SelectMany(monster => monster.Quests);
+
+        var possibleQuestsOfGroup = linked
                 .Where(q => q.Group == group)
                 .Where(q => q.IsAllowedForCharacterClass(player.SelectedCharacter?.CharacterClass))
                 .Where(q => !q.EvolvesIntoInactiveClass(player))
-                .OrderBy(q => q.Number);
+                .OrderBy(q => q.Number)
+                .ToList();
 
-        return possibleQuestsOfGroup.FirstOrDefault(q => q.StartingNumber == number || q.Number == number);
+        // Prefer StartingNumber match (select/accept) over Number (progress) when both exist.
+        return possibleQuestsOfGroup.FirstOrDefault(q => q.StartingNumber == number)
+               ?? possibleQuestsOfGroup.FirstOrDefault(q => q.Number == number);
     }
 
     /// <summary>
@@ -60,6 +69,7 @@ public static class PlayerQuestExtensions
     /// <remarks>
     /// Level limits apply only to starting a quest. Quests the player already has active stay listed
     /// so they can be selected again to turn in rewards after outgrowing the level range.
+    /// Quests blocked by completion history (not repeatable / once per reset) are hidden.
     /// </remarks>
     public static IEnumerable<QuestDefinition> GetAvailableQuestsOfOpenedNpc(this Player player)
     {
@@ -71,7 +81,32 @@ public static class PlayerQuestExtensions
         return GetQuestsLinkedToNpc(player, npc)
             .Where(q => q.IsAllowedForCharacterClass(player.SelectedCharacter?.CharacterClass))
             .Where(q => !q.EvolvesIntoInactiveClass(player))
-            .Where(q => player.HasActiveQuest(q) || IsWithinQuestLevelRange(player, q));
+            .Where(q => player.CanOfferQuestAtNpc(q));
+    }
+
+    /// <summary>
+    /// Determines whether the quest should appear in the NPC available list for this player.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="quest">The quest.</param>
+    /// <returns>
+    /// <c>true</c> when the quest is currently active (turn-in) or can still be started
+    /// (level range and not blocked by completion history).
+    /// </returns>
+    public static bool CanOfferQuestAtNpc(this Player player, QuestDefinition quest)
+    {
+        if (player.HasActiveQuest(quest))
+        {
+            return true;
+        }
+
+        var state = player.GetQuestState(quest.Group);
+        if (quest.IsBlockedByCompletionHistory(state?.LastFinishedQuest))
+        {
+            return false;
+        }
+
+        return player.IsWithinQuestLevelRange(quest);
     }
 
     /// <summary>

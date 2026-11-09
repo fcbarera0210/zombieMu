@@ -25,9 +25,18 @@ public class QuestStartAction
         var quest = player.GetQuest(group, number);
         if (quest is null)
         {
-            player.Logger.LogWarning("Failed, quest not found");
+            player.Logger.LogWarning(
+                "Quest start failed: no quest for group {Group} number {Number} (OpenedNpc={Npc}).",
+                group,
+                number,
+                player.OpenedNpc?.Definition.Number);
+            await player.ShowGoldenMessageAsync(
+                    "[Quest] This mission cannot be started (not found for this NPC).")
+                .ConfigureAwait(false);
             return;
         }
+
+        var questName = quest.Name.GetTranslation(player.Culture) ?? quest.Name.ToString() ?? "Quest";
 
         var questState = player.SelectedCharacter!.QuestStates.FirstOrDefault(q => q.Group == group);
         if (questState is null)
@@ -47,7 +56,18 @@ public class QuestStartAction
 
         if (!player.IsWithinQuestLevelRange(quest))
         {
-            player.Logger.LogDebug("Failed, character level {0} not in allowed range {1} to {2}.", player.Level, quest.MinimumCharacterLevel, quest.MaximumCharacterLevel);
+            var maxText = quest.MaximumCharacterLevel > 0
+                ? quest.MaximumCharacterLevel.ToString()
+                : "∞";
+            player.Logger.LogInformation(
+                "Quest start failed level range: {QuestName}, player {Level}, allowed {Min}-{Max}.",
+                questName,
+                player.Level,
+                quest.MinimumCharacterLevel,
+                quest.MaximumCharacterLevel);
+            await player.ShowGoldenMessageAsync(
+                    $"[Quest] '{questName}' requires level {quest.MinimumCharacterLevel}-{maxText} (you are {player.Level}).")
+                .ConfigureAwait(false);
             return;
         }
 
@@ -68,7 +88,14 @@ public class QuestStartAction
 
         if (quest.IsBlockedByCompletionHistory(questState.LastFinishedQuest))
         {
-            player.Logger.LogDebug("The quest is blocked by completion history (not repeatable or once per reset).");
+            player.Logger.LogInformation(
+                "Quest start blocked by history: {QuestName} (G{Group}/N{Number}).",
+                questName,
+                quest.Group,
+                quest.Number);
+            await player.ShowGoldenMessageAsync(
+                    $"[Quest] '{questName}' was already completed and cannot be taken again.")
+                .ConfigureAwait(false);
             return;
         }
 
