@@ -604,6 +604,20 @@
     }
   },
   {
+    "Name": "characters_leaderboard",
+    "InputSchema": {
+      "type": "object",
+      "properties": {}
+    },
+    "Annotations": {
+      "title": null,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    }
+  },
+  {
     "Name": "characters_update",
     "InputSchema": {
       "type": "object",

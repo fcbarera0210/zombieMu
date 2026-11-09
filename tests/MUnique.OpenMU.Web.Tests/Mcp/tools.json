@@ -111,6 +111,20 @@
     }
   },
   {
+    "Name": "characters_leaderboard",
+    "InputSchema": {
+      "type": "object",
+      "properties": {}
+    },
+    "Annotations": {
+      "title": null,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    }
+  },
+  {
     "Name": "config_describe",
     "InputSchema": {
       "type": "object",
